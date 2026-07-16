@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../../config/db'); // Double-checked relative path for sub-directory routes
+const pool = require('../config/db'); // Double-checked relative path for sub-directory routes
 
 // ── 1. SECURE ACCOUNT FORGOT-PASSWORD VERIFICATION ─────────────────
 router.post('/forgot-password', async (req, res) => {
