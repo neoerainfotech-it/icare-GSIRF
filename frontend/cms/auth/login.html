@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GARVI — Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/garvi-supabase.js"></script>
   <script>
     tailwind.config = {
       theme: { extend: { colors: { 'garvi-orange': '#D58B00', 'garvi-gold': '#F4A623' } } }
@@ -14,12 +12,11 @@
   </script>
   <style>
     body { box-sizing: border-box; }
-    .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease forwards; }
+    .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.6s ease forwards; }
     @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
     .floating-shape { position: absolute; opacity: 0.05; animation: float 6s ease-in-out infinite; }
     @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)} }
 
-    /* Role toggle styling */
     .role-btn { transition: all 0.2s ease; }
     .role-btn.active {
       background: linear-gradient(135deg, #D58B00, #F4A623);
@@ -36,40 +33,39 @@
 </head>
 <body class="min-h-screen bg-gray-50 relative overflow-x-hidden font-sans flex flex-col justify-between">
 
-  <!-- Floating background structural graphics -->
+  <!-- Floating background graphics -->
   <div class="absolute inset-0 -z-10 pointer-events-none">
     <div class="floating-shape w-16 h-16 sm:w-24 sm:h-24 bg-garvi-orange rounded-full top-20 left-4 sm:left-10"></div>
     <div class="floating-shape w-12 h-12 sm:w-16 sm:h-16 bg-garvi-gold rounded-lg bottom-32 right-6 sm:right-16" style="animation-delay:1s"></div>
   </div>
 
-  <!-- Top Header Navigation Bar -->
+  <!-- Top Header Navigation Bar (Paths adjusted to move up two levels via ../../) -->
   <header class="bg-white shadow-md fixed top-0 inset-x-0 z-50">
     <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
       <div class="flex items-center gap-2 sm:gap-3">
-        <a href="landing.html" class="flex items-center gap-2 sm:gap-3">
+        <a href="../../landing.html" class="flex items-center gap-2 sm:gap-3">
           <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI logo" class="h-10 w-10 sm:h-12 sm:w-12 object-contain" />
           <h1 class="text-xl sm:text-2xl font-bold text-garvi-orange">GARVI</h1>
         </a>
         <span class="text-sm sm:text-base text-gray-400 ml-1">/ Login</span>
       </div>
-      <a href="landing.html" class="text-xs sm:text-sm text-gray-500 hover:text-garvi-orange transition-colors flex items-center gap-1">
+      <a href="../../landing.html" class="text-xs sm:text-sm text-gray-500 hover:text-garvi-orange transition-colors flex items-center gap-1">
         ← <span class="hidden xs:inline">Back to </span>Home
       </a>
     </div>
   </header>
 
-  <!-- Centered Login Interface Wrapper -->
+  <!-- Centered Login Card -->
   <main class="flex-grow pt-24 pb-28 flex items-center justify-center px-4 w-full">
     <div class="w-full max-w-md bg-white shadow-xl sm:shadow-2xl rounded-2xl p-6 sm:p-8 fade-in">
 
-      <!-- Branding Identity Header -->
       <div class="text-center mb-6">
         <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI Symbol" class="mx-auto h-16 sm:h-20 mb-2" />
         <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Sign In</h2>
         <p class="text-gray-500 text-xs sm:text-sm mt-1">Select your role and enter your credentials</p>
       </div>
 
-      <!-- Access Layer / Role Switcher -->
+      <!-- Role Switcher -->
       <div class="mb-6">
         <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Login As</label>
         <div class="grid grid-cols-2 gap-3">
@@ -91,13 +87,13 @@
         </p>
       </div>
 
-      <!-- Main Credentials Form Submission Segment -->
+      <!-- Credentials Form -->
       <form id="loginForm" class="space-y-4">
         <input type="hidden" id="selectedRole" value="institute" />
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-          <input type="text" id="email" required
+          <input type="text" id="username" required
             class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm sm:text-base focus:ring-2 focus:ring-garvi-orange/40 focus:border-garvi-orange outline-none"
             placeholder="you@institution.edu.in" />
         </div>
@@ -117,12 +113,11 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-between text-xs sm:text-sm">
+        <div class="flex items-center text-xs sm:text-sm">
           <label class="flex items-center gap-2 cursor-pointer select-none text-gray-600">
-            <input type="checkbox" class="text-garvi-orange focus:ring-garvi-orange border-gray-300 rounded" />
+            <input type="checkbox" id="rememberMe" class="text-garvi-orange focus:ring-garvi-orange border-gray-300 rounded" />
             Remember me
           </label>
-          <a href="#forgot" class="text-garvi-orange hover:text-garvi-gold font-medium">Forgot password?</a>
         </div>
 
         <button type="submit"
@@ -131,12 +126,11 @@
         </button>
       </form>
 
-      <!-- Feedback Banner Message Box -->
       <div id="msg" class="hidden mt-5 text-center py-2.5 rounded-lg text-white text-xs sm:text-sm font-medium px-3 break-words"></div>
     </div>
   </main>
 
-  <!-- Help & Technical Support Footer Dock -->
+  <!-- Support Footer Dock -->
   <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-xl z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
       <div class="flex items-center justify-between">
@@ -162,13 +156,13 @@
             </a>
           </div>
         </div>
-        <button id="helpToggle" class="md:hidden text-garvi-orange p-1.5 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none" aria-label="Toggle structural support details">
+        <button id="helpToggle" class="md:hidden text-garvi-orange p-1.5 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none" aria-label="Toggle support details">
           <svg id="helpToggleIcon" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
           </svg>
         </button>
       </div>
-      <!-- Mobile Expandable Help Links Stack -->
+      <!-- Mobile Expandable Support Details -->
       <div id="mobileHelp" class="hidden md:hidden mt-2 pt-3 border-t border-gray-200 flex flex-col gap-2.5 text-xs sm:text-sm">
         <a href="#contact" class="flex items-center gap-2 text-gray-600 hover:text-garvi-orange py-1">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -187,7 +181,6 @@
   </footer>
 
   <script>
-    // ── Role Configuration definitions ──────────────────────────
     const roleDescriptions = {
       institute: 'Institute (Dashboard Access)',
       admin:     'Admin (Admin Portal Access)'
@@ -199,16 +192,14 @@
       document.getElementById('roleInstitute').classList.toggle('active', role === 'institute');
       document.getElementById('roleAdmin').classList.toggle('active', role === 'admin');
       
-      // Clear values upon swapping roles to maintain safety profiles
-      document.getElementById('email').value = '';
+      document.getElementById('username').value = '';
       document.getElementById('password').value = '';
       
-      // Set responsive placeholder contextual parameters
-      document.getElementById('email').placeholder =
+      document.getElementById('username').placeholder =
         role === 'admin' ? 'admin@garvi.gujarat.gov.in' : 'you@institution.edu.in';
     }
 
-    // ── Password Visibility Toggle Logic ─────────────────────────
+    // Password visibility toggle
     const pwd = document.getElementById('password');
     document.getElementById('togglePwd').addEventListener('click', () => {
       const show = pwd.type === 'password';
@@ -218,14 +209,16 @@
         : `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />`;
     });
 
-    // ── Supabase Auth Pipeline Controller ────────────────────────
+    // Node.js API Login Form Submission Pipeline
     document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
-      const username = document.getElementById('email').value.trim().toLowerCase();
-      const pass     = pwd.value.trim();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = pwd.value.trim();
+      const role = document.getElementById('selectedRole').value;
 
-      if (!username || !pass) {
-        showMsg('❌ Please enter your username and password.', 'bg-red-500');
+      if (!username || !password) {
+        showMsg('❌ Please fill in all fields.', 'bg-red-500');
         return;
       }
 
@@ -234,31 +227,40 @@
       btn.textContent = 'Signing in…';
       btn.classList.add('opacity-75', 'cursor-not-allowed');
 
-      // Internal business email transformation mapping pattern
-      const email = username.includes('@') ? username : `${username}@garvi.internal`;
-
       try {
-        const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, role })
+        });
 
-        if (error) {
-          throw error;
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Authentication rejected.');
         }
 
-        // Validate server identity layer matches system roles definitions table
-        const { data: adminRow, error: dbError } = await sb.from('admins').select('id').eq('id', data.user.id).maybeSingle();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
 
-        if (adminRow) {
-          showMsg('✅ Admin login successful! Redirecting to Admin Portal…', 'bg-green-500');
-          setTimeout(() => window.location.href = 'admin.html', 1500);
-        } else {
-          showMsg('✅ Login successful! Redirecting to Dashboard…', 'bg-green-500');
-          setTimeout(() => window.location.href = 'dashboard.html', 1500);
-        }
+        showMsg('✅ Authentication verified! Redirecting...', 'bg-green-500');
+
+        // Path routing: moving up two levels out of /cms/auth/ to access targets cleanly
+        setTimeout(() => {
+  if (data.user.role === 'admin') {
+    // Moves up to cms/ then down into dashboard/admin.html
+    window.location.href = '../dashboard/admin.html'; 
+  } else {
+    // Adjust this to match where your regular institute dashboard file lives
+    window.location.href = '../dashboard.html'; 
+  }
+}, 1200);
+
       } catch (err) {
         btn.disabled = false;
         btn.textContent = 'Sign In';
         btn.classList.remove('opacity-75', 'cursor-not-allowed');
-        showMsg('❌ Invalid username or password. Please try again.', 'bg-red-500');
+        showMsg(`❌ ${err.message}`, 'bg-red-500');
       }
     });
 
@@ -269,46 +271,23 @@
       msg.classList.remove('hidden');
     }
 
-    // ── Active Session Router Interceptor ─────────────────────────
-    (async () => {
-      try {
-        const session = await getSession();
-        if (session) {
-          const { data: adminRow } = await sb.from('admins').select('id').eq('id', session.user.id).maybeSingle();
-          window.location.href = adminRow ? 'admin.html' : 'dashboard.html';
-        }
-      } catch (e) {
-        // Silently preserve active frame if routing session execution fails
-      }
-    })();
-
-    // ── Mobile Responsive Footer Interaction Drawer Hooks ──────────
+    // Mobile Footer Toggle
     document.getElementById('helpToggle').addEventListener('click', () => {
       const mh = document.getElementById('mobileHelp');
       const icon = document.getElementById('helpToggleIcon');
       const isHidden = mh.classList.toggle('hidden');
-      
-      // Smoothly rotate the indicator arrow chevron based on configuration status
       icon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
     });
 
-    // ── Action Redirect Anchors Processors ───────────────────────
+    // Help bar event interceptors
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', e => {
-        const h = link.getAttribute('href');
-        if (h === '#forgot') return; // Handled dynamically down below
-        
         e.preventDefault();
+        const h = link.getAttribute('href');
         if (h === '#contact') window.open('mailto:support@garvi.gujarat.gov.in?subject=GARVI Login Support', '_blank');
         else if (h === '#phone') alert('📞 GARVI Support\nPhone: +91-79-1234-5678\nMon–Fri, 9 AM–6 PM');
         else if (h === '#guide') alert('📚 User Guide\n• Login help\n• Account setup\n• Feature tutorials\n• FAQ');
       });
-    });
-
-    // Explicit structural override processing matching configuration conditions
-    document.querySelector('a[href="#forgot"]').addEventListener('click', e => {
-      e.preventDefault();
-      alert('🔑 Account Assistance\nFor administrative verification rules, self-service password reset utilities are managed by system administrators. Please contact your administrator directly, email support@garvi.gujarat.gov.in, or call +91-79-1234-5678 to update your security parameters.');
     });
   </script>
 </body>
