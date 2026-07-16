@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
-const authController = require('../controllers/authController');
-=======
 const pool = require('../../config/db'); // Double-checked relative path for sub-directory routes
->>>>>>> 6ee9a6713fe73ffcc2263473ac7f2482079d514c
 
 // ── 1. SECURE ACCOUNT FORGOT-PASSWORD VERIFICATION ─────────────────
 router.post('/forgot-password', async (req, res) => {
@@ -40,11 +36,5 @@ router.post('/forgot-password', async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
-// ✅ ADD THIS CRITICAL ROUTE: Maps the frontend login request to the controller logic
-router.post('/login', authController.login);
-
-=======
 // ── ALWAYS AT THE ABSOLUTE BOTTOM OF THE ROUTER FILE ───────────────
->>>>>>> 6ee9a6713fe73ffcc2263473ac7f2482079d514c
 module.exports = router;
