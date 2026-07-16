@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-require('dotenv').config({ path: '../.env' });
 
 const app = express();
 
@@ -10,29 +9,44 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 🔍 DIAGNOSTIC TRAFFIC LOGGER
+// Prints every single network request directly to your VS Code terminal
+app.use((req, res, next) => {
+    console.log(`📡 [${new Date().toLocaleTimeString()}] ${req.method} request received at: ${req.url}`);
+    next();
+});
+
 // Serve Frontend Files Statically
-// This handles bringing up all your HTML, CSS, and JS assets automatically
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Core API Routes
+// =================================================================
+// 1. ACTIVE API ENDPOINTS
+// =================================================================
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
-// SAFE CATCH-ALL MIDDLEWARE
-// Using app.use() completely avoids path-to-regexp string compilation errors
+// =================================================================
+// 2. CATCH-ALL MIDDLEWARE (Strictly avoids intercepting valid API calls)
+// =================================================================
 app.use((req, res, next) => {
-    // If an API route wasn't found, don't serve the HTML page—let it pass to the error handler
-    if (req.url.startsWith('/api/')) {
+    if (req.url.startsWith('/api')) {
+        console.log(`⚠️ Route missed endpoints. Forwarding to API 404 Handler: ${req.url}`);
         return next();
     }
-    // For all other page requests, fallback safely to index.html
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Global Error Handler
+// =================================================================
+// 3. GLOBAL ERROR & JSON 404 HANDLERS
+// =================================================================
+app.use('/api', (req, res) => {
+    res.status(404).json({ success: false, error: `Endpoint ${req.originalUrl} not found on this server.` });
+});
+
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('💥 Critical Server Error:', err.stack);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
 });
 

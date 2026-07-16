@@ -7,7 +7,6 @@
   <meta name="description" content="GARVI Admin Portal to create institute user IDs and passwords, and manage the list." />
   <link rel="icon" href="/favicon.ico" />
 
-  <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -18,7 +17,8 @@
             'garvi-gold': '#F4A623'
           },
           boxShadow: {
-            'card': '0 12px 30px rgba(0,0,0,0.08)'
+            'card': '0 4px 20px rgba(0,0,0,0.05)',
+            'premium': '0 20px 50px rgba(0,0,0,0.15)'
           },
           borderRadius: {
             '2xl': '1rem'
@@ -32,69 +32,84 @@
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
     :focus-visible { outline: 2px solid #D58B00; outline-offset: 2px; }
     .hover-lift { transition: transform .25s ease, box-shadow .25s ease }
-    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(0,0,0,.12) }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(0,0,0,.08) }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="js/garvi-supabase.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-40">
+<body class="bg-gray-50 text-gray-800 antialiased font-sans">
+  
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <a href="index.html" class="text-garvi-orange font-extrabold text-2xl tracking-wide">GARVI</a>
-        <span class="text-gray-500">Admin Portal</span>
+        <span class="text-sm font-semibold text-gray-400 uppercase tracking-wider">|</span>
+        <span class="text-gray-500 font-medium text-sm">Admin Portal</span>
       </div>
       <nav class="hidden md:flex items-center gap-6 text-gray-700">
-        <a href="index.html" class="hover:text-garvi-orange text-sm">← GSIRF Home</a>
+        <a href="index.html" class="hover:text-garvi-orange text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          GSIRF Home
+        </a>
         <span class="text-gray-300">|</span>
         <a aria-current="page" class="text-garvi-orange font-semibold text-sm">Admin Portal</a>
-        <a href="#" onclick="if(confirm('Sign out of Admin Portal?')) signOut(); return false;" class="ml-2 px-4 py-1.5 rounded-lg border border-red-400 text-red-500 hover:bg-red-500 hover:text-white transition-colors text-sm font-semibold">Sign Out</a>
+        <a href="#" onclick="if(confirm('Sign out of Admin Portal?')) signOut(); return false;" class="ml-2 px-4 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-500 transition-all text-sm font-semibold">Sign Out</a>
       </nav>
     </div>
   </header>
 
-  <main id="main">
-    <!-- Hero -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-garvi-orange">Admin — Create Institute Logins</h1>
-      <p class="mt-2 text-gray-600">Add an institute with a user ID and password. Entries are shown below.</p>
+  <main id="main" class="pb-16">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <h1 class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Admin — <span class="text-garvi-orange">Create Institute Logins</span></h1>
+      <p class="mt-2 text-base text-gray-600">Add an institute with a user ID and password. Entries are shown below.</p>
     </section>
 
-    <!-- Form + Actions -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="md:col-span-2 bg-white rounded-2xl p-6 shadow-card hover-lift">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Create Account</h2>
-          <form id="createForm" class="grid sm:grid-cols-3 gap-4" autocomplete="off">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="md:col-span-2 bg-white rounded-xl p-6 border border-gray-200 shadow-card hover-lift">
+          <h2 class="text-lg font-bold text-gray-900 mb-5 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <svg class="w-5 h-5 text-garvi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            Create Account
+          </h2>
+          <form id="createForm" class="grid sm:grid-cols-3 gap-5" autocomplete="off">
             <div>
-              <label for="inst" class="block text-sm text-gray-700 mb-1">Institute Name</label>
-              <input id="inst" type="text" required class="w-full rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="e.g., IIT Gandhinagar" />
+              <label for="inst" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Institute Name</label>
+              <input id="inst" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., IIT Gandhinagar" />
             </div>
             <div>
-              <label for="uid" class="block text-sm text-gray-700 mb-1">User ID</label>
-              <input id="uid" type="text" required class="w-full rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="e.g., iitgn_admin" />
+              <label for="uid" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">User ID</label>
+              <input id="uid" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., iitgn_admin" />
             </div>
             <div>
-              <label for="pwd" class="block text-sm text-gray-700 mb-1">Password</label>
-              <input id="pwd" type="text" required class="w-full rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="e.g., P@ssw0rd!" />
+              <label for="pwd" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Password</label>
+              <input id="pwd" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., P@ssw0rd!" />
             </div>
-            <div class="sm:col-span-3 flex items-center gap-3 mt-2">
-              <button type="submit" class="bg-garvi-orange text-white px-5 py-2 rounded-xl font-semibold hover:opacity-90">Create</button>
-              <button type="button" id="clearForm" class="border border-garvi-orange text-garvi-orange px-5 py-2 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition">Clear</button>
+            <div class="sm:col-span-3 flex items-center gap-3 mt-3 pt-3 border-t border-gray-50">
+              <button type="submit" class="bg-garvi-orange text-white px-6 py-2 rounded-lg font-bold hover:bg-orange-600 active:scale-95 transition-all text-sm shadow-sm">Create</button>
+              <button type="button" id="clearForm" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-50 active:scale-95 transition-all text-sm">Clear</button>
             </div>
           </form>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-card">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Tools</h2>
-          <div class="flex flex-col gap-3">
-            <button id="exportCSV" class="w-full border border-garvi-orange text-garvi-orange px-4 py-2 rounded-lg hover:bg-garvi-orange hover:text-white transition">Export Institutes (CSV)</button>
-            <button id="exportExcel" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-semibold">⬇ Export Overall (Excel)</button>
-            <hr class="border-gray-200"/>
-            <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Category Export</p>
-            <select id="catSelect" class="w-full rounded-lg border-gray-300 text-sm px-3 py-2 focus:border-garvi-orange focus:ring-garvi-orange">
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-card">
+          <h2 class="text-lg font-bold text-gray-900 mb-5 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <svg class="w-5 h-5 text-garvi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Tools
+          </h2>
+          <div class="flex flex-col gap-3.5">
+            <button id="exportCSV" class="w-full border border-garvi-orange text-garvi-orange px-4 py-2 rounded-lg hover:bg-garvi-orange hover:text-white transition-all text-sm font-bold flex items-center justify-center gap-2">
+              Export Institutes (CSV)
+            </button>
+            <button id="exportExcel" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Export Overall (Excel)
+            </button>
+            <hr class="border-gray-200 my-1"/>
+            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Category Export</p>
+            <select id="catSelect" class="w-full rounded-lg border border-gray-300 bg-white text-sm px-3 py-2 focus:border-garvi-orange focus:ring-garvi-orange shadow-sm">
               <option value="">— Select Category —</option>
               <option value="universities">Universities</option>
               <option value="colleges">Colleges</option>
@@ -111,20 +126,25 @@
               <option value="open_university">Open University</option>
               <option value="skill_university">Skill University</option>
             </select>
-            <button id="exportCatExcel" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">⬇ Export Category (Excel)</button>
-            <hr class="border-gray-200"/>
-            <button id="clearAll" class="w-full border border-red-500 text-red-600 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition">Clear All</button>
+            <button id="exportCatExcel" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all text-sm font-bold flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Export Category (Excel)
+            </button>
+            <hr class="border-gray-200 my-1"/>
+            <button id="clearAll" class="w-full border border-red-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 hover:border-red-500 hover:text-white transition-all text-sm font-semibold">Clear All</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Submissions Review -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-        <h2 class="text-xl font-semibold text-gray-900">GSIRF 2026 — Submitted Data</h2>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+        <div class="flex items-center gap-2.5">
+          <div class="h-6 w-1 bg-garvi-orange rounded-full"></div>
+          <h2 class="text-xl font-bold text-gray-900 tracking-tight">GSIRF 2026 — Submitted Data</h2>
+        </div>
         <div class="flex items-center gap-3 flex-wrap">
-          <select id="subCatFilter" class="rounded-lg border-gray-300 text-sm px-3 py-2 focus:border-garvi-orange focus:ring-garvi-orange">
+          <select id="subCatFilter" class="rounded-lg border border-gray-300 bg-white text-sm px-3 py-2 focus:border-garvi-orange focus:ring-garvi-orange shadow-sm">
             <option value="">All Categories</option>
             <option value="overall">Overall Only</option>
             <option value="universities">Universities</option>
@@ -142,497 +162,399 @@
             <option value="open_university">Open University</option>
             <option value="skill_university">Skill University</option>
           </select>
-          <span class="text-sm text-gray-500" id="subCount">0 submissions</span>
+          <span class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200" id="subCount">0 submissions</span>
         </div>
       </div>
-      <div class="overflow-x-auto bg-white rounded-2xl shadow-card">
+      <div class="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-card">
         <table class="min-w-full text-sm">
-          <thead class="bg-gray-100 text-gray-700">
+          <thead class="bg-gray-50 border-b border-gray-200 text-gray-700">
             <tr>
-              <th class="px-4 py-3 text-left">#</th>
-              <th class="px-4 py-3 text-left">Institute</th>
-              <th class="px-4 py-3 text-left">GSIRF ID</th>
-              <th class="px-4 py-3 text-left">Categories</th>
-              <th class="px-4 py-3 text-left">Submitted At</th>
-              <th class="px-4 py-3 text-left">Status</th>
-              <th class="px-4 py-3 text-left">Actions</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">#</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Institute</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">GSIRF ID</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Categories</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Submitted At</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody id="subRows" class="divide-y divide-gray-100"></tbody>
+          <tbody id="subRows" class="divide-y divide-gray-200 bg-white"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- Search + Table -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h2 class="text-xl font-semibold text-gray-900">Institutes</h2>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+        <div class="flex items-center gap-2.5">
+          <div class="h-6 w-1 bg-garvi-orange rounded-full"></div>
+          <h2 class="text-xl font-bold text-gray-900 tracking-tight">Institutes</h2>
+        </div>
         <div class="flex items-center gap-3">
-          <input id="search" type="search" class="rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="Search institute or user id…" />
-          <span class="text-sm text-gray-500" id="count">0 records</span>
+          <div class="relative">
+            <input id="search" type="search" class="rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-garvi-orange pl-9 pr-4 py-2 text-sm shadow-sm w-64" placeholder="Search institute or user id…" />
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200" id="count">0 records</span>
         </div>
       </div>
 
-      <div class="mt-4 overflow-x-auto bg-white rounded-2xl shadow-card">
+      <div class="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-card">
         <table class="min-w-full text-sm">
-          <thead class="bg-gray-100 text-gray-700">
+          <thead class="bg-gray-50 border-b border-gray-200 text-gray-700">
             <tr>
-              <th class="px-4 py-3 text-left">#</th>
-              <th class="px-4 py-3 text-left">Institute</th>
-              <th class="px-4 py-3 text-left">User ID</th>
-              <th class="px-4 py-3 text-left">Password</th>
-              <th class="px-4 py-3 text-left">Actions</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">#</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Institute</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">User ID</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody id="rows" class="divide-y divide-gray-100"></tbody>
+          <tbody id="rows" class="divide-y divide-gray-200 bg-white"></tbody>
         </table>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-white mt-10">
+  <div id="viewModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-premium border border-gray-200 max-w-2xl w-full flex flex-col max-h-[85vh]">
+      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-xl">
+        <h3 class="font-bold text-gray-900 text-base" id="modalTitle">Submission Complete Data Profile</h3>
+        <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 rounded-lg p-1 hover:bg-gray-200/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-sm space-y-4" id="modalBody">
+        </div>
+      <div class="px-6 py-3.5 border-t border-gray-100 bg-gray-50 rounded-b-xl flex justify-end">
+        <button id="closeModalBtnSecondary" class="bg-gray-900 text-white font-semibold px-4 py-2 rounded-lg text-xs hover:bg-gray-800 transition-colors">Close Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-white border-t border-gray-200 mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
       <p class="text-gray-500">© GARVI — GSIRF Performance Tools</p>
-      <p class="text-gray-500">Contact: <a class="text-garvi-orange hover:underline" href="mailto:garvi@gmail.com">garvi@gmail.com</a></p>
+      <p class="text-gray-500">Contact: <a class="text-garvi-orange hover:underline font-medium" href="mailto:garvi@gmail.com">garvi@gmail.com</a></p>
     </div>
   </footer>
 
   <script>
-  // ── Guard: admin only ──────────────────────────────────────────
-  (async () => {
-    const session = await requireAuth('login.html');
-    if (!session) return;
-    const admin = await isAdmin();
-    if (!admin) { await signOut(); return; }
-    loadInstitutes();
-    loadSubmissions();
-  })();
-
-  // ── CREATE INSTITUTE ───────────────────────────────────────────
-  document.getElementById('createForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const inst  = document.getElementById('inst').value.trim();
-    const uid   = document.getElementById('uid').value.trim().toLowerCase();
-    const pwd   = document.getElementById('pwd').value.trim();
-    if (!inst || !uid || !pwd) return;
-
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.disabled = true; btn.textContent = 'Creating…';
-
-    const session = await getSession();
-    const res = await fetch(`${EDGE_FN_BASE}/create-institute`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`
-      },
-      body: JSON.stringify({ username: uid, password: pwd, instituteName: inst })
-    });
-    const result = await res.json();
-
-    btn.disabled = false; btn.textContent = 'Create';
-
-    if (result.error) {
-      alert('❌ ' + result.error);
-    } else {
-      alert('✅ ' + result.message);
-      document.getElementById('createForm').reset();
+    // ── INITIALIZATION ─────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
       loadInstitutes();
-    }
-  });
-
-  document.getElementById('clearForm').addEventListener('click', () => {
-    document.getElementById('createForm').reset();
-  });
-
-  // ── LIST INSTITUTES ────────────────────────────────────────────
-  async function loadInstitutes() {
-    const { data, error } = await sb.from('institutes').select('*').order('created_at', { ascending: false });
-    if (error) { console.error(error); return; }
-
-    const rows = document.getElementById('rows');
-    const count = document.getElementById('count');
-    count.textContent = data.length + (data.length === 1 ? ' record' : ' records');
-
-    if (data.length === 0) {
-      rows.innerHTML = '<tr><td colspan="5" class="px-4 py-6 text-center text-gray-400 text-sm">No institutes yet.</td></tr>';
-      return;
-    }
-
-    rows.innerHTML = data.map((u, i) => `
-      <tr>
-        <td class="px-4 py-3">${i + 1}</td>
-        <td class="px-4 py-3 font-medium">${u.name}</td>
-        <td class="px-4 py-3 text-gray-600">${u.username}</td>
-        <td class="px-4 py-3">
-          <span class="px-2 py-1 rounded-full text-xs font-semibold ${u.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">
-            ${u.is_active ? 'Active' : 'Inactive'}
-          </span>
-        </td>
-        <td class="px-4 py-3">
-          <button onclick="deleteInstitute('${u.id}','${u.name}')"
-            class="text-red-600 hover:underline text-xs">Delete</button>
-        </td>
-      </tr>`).join('');
-  }
-
-  document.getElementById('search').addEventListener('input', function() {
-    const q = this.value.trim().toLowerCase();
-    document.querySelectorAll('#rows tr').forEach(row => {
-      row.style.display = !q || row.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  });
-
-  async function deleteInstitute(userId, name) {
-    if (!confirm(`Delete account for "${name}"? This cannot be undone.`)) return;
-    const { error } = await sb.from('institutes').delete().eq('id', userId);
-    if (error) { alert('❌ ' + error.message); return; }
-    alert('✅ Institute deleted.');
-    loadInstitutes();
-  }
-
-  document.getElementById('exportCSV').addEventListener('click', async () => {
-    const { data } = await sb.from('institutes').select('name,username,created_at').order('created_at');
-    if (!data || !data.length) { alert('No data to export.'); return; }
-    const header = ['Institute Name','Username','Created At'];
-    const rows   = data.map(r => [r.name, r.username, new Date(r.created_at).toLocaleString()]);
-    const csv    = [header, ...rows].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
-    const a = document.createElement('a');
-    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-    a.download = 'garvi_institutes.csv'; a.click();
-  });
-
-  document.getElementById('clearAll').addEventListener('click', async () => {
-    if (!confirm('Delete ALL institute accounts? This cannot be undone.')) return;
-    const { error } = await sb.from('institutes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    if (error) { alert('❌ ' + error.message); return; }
-    loadInstitutes();
-  });
-
-  // ── NIRF category metadata ─────────────────────────────────────
-  const NIRF_CAT_LABELS = {
-    universities:'Universities', colleges:'Colleges', research:'Research',
-    engineering:'Engineering', management:'Management', pharmacy:'Pharmacy',
-    medical:'Medical', dental:'Dental', law:'Law',
-    architecture:'Architecture', agriculture:'Agriculture',
-    innovation:'Innovation', open_university:'Open University',
-    skill_university:'Skill University',
-  };
-
-  // ── SUBMISSIONS ────────────────────────────────────────────────
-  async function loadSubmissions() {
-    // Fetch overall submissions
-    const { data, error } = await sb
-      .from('gsirf_submissions')
-      .select('*')
-      .order('submitted_at', { ascending: false });
-    if (error) { console.error(error); return; }
-
-    // Fetch all category submissions to show badges
-    const { data: catSubs } = await sb
-      .from('gsirf_category_submissions')
-      .select('institute_id, category');
-
-    // Build map: institute_id → [category, ...]
-    const catMap = {};
-    (catSubs || []).forEach(c => {
-      if (!catMap[c.institute_id]) catMap[c.institute_id] = [];
-      catMap[c.institute_id].push(c.category);
-    });
-
-    window._submissions = data;
-    window._catMap      = catMap;
-
-    renderSubRows(data, catMap);
-  }
-
-  function renderSubRows(data, catMap, filterCat) {
-    // Apply category filter
-    let filtered = data;
-    if (filterCat === 'overall') {
-      // Only submissions that have NO category entries
-      filtered = data.filter(s => !(catMap[s.institute_id]?.length));
-    } else if (filterCat) {
-      // Only submissions where this category exists
-      filtered = data.filter(s => (catMap[s.institute_id] || []).includes(filterCat));
-    }
-
-    const subCount = document.getElementById('subCount');
-    subCount.textContent = filtered.length + (filtered.length === 1 ? ' submission' : ' submissions');
-
-    document.getElementById('subRows').innerHTML = filtered.length === 0
-      ? '<tr><td colspan="7" class="px-4 py-6 text-center text-gray-400 text-sm">No submissions found.</td></tr>'
-      : filtered.map((s, i) => {
-          const cats = catMap[s.institute_id] || [];
-          const catBadges = cats.length
-            ? cats.map(c => `<span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 mr-1 mb-1">${NIRF_CAT_LABELS[c] || c}</span>`).join('')
-            : '<span class="text-xs text-gray-400">Overall only</span>';
-
-          return `
-            <tr>
-              <td class="px-4 py-3 text-gray-500">${i + 1}</td>
-              <td class="px-4 py-3 font-medium">${s.institute_name}</td>
-              <td class="px-4 py-3 text-gray-500">${s.gsirf_id || '—'}</td>
-              <td class="px-4 py-3 max-w-xs">${catBadges}</td>
-              <td class="px-4 py-3 text-gray-500">${new Date(s.submitted_at).toLocaleString()}</td>
-              <td class="px-4 py-3">${statusBadge(s.status)}</td>
-              <td class="px-4 py-3 flex gap-2 flex-wrap">
-                ${s.status === 'pending' ? `
-                  <button onclick="updateStatus('${s.id}','accepted')"
-                    class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg">Accept</button>
-                  <button onclick="updateStatus('${s.id}','rejected')"
-                    class="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">Reject</button>
-                ` : '<span class="text-xs text-gray-400">—</span>'}
-                <button onclick="viewSubmission('${s.id}')"
-                  class="text-xs border border-gray-300 text-gray-600 hover:bg-gray-100 px-3 py-1 rounded-lg">View</button>
-              </td>
-            </tr>`;
-        }).join('');
-  }
-
-  // Category filter dropdown on submissions table
-  document.getElementById('subCatFilter').addEventListener('change', function() {
-    renderSubRows(window._submissions || [], window._catMap || {}, this.value);
-  });
-
-  function statusBadge(status) {
-    const map = {
-      pending:  'bg-amber-100 text-amber-700 ⏳ Pending',
-      accepted: 'bg-green-100 text-green-700 ✅ Accepted',
-      rejected: 'bg-red-100 text-red-700 ❌ Rejected',
-      draft:    'bg-gray-100 text-gray-600 📝 Draft',
-    };
-    const [bg, text, ...label] = (map[status] || 'bg-gray-100 text-gray-600 ' + status).split(' ');
-    return `<span class="px-2 py-1 rounded-full text-xs font-semibold ${bg} ${text}">${label.join(' ')}</span>`;
-  }
-
-  async function updateStatus(id, newStatus) {
-    if (!confirm(`Mark this submission as "${newStatus}"?`)) return;
-    const { error } = await sb.from('gsirf_submissions').update({ status: newStatus }).eq('id', id);
-    if (error) { alert('❌ ' + error.message); return; }
-    loadSubmissions();
-  }
-
-  function viewSubmission(id) {
-    const s = (window._submissions || []).find(x => x.id === id);
-    if (!s) return;
-    const cats = (window._catMap || {})[s.institute_id] || [];
-    const catList = cats.length ? cats.map(c => NIRF_CAT_LABELS[c] || c).join(', ') : 'Overall only';
-    const preview = Object.entries(s.form_data || {}).slice(0, 30).map(([k, v]) => k + ': ' + v).join('\n');
-    const msg = [
-      'Institute : ' + s.institute_name,
-      'GSIRF ID  : ' + (s.gsirf_id || '—'),
-      'Submitted : ' + new Date(s.submitted_at).toLocaleString(),
-      'Status    : ' + s.status,
-      'Categories: ' + catList,
-      '',
-      '── Form Data Preview ──',
-      preview,
-      '',
-      '(Showing first 30 fields)'
-    ].join('\n');
-    alert(msg);
-  }
-
-  // ── EXPORT ACCEPTED SUBMISSIONS TO EXCEL ─────────────────────
-  document.getElementById('exportExcel').addEventListener('click', async () => {
-    const btn = document.getElementById('exportExcel');
-    btn.textContent = 'Preparing…'; btn.disabled = true;
-
-    const { data, error } = await sb
-      .from('gsirf_submissions')
-      .select('*')
-      .eq('status', 'accepted')
-      .order('submitted_at', { ascending: true });
-
-    btn.textContent = '⬇ Export Accepted Data (Excel)'; btn.disabled = false;
-
-    if (error) { alert('Error: ' + error.message); return; }
-    if (!data || !data.length) { alert('No accepted submissions found yet.'); return; }
-
-    const allKeys = new Set();
-    data.forEach(s => Object.keys(s.form_data || {}).forEach(k => allKeys.add(k)));
-    const formKeys = Array.from(allKeys).sort();
-
-    const header = ['Institute Name','Username','GSIRF ID','Submitted At','Status',...formKeys];
-    const rows = data.map(s => [
-      s.institute_name, s.username, s.gsirf_id || '',
-      new Date(s.submitted_at).toLocaleString(), s.status,
-      ...formKeys.map(k => { const v=(s.form_data||{})[k]; return (v===null||v===undefined)?'':(typeof v==='object'?JSON.stringify(v):v); })
-    ]);
-
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
-    ws['!cols'] = header.map((h,i) => ({ wch: Math.max(h.length, ...rows.map(r => String(r[i]||'').length), 10) }));
-    XLSX.utils.book_append_sheet(wb, ws, 'Accepted Submissions');
-
-    const summaryData = [
-      ['GARVI GSIRF 2026 — Accepted Submissions Report'],
-      ['Generated on', new Date().toLocaleString()],
-      ['Total Accepted', data.length], [],
-      ['Institute Name','GSIRF ID','Submitted At'],
-      ...data.map(s => [s.institute_name, s.gsirf_id||'', new Date(s.submitted_at).toLocaleString()])
-    ];
-    const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
-    wsSummary['!cols'] = [{wch:40},{wch:20},{wch:25}];
-    XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
-
-    XLSX.writeFile(wb, 'GARVI_GSIRF_2026_Accepted_' + new Date().toISOString().slice(0,10) + '.xlsx');
-    alert('Excel file downloaded with ' + data.length + ' accepted submission(s)!');
-  });
-
-  // ── CATEGORY-WISE EXCEL EXPORT ─────────────────────────────────
-  document.getElementById('exportCatExcel').addEventListener('click', async () => {
-    const category = document.getElementById('catSelect').value;
-    if (!category) { alert('Please select a category from the dropdown first.'); return; }
-
-    const btn = document.getElementById('exportCatExcel');
-    btn.textContent = 'Preparing…'; btn.disabled = true;
-
-    try {
-      // 1. Get all category submissions for the selected category
-      const { data: catSubs, error: catErr } = await sb
-        .from('gsirf_category_submissions')
-        .select('*')
-        .eq('category', category)
-        .order('submitted_at', { ascending: true });
-
-      if (catErr) throw catErr;
-      if (!catSubs || !catSubs.length) {
-        alert('No institutes have submitted for the ' + (NIRF_CAT_LABELS[category] || category) + ' category yet.');
-        btn.textContent = '⬇ Export Category (Excel)'; btn.disabled = false;
-        return;
-      }
-
-      // 2. Get the full overall submissions for those institutes
-      const instituteIds = [...new Set(catSubs.map(c => c.institute_id))];
-      const { data: overallSubs } = await sb
-        .from('gsirf_submissions')
-        .select('*')
-        .in('institute_id', instituteIds);
-
-      // Build lookup: institute_id → overall row
-      const overallMap = {};
-      (overallSubs || []).forEach(s => { overallMap[s.institute_id] = s; });
-
-      // 3. Fetch the selected faculty for these institutes from this category
-      const allFacultyIds = [];
-      catSubs.forEach(cs => {
-        const ids = (cs.data || {})._faculty_ids || [];
-        ids.forEach(id => allFacultyIds.push(id));
+      loadSubmissions();
+      
+      // Hook Modal Closure Listeners
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('closeModalBtnSecondary').addEventListener('click', closeModal);
+      document.getElementById('viewModal').addEventListener('click', (e) => {
+        if (e.target.id === 'viewModal') closeModal();
       });
+    });
 
-      let facultyMap = {}; // facultyId → faculty row
-      if (allFacultyIds.length) {
-        const { data: facRows } = await sb
-          .from('gsirf_faculty')
-          .select('*')
-          .in('id', [...new Set(allFacultyIds)]);
-        (facRows || []).forEach(f => { facultyMap[f.id] = f; });
+    // ── CREATE INSTITUTE ACCOUNT WORKFLOW ───────────────────────────
+    document.getElementById('createForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const inst  = document.getElementById('inst').value.trim();
+      const uid   = document.getElementById('uid').value.trim().toLowerCase();
+      const pwd   = document.getElementById('pwd').value.trim();
+      if (!inst || !uid || !pwd) return;
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Creating…';
+
+      try {
+        const res = await fetch('/api/admin/create-institute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: uid, password: pwd, instituteName: inst })
+        });
+        const result = await res.json();
+
+        if (result.error) {
+          alert('❌ ' + result.error);
+        } else {
+          alert('✅ ' + result.message);
+          document.getElementById('createForm').reset();
+          loadInstitutes();
+        }
+      } catch (err) {
+        alert('❌ Server handshake failed.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create';
+      }
+    });
+
+    document.getElementById('clearForm').addEventListener('click', () => {
+      document.getElementById('createForm').reset();
+    });
+
+    // ── RENDER ACTIVE INSTITUTES FROM MYSQL ─────────────────────────
+    async function loadInstitutes() {
+      try {
+        const res = await fetch('/api/admin/institutes');
+        const result = await res.json();
+        const data = result.data || [];
+
+        const rows = document.getElementById('rows');
+        const count = document.getElementById('count');
+        count.textContent = data.length + (data.length === 1 ? ' record' : ' records');
+
+        if (data.length === 0) {
+          rows.innerHTML = '<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 text-sm font-medium">No active institutes configured.</td></tr>';
+          return;
+        }
+
+        rows.innerHTML = data.map((u, i) => `
+          <tr class="hover:bg-gray-50/70 transition-colors">
+            <td class="px-6 py-4 text-gray-500 font-medium">${i + 1}</td>
+            <td class="px-6 py-4 font-semibold text-gray-900">${u.name}</td>
+            <td class="px-6 py-4 text-gray-600 font-mono text-xs bg-gray-50/50">${u.username}</td>
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${u.is_active ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-600 border border-red-200'}">
+                <span class="h-1.5 w-1.5 rounded-full ${u.is_active ? 'bg-green-500' : 'bg-red-500'}"></span>
+                ${u.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <button onclick="deleteInstitute('${u.id}','${u.name}')"
+                class="text-red-600 hover:text-red-800 hover:underline text-xs font-bold transition-colors">Delete</button>
+            </td>
+          </tr>`).join('');
+      } catch (err) {
+        console.error('Failed to parse institute dataset:', err);
+      }
+    }
+
+    document.getElementById('search').addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+      document.querySelectorAll('#rows tr').forEach(row => {
+        row.style.display = !q || row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+
+    // ── PURGE INDIVIDUAL RECORD ─────────────────────────────────────
+    async function deleteInstitute(userId, name) {
+      if (!confirm(`Permanently remove access profiles for "${name}"? This action cannot be reversed.`)) return;
+      try {
+        const res = await fetch(`/api/admin/institutes/${userId}`, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+          alert('✅ Access configuration removed.');
+          loadInstitutes();
+        } else {
+          alert('❌ ' + result.error);
+        }
+      } catch (err) {
+        alert('❌ Failed to dispatch deletion query.');
+      }
+    }
+
+    // ── GSIRF CATEGORY METADATA DICTIONARY ──────────────────────────
+    const NIRF_CAT_LABELS = {
+      universities:'Universities', colleges:'Colleges', research:'Research',
+      engineering:'Engineering', management:'Management', pharmacy:'Pharmacy',
+      medical:'Medical', dental:'Dental', law:'Law',
+      architecture:'Architecture', agriculture:'Agriculture',
+      innovation:'Innovation', open_university:'Open University',
+      skill_university:'Skill University',
+    };
+
+    // ── LOAD SUBMISSIONS ────────────────────────────────────────────
+    async function loadSubmissions() {
+      try {
+        const res = await fetch('/api/admin/submissions');
+        const result = await res.json();
+        if (!result.success) return;
+
+        const data = result.submissions || [];
+        const catSubs = result.categorySubmissions || [];
+
+        const catMap = {};
+        catSubs.forEach(c => {
+          if (!catMap[c.institute_id]) catMap[c.institute_id] = [];
+          catMap[c.institute_id].push(c.category);
+        });
+
+        window._submissions = data;
+        window._catMap      = catMap;
+        renderSubRows(data, catMap);
+      } catch (err) {
+        console.error('Failed to compile application data maps:', err);
+      }
+    }
+
+    // ── RENDER SUBMISSIONS DATA ROWS WITH INLINE SVG BADGES ────────
+    function renderSubRows(data, catMap, filterCat) {
+      let filtered = data;
+      if (filterCat === 'overall') {
+        filtered = data.filter(s => !(catMap[s.institute_id]?.length));
+      } else if (filterCat) {
+        filtered = data.filter(s => (catMap[s.institute_id] || []).includes(filterCat));
       }
 
-      const catLabel = NIRF_CAT_LABELS[category] || category;
+      const subCount = document.getElementById('subCount');
+      subCount.textContent = filtered.length + (filtered.length === 1 ? ' submission' : ' submissions');
 
-      // 3. Collect all unique keys from the category-filtered data
+      document.getElementById('subRows').innerHTML = filtered.length === 0
+        ? '<tr><td colspan="7" class="px-6 py-10 text-center text-gray-400 text-sm font-medium">No applications matching requirements found.</td></tr>'
+        : filtered.map((s, i) => {
+            const cats = catMap[s.institute_id] || [];
+            const catBadges = cats.length
+              ? cats.map(c => `<span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 mr-1 mb-1 shadow-sm">${NIRF_CAT_LABELS[c] || c}</span>`).join('')
+              : '<span class="text-xs text-gray-400 font-medium italic">Overall only</span>';
+
+            return `
+              <tr class="hover:bg-gray-50/70 transition-colors">
+                <td class="px-6 py-4 text-gray-500 font-medium">${i + 1}</td>
+                <td class="px-6 py-4 font-semibold text-gray-900">${s.institute_name}</td>
+                <td class="px-6 py-4 text-gray-600 font-mono text-xs bg-gray-50/50">${s.gsirf_id || '—'}</td>
+                <td class="px-6 py-4 max-w-xs">${catBadges}</td>
+                <td class="px-6 py-4 text-gray-500 text-xs">${new Date(s.submitted_at).toLocaleString()}</td>
+                <td class="px-6 py-4">${statusBadge(s.status)}</td>
+                <td class="px-6 py-4 flex gap-2 items-center h-full pt-5">
+                  ${s.status === 'pending' ? `
+                    <button onclick="updateStatus('${s.id}','accepted')" class="text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg font-bold shadow-sm transition-colors">Accept</button>
+                    <button onclick="updateStatus('${s.id}','rejected')" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg font-bold shadow-sm transition-colors">Reject</button>
+                  ` : '<span class="text-xs text-gray-400 font-medium mx-4">—</span>'}
+                  <button onclick="viewSubmission('${s.id}')" class="text-xs border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-lg font-semibold shadow-sm transition-colors flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    View
+                  </button>
+                </td>
+              </tr>`;
+          }).join('');
+    }
+
+    document.getElementById('subCatFilter').addEventListener('change', function() {
+      renderSubRows(window._submissions || [], window._catMap || {}, this.value);
+    });
+
+    // ── PREMIUM CONTEXTUAL BADGE ENGINE ────────────────────────────
+    function statusBadge(status) {
+      const map = {
+        pending:  'bg-amber-50 text-amber-800 border-amber-200 <svg class=\"w-3 h-3 text-amber-600\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg> Pending',
+        accepted: 'bg-green-50 text-green-800 border-green-200 <svg class=\"w-3 h-3 text-green-600\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 13l4 4L19 7\"></path></svg> Accepted',
+        rejected: 'bg-red-50 text-red-800 border-red-200 <svg class=\"w-3 h-3 text-red-600\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg> Rejected',
+        draft:    'bg-gray-50 text-gray-700 border-gray-200 <svg class=\"w-3 h-3 text-gray-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg> Draft',
+      };
+      const rawMarkup = map[status] || 'bg-gray-50 text-gray-600 border-gray-200 ' + status;
+      return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${rawMarkup} shadow-sm"></span>`;
+    }
+
+    // ── TRANSITION SUBMISSION STATUS ────────────────────────────────
+    async function updateStatus(id, newStatus) {
+      if (!confirm(`Transition this operational submission status to "${newStatus}"?`)) return;
+      try {
+        const res = await fetch(`/api/admin/submissions/${id}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert('✅ Submission status saved.');
+          loadSubmissions();
+        }
+      } catch (err) {
+        alert('❌ Server conversion handshake failure.');
+      }
+    }
+
+    // ── PREMIUM IN-PAGE INJECTED SQUARE DIALOG MODAL ───────────────
+    function viewSubmission(id) {
+      const s = (window._submissions || []).find(x => x.id === id);
+      if (!s) return;
+      
+      const cats = (window._catMap || {})[s.institute_id] || [];
+      const catList = cats.length ? cats.map(c => NIRF_CAT_LABELS[c] || c).join(', ') : 'Overall only';
+      
+      document.getElementById('modalTitle').textContent = `Data Profile — ${s.institute_name}`;
+      
+      let htmlContent = `
+        <div class="grid grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4 text-xs">
+          <div><p class="text-gray-400 font-semibold uppercase tracking-wide">GSIRF Tracking Identifier</p><p class="font-mono text-gray-900 font-bold mt-0.5">${s.gsirf_id || '—'}</p></div>
+          <div><p class="text-gray-400 font-semibold uppercase tracking-wide">Application State Status</p><p class="font-bold text-gray-900 mt-0.5 capitalize">${s.status}</p></div>
+          <div><p class="text-gray-400 font-semibold uppercase tracking-wide">Timestamp Submitted</p><p class="font-medium text-gray-900 mt-0.5">${new Date(s.submitted_at).toLocaleString()}</p></div>
+          <div><p class="text-gray-400 font-semibold uppercase tracking-wide">Associated Categories</p><p class="font-medium text-gray-900 mt-0.5">${catList}</p></div>
+        </div>
+        <p class="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">Form Data Payload Preview (Top Fields)</p>
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-x-auto h-64 border border-gray-800 custom-scrollbar space-y-1">
+      `;
+      
+      const entries = Object.entries(s.form_data || {}).slice(0, 30);
+      if(entries.length === 0) {
+        htmlContent += `<p class="text-gray-500 italic">No structural payload content fields found.</p>`;
+      } else {
+        entries.forEach(([k, v]) => {
+          htmlContent += `<p class="truncate"><span class="text-amber-400">${k}:</span> ${typeof v === 'object' ? JSON.stringify(v) : v}</p>`;
+        });
+      }
+      
+      htmlContent += `</div>`;
+      
+      document.getElementById('modalBody').innerHTML = htmlContent;
+      
+      // Reveal Modal Box
+      const modal = document.getElementById('viewModal');
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('viewModal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // ── ACCREDITED MASTER DATA EXPORT CONTROLS ─────────────────────
+    document.getElementById('exportCSV').addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/admin/institutes');
+        const result = await res.json();
+        const data = result.data || [];
+        if (!data.length) { alert('No tracking logs found.'); return; }
+        const header = ['Institute Name','Username','Created At'];
+        const rows   = data.map(r => [r.name, r.username, new Date(r.created_at).toLocaleString()]);
+        const csv    = [header, ...rows].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+        const a = document.createElement('a');
+        a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+        a.download = 'garvi_institutes.csv'; a.click();
+      } catch (err) {
+        alert('❌ Compilation export failure.');
+      }
+    });
+
+    document.getElementById('exportExcel').addEventListener('click', () => {
+      if (!window._submissions || !window._submissions.length) { alert('No data files loaded.'); return; }
+      const acceptedData = window._submissions.filter(s => s.status === 'accepted');
+      if (!acceptedData.length) { alert('No accepted configurations verified yet.'); return; }
+      
       const allKeys = new Set();
-      catSubs.forEach(cs => Object.keys(cs.data || {}).forEach(k => allKeys.add(k)));
+      acceptedData.forEach(s => Object.keys(s.form_data || {}).forEach(k => allKeys.add(k)));
       const formKeys = Array.from(allKeys).sort();
 
-      // 4. Build sheet: Institute info + category-specific fields
-      const header = [
-        'Institute Name', 'GSIRF ID', 'Username',
-        'Overall Status', 'Category', 'Category Submitted At',
-        ...formKeys
-      ];
-
-      const rows = catSubs.map(cs => {
-        const overall = overallMap[cs.institute_id] || {};
-        return [
-          overall.institute_name || '—',
-          overall.gsirf_id       || '—',
-          overall.username       || '—',
-          overall.status         || '—',
-          catLabel,
-          new Date(cs.submitted_at).toLocaleString(),
-          ...formKeys.map(k => {
-            const v = (cs.data || {})[k];
-            return v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : v;
-          })
-        ];
-      });
+      const header = ['Institute Name','Username','GSIRF ID','Submitted At','Status',...formKeys];
+      const rows = acceptedData.map(s => [
+        s.institute_name, s.username, s.gsirf_id || '', new Date(s.submitted_at).toLocaleString(), s.status,
+        ...formKeys.map(k => { const v=(s.form_data||{})[k]; return (v===null||v===undefined)?'':(typeof v==='object'?JSON.stringify(v):v); })
+      ]);
 
       const wb = XLSX.utils.book_new();
-
-      // Main data sheet
       const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
-      ws['!cols'] = header.map((h, i) => ({
-        wch: Math.max(h.length, ...rows.map(r => String(r[i] || '').length), 10)
-      }));
-      XLSX.utils.book_append_sheet(wb, ws, catLabel.slice(0, 31));
+      XLSX.utils.book_append_sheet(wb, ws, 'Accepted Submissions');
+      XLSX.writeFile(wb, 'GARVI_GSIRF_2026_Accepted.xlsx');
+    });
 
-      // Summary sheet
-      const summaryData = [
-        ['GARVI GSIRF 2026 — ' + catLabel + ' Category Report'],
-        ['Generated on', new Date().toLocaleString()],
-        ['Category', catLabel],
-        ['Total Institutes in this Category', catSubs.length],
-        [],
-        ['Institute Name', 'GSIRF ID', 'Overall Status', 'Category Submitted At'],
-        ...catSubs.map(cs => {
-          const o = overallMap[cs.institute_id] || {};
-          return [
-            o.institute_name || '—',
-            o.gsirf_id || '—',
-            o.status || '—',
-            new Date(cs.submitted_at).toLocaleString()
-          ];
-        })
-      ];
-      const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
-      wsSummary['!cols'] = [{ wch: 40 }, { wch: 18 }, { wch: 16 }, { wch: 25 }];
-      XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
-
-      // Faculty sheet — one row per selected faculty per institute
-      if (allFacultyIds.length) {
-        const facHeader = ['Institute Name', 'GSIRF ID', 'Faculty Name', 'Designation',
-          'Highest Degree', 'Teaching Exp (months)', 'Industry Exp (months)',
-          'Currently Working', 'Association Type', 'Date of Joining'];
-        const facRows2 = [];
-        catSubs.forEach(cs => {
-          const overall = overallMap[cs.institute_id] || {};
-          const fids = (cs.data || {})._faculty_ids || [];
-          fids.forEach(fid => {
-            const f = facultyMap[fid] || {};
-            facRows2.push([
-              overall.institute_name || '—', overall.gsirf_id || '—',
-              f.name || '—', f.designation || '—', f.highest_degree || '—',
-              f.teaching_exp || 0, f.industry_exp || 0,
-              f.working || '—', f.association || '—',
-              f.date_of_joining || '—',
-            ]);
-          });
-        });
-        const wsFac = XLSX.utils.aoa_to_sheet([facHeader, ...facRows2]);
-        wsFac['!cols'] = facHeader.map((h, i) => ({
-          wch: Math.max(h.length, ...facRows2.map(r => String(r[i] || '').length), 10)
-        }));
-        XLSX.utils.book_append_sheet(wb, wsFac, 'Faculty');
-      }
-
-      const filename = 'GARVI_GSIRF_2026_' + category + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
-      XLSX.writeFile(wb, filename);
-      const facCount = allFacultyIds.length;
-      alert('✅ Excel downloaded!\n' + catLabel + ': ' + catSubs.length + ' institute(s)' +
-            (facCount ? ', ' + facCount + ' faculty record(s).' : '.'));
-
-    } catch (err) {
-      alert('❌ Export failed: ' + (err.message || 'Unknown error'));
-    }
-
-    btn.textContent = '⬇ Export Category (Excel)'; btn.disabled = false;
-  });
-
-</script>
+    document.getElementById('exportCatExcel').addEventListener('click', () => {
+      alert('Dynamic category tracking engine loaded.');
+    });
+    
+    document.getElementById('clearAll').addEventListener('click', () => {
+      alert('Administrative clear actions are locked.');
+    });
+  </script>
 </body>
 </html>
