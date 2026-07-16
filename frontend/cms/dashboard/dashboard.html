@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GARVI — Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../../js/auth.js"></script>
   <script>
     tailwind.config = {
       theme: { extend: { colors: { 'garvi-orange': '#D58B00', 'garvi-gold': '#F4A623' } } }
@@ -59,7 +60,7 @@
                 <a href="#profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
                 <a href="#preferences" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Preferences</a>
                 <hr class="my-1">
-                <a href="#" onclick="signOut();return false;" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign Out</a>
+                <button type="button" onclick="signOut()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 focus:outline-none">Sign Out</button>
               </div>
             </div>
           </div>
@@ -404,6 +405,7 @@
   </main>
 
   <script>
+    protectPage('institute');
     // Profile dropdown toggle
     document.getElementById('profileBtn').addEventListener('click', () => {
       const menu = document.getElementById('profileMenu');

@@ -6,6 +6,7 @@
   <title>GARVI — Admin Portal</title>
   <meta name="description" content="GARVI Admin Portal to create institute user IDs and passwords, and manage the list." />
   <link rel="icon" href="/favicon.ico" />
+  <script src="../../js/auth.js"></script>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -56,7 +57,7 @@
         </a>
         <span class="text-gray-300">|</span>
         <a aria-current="page" class="text-garvi-orange font-semibold text-sm">Admin Portal</a>
-        <a href="#" onclick="if(confirm('Sign out of Admin Portal?')) signOut(); return false;" class="ml-2 px-4 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-500 transition-all text-sm font-semibold">Sign Out</a>
+        <button type="button" onclick="signOut()" class="ml-2 px-4 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-500 transition-all text-sm font-semibold focus:outline-none">Sign Out</button>
       </nav>
     </div>
   </header>
@@ -262,6 +263,7 @@
   </footer>
 
   <script>
+    protectPage('admin');
     // ── INITIALIZATION ─────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       loadInstitutes();
