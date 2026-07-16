@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Tool - GARVI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #D58B00 0%, #F4A623 100%);
+        }
+        
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(213, 139, 0, 0.2);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        
+        .benchmark-container {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid #e9ecef;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D58B00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .responsive-iframe {
+            width: 100%;
+            height: 600px;
+            min-height: 500px;
+        }
+        
+        @media (max-width: 768px) {
+            .responsive-iframe {
+                height: 400px;
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .responsive-iframe {
+                height: 300px;
+                min-height: 280px;
+            }
+        }
+
+        .notification-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .notification-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'garvi-orange': '#D58B00',
+                        'garvi-gold': '#F4A623',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-black font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-garvi-orange hover:text-garvi-gold transition-colors">
+                        GARVI
+                    </a>
+                    <div class="ml-2 text-sm text-gray-600 hidden sm:block">
+                        Simulator Tool
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-4">
+                        <a href="dashboard.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Dashboard
+                        </a>
+                        <a href="analytics.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Analytics</a>
+                        <a href="benchmarking.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Benchmarking</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="pt-20 pb-8 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center py-12">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 fade-in">
+                    <span class="text-garvi-orange">Simulator Tool</span>
+                </h1>
+                <p class="text-xl text-gray-600 mb-6 max-w-3xl mx-auto fade-in stagger-1">
+                    Compare institutional performance against state standards and peer institutions using GSIRF metrics
+                </p>
+                <!-- KPI Cards -->
+                <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto fade-in stagger-2">
+                    <!-- Peer Analysis -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg hover-lift text-center h-64 flex flex-col justify-between">
+                        <div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Weak Indicators</h3>
+                            <p class="text-gray-600 text-sm mb-4">Automatically flags underperforming indicators for your institute</p>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-garvi-orange">470</div>
+                            <div class="text-xs text-gray-500">Peer Institutions</div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Comparisons -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg hover-lift text-center h-64 flex flex-col justify-between">
+                        <div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">What-If Inputs</h3>
+                            <p class="text-gray-600 text-sm mb-4">Use sliders or fields to set target scores for each indicator</p>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-garvi-orange">20</div>
+                            <div class="text-xs text-gray-500">Key Metrics</div>
+                        </div>
+                    </div>
+
+                    <!-- Setting Standards -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg hover-lift text-center h-64 flex flex-col justify-between">
+                        <div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Predicted Impact</h3>
+                            <p class="text-gray-600 text-sm mb-4">Instant projection of new total score and rank after your changes</p>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-garvi-orange">95%</div>
+                            <div class="text-xs text-gray-500">Compliance Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="pb-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Dashboard Container -->
+            <div class="benchmark-container rounded-2xl shadow-2xl p-6 md:p-8 fade-in stagger-3">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">GSIRF Simulator Dashboard</h2>
+                        <p class="text-gray-600">Interactive benchmarking analysis and institutional performance comparison</p>
+                    </div>
+                    <div class="flex items-center mt-4 md:mt-0">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            Live Data
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading Indicator -->
+                <div id="loading-indicator" class="flex flex-col items-center justify-center py-20">
+                    <div class="loading-spinner mb-4"></div>
+                    <p class="text-gray-600">Loading GSIRF Simulator Dashboard...</p>
+                </div>
+
+                <!-- Power BI Dashboard -->
+                <div id="dashboard-frame" class="hidden">
+<div style="display:flex; justify-content:center;"><iframe title="SIMULATOR TOOL" width="1024" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiZTQ4MTg4ODItODUzMS00YTdiLTk0OGUtMmIxOWM4YjE3NTViIiwidCI6ImU5YjVlZTQxLTRkODUtNDBhZi04YWRhLWQ2MTBiNzU3NTk5YSJ9" frameborder="0" allowFullScreen="true"></iframe></div>
+</div>
+</div>
+                
+                <!-- Dashboard Controls -->
+                <div class="mt-6 flex flex-wrap gap-4 justify-center">
+                    <button class="flex items-center bg-garvi-orange text-white px-4 py-2 rounded-lg hover:bg-garvi-gold transition-colors hover-lift">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Export Report
+                    </button>
+                    <button class="flex items-center bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors hover-lift">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                        </svg>
+                        Share Dashboard
+                    </button>
+                    <button class="flex items-center bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors hover-lift">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Refresh Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Additional Tools</h2>
+                <p class="text-gray-600">Explore more GARVI analysis and improvement tools</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Analytics Dashboard -->
+                <div class="bg-gray-50 rounded-xl p-6 text-center hover-lift">
+                    <div class="w-12 h-12 bg-garvi-orange rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Analytics Dashboard</h3>
+                    <p class="text-gray-600 mb-4">View comprehensive performance analytics</p>
+                    <a href="/analytics" class="text-garvi-orange font-semibold hover:text-garvi-gold transition-colors">
+                        View Dashboard →
+                    </a>
+                </div>
+
+                <!-- Performance Simulator -->
+                <div class="bg-gray-50 rounded-xl p-6 text-center hover-lift">
+                    <div class="w-12 h-12 bg-garvi-orange rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Benchmarking Tool</h3>
+                    <p class="text-gray-600 mb-4">Compare your institution with peers and leaders</p>
+                    <a href="/benchmarking" class="text-garvi-orange font-semibold hover:text-garvi-gold transition-colors">
+                        View Dashboard →
+                    </a>
+                </div>
+
+                <!-- Tutorials -->
+                <div class="bg-gray-50 rounded-xl p-6 text-center hover-lift">
+                    <div class="w-12 h-12 bg-garvi-orange rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Tutorials</h3>
+                    <p class="text-gray-600 mb-4">Learn how to use benchmarking tools effectively</p>
+                    <a href="#tutorials" class="text-garvi-orange font-semibold hover:text-garvi-gold transition-colors">
+                        View Tutorials →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="text-2xl font-bold mb-4 text-garvi-orange">GARVI</div>
+                    <p class="text-gray-300 mb-4">
+                        Gujarat Academic Rating Visualization for Improvement
+                    </p>
+                    <a href="mailto:garvi@gmail.com" class="text-garvi-orange hover:text-garvi-gold transition-colors">
+                        garvi@gmail.com
+                    </a>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Tools</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="/analytics" class="hover:text-garvi-orange transition-colors">Analytics Tool</a></li>
+                        <li><a href="#" class="hover:text-garvi-orange transition-colors">Benchmarking</a></li>
+                        <li><a href="#simulator" class="hover:text-garvi-orange transition-colors">Simulator</a></li>
+                        <li><a href="#tutorials" class="hover:text-garvi-orange transition-colors">Tutorials</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-garvi-orange transition-colors">User Guide</a></li>
+                        <li><a href="#" class="hover:text-garvi-orange transition-colors">Technical Support</a></li>
+                        <li><a href="#" class="hover:text-garvi-orange transition-colors">Training Resources</a></li>
+                        <li><a href="index.html" class="hover:text-garvi-orange transition-colors">Back to Home</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <div class="flex flex-col md:flex-row justify-between items-center text-gray-400">
+                    <p>&copy; 2024 GARVI Benchmarking Tool. All rights reserved.</p>
+                    <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                        <span>Developed by <span class="text-garvi-orange">ICARE</span></span>
+                        <span>•</span>
+                        <span><span class="text-garvi-orange">Government of Gujarat</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Modal -->
+    <div id="notification-modal" class="notification-modal">
+        <div class="notification-content">
+            <div id="notification-icon" class="text-4xl mb-4"></div>
+            <h3 id="notification-title" class="text-lg font-semibold mb-2"></h3>
+            <p id="notification-message" class="text-gray-600 mb-4"></p>
+            <button id="notification-close" class="bg-garvi-orange text-white px-6 py-2 rounded-lg hover:bg-garvi-gold transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Show dashboard immediately and remove loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove loading indicator immediately
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const dashboardFrame = document.getElementById('dashboard-frame');
+            
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+            if (dashboardFrame) {
+                dashboardFrame.classList.remove('hidden');
+                dashboardFrame.style.display = 'block';
+            }
+        });
+
+        // Custom notification function
+        function showNotification(icon, title, message) {
+            const modal = document.getElementById('notification-modal');
+            const iconEl = document.getElementById('notification-icon');
+            const titleEl = document.getElementById('notification-title');
+            const messageEl = document.getElementById('notification-message');
+            
+            iconEl.textContent = icon;
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Close notification
+        document.getElementById('notification-close').addEventListener('click', function() {
+            document.getElementById('notification-modal').style.display = 'none';
+        });
+
+        // Close on backdrop click
+        document.getElementById('notification-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Dashboard control buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.textContent.trim();
+                if (buttonText.includes('Export Report')) {
+                    showNotification('📊', 'Preparing Report', 'Simulator report is being prepared for download...');
+                } else if (buttonText.includes('Share Dashboard')) {
+                    showNotification('🔗', 'Generating Link', 'Creating shareable simulator dashboard link...');
+                } else if (buttonText.includes('Refresh Data')) {
+                    showNotification('🔄', 'Refreshing Data', 'Updating simulator data from GSIRF database...');
+                }
+            });
+        });
+
+        // Navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                if (href === '#simulator') {
+                    showNotification('⚙️', 'Loading Performance Simulator', 'Opening GARVI Simulator...');
+                } else if (href === '#tutorials') {
+                    showNotification('📚', 'Opening Tutorials', 'Loading simulator tutorials and guides...');
+                }
+            });
+        });
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.hover-lift').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992411e6a6c33d2a',t:'MTc2MTA4NDQ2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

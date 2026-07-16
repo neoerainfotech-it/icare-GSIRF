@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARVI - Gujarat Academic Ratings Visualization for Improvement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { box-sizing: border-box; }
+        .gradient-bg { background: linear-gradient(135deg, #D58B00 0%, #F4A623 100%); }
+        .hover-lift { transition: all 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(213, 139, 0, 0.2); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
+        .fade-in { opacity: 0; transform: translateY(30px); animation: fadeInUp 0.8s ease forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .icon-bounce { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,20%,50%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { 'garvi-orange': '#D58B00', 'garvi-gold': '#F4A623' } } } }
+    </script>
+</head>
+<body class="bg-white text-black font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Left: Brand -->
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-garvi-orange">GARVI</div>
+                    
+                </div>
+                <!-- Right: Desktop Nav -->
+                <div class="hidden md:flex items-center space-x-4 text-sm">
+                    <a href="#home" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">Home</a>
+                    <a href="#about" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">About</a>
+                    <a href="#tools" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">Tools</a>
+                    <a href="#vision" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">Vision</a>
+                    <a href="#contact" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">Contact</a>
+                    <!-- Filled Login with key icon -->
+                    <a href="login.html" class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-md bg-garvi-orange text-white hover:bg-garvi-gold transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+                            <path d="M8 11V8a4 4 0 1 1 8 0v3"></path>
+                        </svg>
+                        <span>Login</span>
+                    </a>
+                </div>
+                <!-- Mobile menu button -->
+                <button id="mobileToggle" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-garvi-orange focus:outline-none" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu dropdown -->
+        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-100 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 grid gap-2 text-sm">
+                <a class="py-2 hover:text-garvi-orange" href="#home">Home</a>
+                <a class="py-2 hover:text-garvi-orange" href="#about">About</a>
+                <a class="py-2 hover:text-garvi-orange" href="#tools">Tools</a>
+                <a class="py-2 hover:text-garvi-orange" href="#vision">Vision</a>
+                <a class="py-2 hover:text-garvi-orange" href="#contact">Contact</a>
+                <a class="py-2 hover:text-garvi-orange font-semibold" href="login.html">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-20 pb-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center py-20">
+                <a href="https://im.ge/i/GARVI-symbol.ngltcP" target="_blank" rel="noopener">
+                    <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI symbol"
+                         class="mx-auto mb-6 h-24 md:h-32 object-contain" width="480" height="273" />
+                </a>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 fade-in"><span class="text-garvi-orange">GARVI</span></h1>
+                <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 fade-in stagger-1">Gujarat Academic Ratings Visualization for Improvement</h2>
+                <p class="text-lg md:text-xl mb-12 max-w-4xl mx-auto text-gray-600 fade-in stagger-2">A comprehensive data-driven analytics platform under the Gujarat State Institutional Rating Framework (GSIRF) for educational excellence and institutional improvement.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center fade-in stagger-3">
+                    <a href="login.html" class="border-2 border-garvi-orange text-garvi-orange bg-white min-w-[240px] px-8 py-4 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition-all duration-300 hover-lift text-center">Analytics</a>
+                    <a href="login.html" class="border-2 border-garvi-orange text-garvi-orange bg-white min-w-[240px] px-8 py-4 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition-all duration-300 hover-lift text-center">Benchmarking</a>
+                    <a href="login.html" class="border-2 border-garvi-orange text-garvi-orange bg-white min-w-[240px] px-8 py-4 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition-all duration-300 hover-lift text-center">Simulator</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About GARVI Section -->
+    <section id="about" class="py-20 bg-gray-50 relative overflow-hidden">
+        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(213,139,0,0.06)_1px,transparent_1.2px)] [background-size:22px_22px]"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-block">
+                    <h2 class="text-3xl md:text-4xl font-bold text-black">About GARVI</h2>
+                    <div class="h-1 bg-garvi-orange mt-3"></div>
+                </div>
+            </div>
+            
+            <!-- Purpose & Key Features as separate cards -->
+            <div class="grid md:grid-cols-2 gap-8 fade-in">
+                <!-- Purpose card -->
+                <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 p-8 md:p-10">
+                    <h3 class="text-2xl font-bold mb-6 text-garvi-orange">Purpose</h3>
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">GARVI serves as the cornerstone of educational analytics in Gujarat, providing institutions with powerful tools to visualize, analyze, and improve their academic performance through data‑driven insights.</p>
+                    <p class="text-lg text-gray-700 leading-relaxed">Built under the Gujarat State Institutional Rating Framework (GSIRF), GARVI empowers educational institutions to benchmark their performance, identify improvement areas, and simulate strategic decisions for enhanced academic outcomes.</p>
+                </div>
+
+                <!-- Key Features card -->
+                <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 p-8 md:p-10">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="text-2xl font-bold text-garvi-orange">Key Features</h4>
+                        <span class="px-3 py-1 text-xs rounded-full bg-garvi-orange/10 text-garvi-orange font-medium">GSIRF Ready</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="text-gray-700">Real‑time performance analytics</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="text-gray-700">Comprehensive benchmarking tools</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="text-gray-700">Strategic decision simulation</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="text-gray-700">Interactive data visualization</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="text-gray-700">Institutional improvement tracking</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-100 text-sm text-gray-500 flex items-center gap-3">
+                        <svg class="w-4 h-4 text-garvi-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h2v4h-2z"/></svg>
+                        <span>Data used:</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-garvi-orange/10 text-garvi-orange">2024</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-garvi-orange/10 text-garvi-orange">2023</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI strip below -->
+            <div class="mt-10 grid sm:grid-cols-3 gap-4">
+                <div class="flex items-center gap-3 rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg></span>
+                    <div>
+                        <div class="text-sm text-gray-500">Parameters</div>
+                        <div class="text-2xl font-bold">4</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg></span>
+                    <div>
+                        <div class="text-sm text-gray-500">Indicators</div>
+                        <div class="text-2xl font-bold">16</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg></span>
+                    <div>
+                        <div class="text-sm text-gray-500">Institutions</div>
+                        <div class="text-2xl font-bold">470</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Tools Grid -->
+    <section id="tools" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <div class="inline-block">
+                    <h2 class="text-3xl md:text-4xl font-bold text-black">Our Tools</h2>
+                    <div class="h-1 bg-garvi-orange mt-2"></div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                <!-- Analytics Tool -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Analytics Tool</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-center leading-relaxed">Comprehensive data analysis and visualization platform for institutional performance metrics and trends.</p>
+                    <div class="text-center">
+                        <a href="login.html" class="inline-flex items-center bg-garvi-orange text-white px-6 py-3 rounded-xl font-semibold hover:bg-garvi-gold transition-all duration-300">Explore Analytics
+                            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Benchmarking -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay: 0.2s;">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Benchmarking</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-center leading-relaxed">Compare your institution's performance against state and national standards with detailed benchmarking reports.</p>
+                    <div class="text-center">
+                        <a href="login.html" class="inline-flex items-center bg-garvi-orange text-white px-6 py-3 rounded-xl font-semibold hover:bg-garvi-gold transition-all duration-300">Start Benchmarking
+                            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Simulator -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay: 0.4s;">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Simulator</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-center leading-relaxed">Model different scenarios and strategic decisions to predict their impact on institutional ratings and performance.</p>
+                    <div class="text-center">
+                        <a href="login.html" class="inline-flex items-center bg-garvi-orange text-white px-6 py-3 rounded-xl font-semibold hover:bg-garvi-gold transition-all duration-300">Launch Simulator
+                            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Advanced Analytics -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay: 0.6s;">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Advanced Analytics</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-center leading-relaxed">Deep-dive analytics with AI-powered insights, predictive modeling, and advanced statistical analysis tools.</p>
+                    <div class="text-center">
+                        <a href="#advanced" class="inline-flex items-center bg-garvi-orange text-white px-6 py-3 rounded-xl font-semibold hover:bg-garvi-gold transition-all duration-300">Access Advanced Tools
+                            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision & Mission Section -->
+    <section id="vision" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-block">
+                    <h2 class="text-3xl md:text-4xl font-bold text-black">Vision & Mission</h2>
+                    <div class="h-1 bg-garvi-orange mt-3"></div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Vision -->
+                <div class="text-center bg-white p-8 rounded-2xl shadow-xl card-hover">
+                    <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-garvi-orange">Our Vision</h3>
+                    <p class="text-gray-700 leading-relaxed">To establish Gujarat as a leader in educational excellence through data-driven insights, empowering institutions to achieve world-class standards and fostering a culture of continuous improvement in academic performance.</p>
+                </div>
+                <!-- Mission -->
+                <div class="text-center bg-white p-8 rounded-2xl shadow-xl card-hover">
+                    <div class="w-16 h-16 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-garvi-orange">Our Mission</h3>
+                    <p class="text-gray-700 leading-relaxed">To provide comprehensive, user-friendly analytical tools that enable educational institutions to visualize performance data, benchmark against standards, and make informed strategic decisions for sustainable academic growth and excellence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- GARVI Info -->
+                <div class="md:col-span-2">
+                    <div class="text-3xl font-bold mb-4 text-garvi-orange">GARVI</div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">Gujarat Academic Ratings Visualization for Improvement - Empowering educational institutions through data-driven analytics and strategic insights under the Gujarat State Institutional Rating Framework.</p>
+                    <div class="flex flex-wrap items-center gap-6">
+                        <a href="mailto:garvi@gmail.com" class="inline-flex items-center gap-2 text-garvi-orange hover:text-garvi-gold transition-colors">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="m22 8-10 6L2 8"/></svg>
+                            <span>garvi@gmail.com</span>
+                        </a>
+                        <a href="tel:9924547471" class="inline-flex items-center gap-2 text-garvi-orange hover:text-garvi-gold transition-colors">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.86 19.86 0 0 1-3.07-8.67A2 2 0 0 1 4.11 1h2a2 2 0 0 1 2 1.72c.12.9.3 1.78.54 2.64a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.44-1.11a2 2 0 0 1 2.11-.45c.86.24 1.74.42 2.64.54A2 2 0 0 1 22 16.92z"/></svg>
+                            <span>9924547471</span>
+                        </a>
+                        <a href="tel:6352059496" class="inline-flex items-center gap-2 text-garvi-orange hover:text-garvi-gold transition-colors">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.86 19.86 0 0 1-3.07-8.67A2 2 0 0 1 4.11 1h2a2 2 0 0 1 2 1.72c.12.9.3 1.78.54 2.64a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.44-1.11a2 2 0 0 1 2.11-.45c.86.24 1.74.42 2.64.54A2 2 0 0 1 22 16.92z"/></svg>
+                            <span>6352059496</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#home" class="hover:text-garvi-orange transition-colors">Home</a></li>
+                        <li><a href="#about" class="hover:text-garvi-orange transition-colors">About GARVI</a></li>
+                        <li><a href="#tools" class="hover:text-garvi-orange transition-colors">Our Tools</a></li>
+                        <li><a href="#vision" class="hover:text-garvi-orange transition-colors">Vision & Mission</a></li>
+                        <li><a href="#" class="hover:text-garvi-orange transition-colors">GSIRF</a></li>
+                    </ul>
+                </div>
+                <!-- Tools -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-lg">Tools</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="login.html" class="hover:text-garvi-orange transition-colors">Analytics Tool</a></li>
+                        <li><a href="login.html" class="hover:text-garvi-orange transition-colors">Benchmarking</a></li>
+                        <li><a href="login.html" class="hover:text-garvi-orange transition-colors">Simulator</a></li>
+                        <li><a href="#advanced" class="hover:text-garvi-orange transition-colors">Advanced Analytics</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-400 mb-4 md:mb-0"><p>&copy; <span id="yearSpan"></span> GARVI. All rights reserved.</p></div>
+                    <div class="flex items-center space-x-6 text-gray-400"><span>Developed by <span class="text-garvi-orange font-semibold">ICARE</span></span><span>•</span><span><span class="text-garvi-orange font-semibold">Government of Gujarat</span></span></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        (function(){
+            const btn = document.getElementById('mobileToggle');
+            const menu = document.getElementById('mobileMenu');
+            if(btn && menu){
+                btn.addEventListener('click', ()=>{
+                    const isOpen = !menu.classList.contains('hidden');
+                    menu.classList.toggle('hidden');
+                    btn.setAttribute('aria-expanded', String(!isOpen));
+                });
+            }
+        })();
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return; // allow external placeholders
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Add click handlers for CTA buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.textContent.trim();
+                if (buttonText.includes('Explore Analytics')) {
+                    alert('🔍 Welcome to GARVI Analytics! Discover powerful insights into institutional performance.');
+                } else if (buttonText.includes('Benchmarking')) {
+                    alert('📊 Access GARVI Benchmarking tools to compare your institution against state standards.');
+                } else if (buttonText.includes('Simulator')) {
+                    alert('⚙️ Launch the GARVI Simulator to model strategic decisions and predict outcomes.');
+                }
+            });
+        });
+
+        // Add click handlers for tool cards
+        document.querySelectorAll('a[href^="#analytics"], a[href^="#benchmarking"], a[href^="#simulator"], a[href^="#advanced"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                if (href === '#analytics') {
+                    alert('🔍 Launching GARVI Analytics Dashboard - Your gateway to comprehensive institutional data analysis!');
+                } else if (href === '#benchmarking') {
+                    alert('📊 Opening GARVI Benchmarking Suite - Compare and excel against state standards!');
+                } else if (href === '#simulator') {
+                    alert('⚙️ Initializing GARVI Simulator - Model your strategic decisions with confidence!');
+                } else if (href === '#advanced') {
+                    alert('🧠 Accessing Advanced Analytics - Unlock AI-powered insights and predictive modeling!');
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('fade-in'); });
+        }, observerOptions);
+        document.querySelectorAll('.card-hover, .hover-lift').forEach(el => observer.observe(el));
+
+        // Dynamic year
+        document.getElementById('yearSpan').textContent = new Date().getFullYear();
+
+        // (Optional) If you host the PNG elsewhere, replace the src above with your absolute URL.
+    </script>
+
+    <!-- Note: Removed extraneous third-party challenge script from the pasted snippet to keep the page clean, accessible, and CSP-friendly. -->
+</body>
+</html>

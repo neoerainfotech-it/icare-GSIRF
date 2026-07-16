@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GARVI — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/garvi-supabase.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { 'garvi-orange': '#D58B00', 'garvi-gold': '#F4A623' } } }
+    };
+  </script>
+  <style>
+    body { box-sizing: border-box; }
+    .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease forwards; }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    .floating-shape { position: absolute; opacity: 0.08; animation: float 6s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)} }
+
+    /* Role toggle */
+    .role-btn { transition: all 0.2s ease; }
+    .role-btn.active {
+      background: linear-gradient(135deg, #D58B00, #F4A623);
+      color: white;
+      box-shadow: 0 4px 12px rgba(213,139,0,0.35);
+    }
+    .role-btn:not(.active) {
+      background: #f9fafb;
+      color: #374151;
+      border: 2px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 relative overflow-hidden font-sans">
+
+  <!-- Floating shapes -->
+  <div class="absolute inset-0 -z-10">
+    <div class="floating-shape w-24 h-24 bg-garvi-orange rounded-full top-20 left-10"></div>
+    <div class="floating-shape w-16 h-16 bg-garvi-gold rounded-lg bottom-32 right-16" style="animation-delay:1s"></div>
+  </div>
+
+  <!-- Top Header -->
+  <div class="bg-white shadow-md fixed top-0 inset-x-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-6">
+      <div class="flex items-center gap-3">
+        <a href="landing.html" class="flex items-center gap-3">
+          <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI logo" class="h-12 w-12 object-contain" />
+          <h1 class="text-2xl font-bold text-garvi-orange">GARVI</h1>
+        </a>
+        <span class="text-base text-gray-400 ml-1">/ Login</span>
+      </div>
+      <a href="landing.html" class="text-sm text-gray-500 hover:text-garvi-orange transition-colors flex items-center gap-1">
+        ← Back to Home
+      </a>
+    </div>
+  </div>
+
+  <!-- Login Container -->
+  <main class="pt-28 pb-24 flex items-center justify-center px-4">
+    <div class="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 fade-in">
+
+      <!-- Logo & Title -->
+      <div class="text-center mb-6">
+        <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI Symbol" class="mx-auto h-20 mb-3" />
+        <h2 class="text-3xl font-bold text-gray-900">Sign In</h2>
+        <p class="text-gray-500 text-sm mt-1">Select your role and enter your credentials</p>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Login As</label>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" id="roleInstitute" class="role-btn active rounded-xl py-3 px-4 font-semibold text-sm flex flex-col items-center gap-1.5" onclick="selectRole('institute')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+            Institute
+          </button>
+          <button type="button" id="roleAdmin" class="role-btn rounded-xl py-3 px-4 font-semibold text-sm flex flex-col items-center gap-1.5" onclick="selectRole('admin')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            Admin
+          </button>
+        </div>
+        <!-- Role description badge -->
+        <p id="roleDesc" class="text-xs text-center mt-2 text-garvi-orange font-medium">
+          Logging in as: <span id="roleLabel">Institute (Dashboard Access)</span>
+        </p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="space-y-4">
+        <input type="hidden" id="selectedRole" value="institute" />
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <input type="text" id="email" required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-garvi-orange/40 focus:border-garvi-orange outline-none"
+            placeholder="e.g. iitgn_2024" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <div class="relative">
+            <input type="password" id="password" required
+              class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-garvi-orange/40 focus:border-garvi-orange outline-none pr-10"
+              placeholder="••••••••" />
+            <button type="button" id="togglePwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-garvi-orange">
+              <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7s-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="text-garvi-orange focus:ring-garvi-orange border-gray-300 rounded" />
+            Remember me
+          </label>
+          <a href="#forgot" class="text-garvi-orange hover:text-garvi-gold">Forgot password?</a>
+        </div>
+
+        <button type="submit"
+          class="w-full py-3 rounded-lg bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-semibold hover:shadow-lg transition-all text-base">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Message -->
+      <div id="msg" class="hidden mt-5 text-center py-2.5 rounded-lg text-white text-sm font-medium"></div>
+    </div>
+  </main>
+
+  <!-- Help Bar -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <div class="max-w-7xl mx-auto px-6 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-garvi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="font-semibold text-gray-800 text-sm">Need Help?</span>
+          </div>
+          <div class="hidden sm:flex items-center gap-5 text-sm text-gray-600">
+            <a href="#contact" class="hover:text-garvi-orange transition-colors flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              support@garvi.gujarat.gov.in
+            </a>
+            <a href="#phone" class="hover:text-garvi-orange transition-colors flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              +91-79-1234-5678
+            </a>
+            <a href="#guide" class="hover:text-garvi-orange transition-colors flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              User Guide
+            </a>
+          </div>
+        </div>
+        <button id="helpToggle" class="sm:hidden text-garvi-orange">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+      </div>
+      <div id="mobileHelp" class="hidden sm:hidden mt-3 pt-3 border-t border-gray-200 grid grid-cols-1 gap-2 text-sm">
+        <a href="#contact" class="flex items-center gap-2 text-gray-600 hover:text-garvi-orange">Email: support@garvi.gujarat.gov.in</a>
+        <a href="#phone" class="flex items-center gap-2 text-gray-600 hover:text-garvi-orange">Phone: +91-79-1234-5678</a>
+        <a href="#guide" class="flex items-center gap-2 text-gray-600 hover:text-garvi-orange">User Guide & Documentation</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Role selection ──────────────────────────────────────────
+    const roleDescriptions = {
+      institute: 'Institute (Dashboard Access)',
+      admin:     'Admin (Admin Portal Access)'
+    };
+
+    function selectRole(role) {
+      document.getElementById('selectedRole').value = role;
+      document.getElementById('roleLabel').textContent = roleDescriptions[role];
+      document.getElementById('roleInstitute').classList.toggle('active', role === 'institute');
+      document.getElementById('roleAdmin').classList.toggle('active', role === 'admin');
+      // Update placeholder email
+      document.getElementById('email').placeholder =
+        role === 'admin' ? 'admin@garvi.gujarat.gov.in' : 'you@institution.edu.in';
+    }
+
+    // ── Password toggle ─────────────────────────────────────────
+    const pwd = document.getElementById('password');
+    document.getElementById('togglePwd').addEventListener('click', () => {
+      const show = pwd.type === 'password';
+      pwd.type = show ? 'text' : 'password';
+      document.getElementById('eyeIcon').innerHTML = show
+        ? `<path d='M13.875 18.825A10.05 10.05 0 0 1 12 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 0 1 1.563-3.029m5.858.908a3 3 0 1 1 4.243 4.243M9.878 9.878l4.242 4.242M3 3l18 18' />`
+        : `<path d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'/><path d='M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7s-8.268-2.943-9.542-7z'/>`;
+    });
+
+    // ── Form submit → Supabase Auth ──────────────────────────────
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const msg      = document.getElementById('msg');
+      const username = document.getElementById('email').value.trim().toLowerCase();
+      const pass     = pwd.value.trim();
+
+      if (!username || !pass) {
+        showMsg('❌ Please enter your username and password.', 'bg-red-500');
+        return;
+      }
+
+      // Disable button while signing in
+      const btn = document.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+
+      // All accounts use username@garvi.internal internally
+      const email = `${username}@garvi.internal`;
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+      if (error) {
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+        showMsg('❌ Invalid username or password. Please try again.', 'bg-red-500');
+        return;
+      }
+
+      // Determine role from database (not from UI toggle)
+      const { data: adminRow } = await sb.from('admins').select('id').eq('id', data.user.id).maybeSingle();
+
+      if (adminRow) {
+        showMsg('✅ Admin login successful! Redirecting to Admin Portal…', 'bg-green-500');
+        setTimeout(() => window.location.href = 'admin.html', 1500);
+      } else {
+        showMsg('✅ Login successful! Redirecting to Dashboard…', 'bg-green-500');
+        setTimeout(() => window.location.href = 'dashboard.html', 1500);
+      }
+    });
+
+    function showMsg(text, bgClass) {
+      const msg = document.getElementById('msg');
+      msg.textContent = text;
+      msg.className = `mt-5 text-center py-2.5 rounded-lg text-white text-sm font-medium ${bgClass}`;
+      msg.classList.remove('hidden');
+    }
+
+    // ── If already logged in, skip login page ─────────────────
+    (async () => {
+      const session = await getSession();
+      if (session) {
+        const { data: adminRow } = await sb.from('admins').select('id').eq('id', session.user.id).maybeSingle();
+        window.location.href = adminRow ? 'admin.html' : 'dashboard.html';
+      }
+    })();
+
+    // ── Help bar mobile toggle ──────────────────────────────────
+    document.getElementById('helpToggle').addEventListener('click', () => {
+      const mh = document.getElementById('mobileHelp');
+      mh.classList.toggle('hidden');
+    });
+
+    // ── Help link handlers ──────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const h = link.getAttribute('href');
+        if (h === '#contact') window.open('mailto:support@garvi.gujarat.gov.in?subject=GARVI Login Support', '_blank');
+        else if (h === '#phone') alert('📞 GARVI Support\nPhone: +91-79-1234-5678\nMon–Fri, 9 AM–6 PM');
+        else if (h === '#guide') alert('📚 User Guide\n• Login help\n• Account setup\n• Feature tutorials\n• FAQ');
+        else if (h === '#forgot') alert('🔑 Forgot Password\nContact: support@garvi.gujarat.gov.in\nor call +91-79-1234-5678');
+      });
+    });
+  </script>
+</body>
+</html>

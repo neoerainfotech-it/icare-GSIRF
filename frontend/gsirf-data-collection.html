@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GARVI — GSIRF 2026 Data Collection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { 'garvi-orange':'#D58B00','garvi-gold':'#F4A623' } } }
+    };
+  </script>
+  <style>
+    body { box-sizing:border-box; }
+    .fade-in { opacity:0; transform:translateY(16px); animation:fadeUp .5s ease forwards; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .gradient-bg { background:linear-gradient(135deg,#D58B00 0%,#F4A623 100%); }
+    .step-panel { display:none; }
+    .step-panel.active { display:block; }
+    .step-nav.active .step-dot { background:#D58B00; color:#fff; }
+    .step-nav.active .step-label { color:#D58B00; font-weight:600; }
+    .step-nav.done .step-dot { background:#16a34a; color:#fff; }
+    .step-nav.done .step-label { color:#16a34a; }
+    .step-nav .step-dot { background:#e5e7eb; color:#6b7280; }
+    input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],select,textarea {
+      border:1px solid #d1d5db; border-radius:.5rem; padding:.5rem .75rem; width:100%;
+      font-size:.875rem; outline:none; transition:border-color .2s,box-shadow .2s; background:#fff;
+    }
+    input:focus,select:focus,textarea:focus { border-color:#D58B00; box-shadow:0 0 0 3px rgba(213,139,0,.15); }
+    input[type=radio],input[type=checkbox] { accent-color:#D58B00; }
+    label.field-label { display:block; font-size:.8125rem; font-weight:600; color:#374151; margin-bottom:.25rem; }
+    .section-card { background:#fff; border-radius:1rem; box-shadow:0 4px 24px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
+    .section-title { font-size:1rem; font-weight:700; color:#D58B00; border-bottom:2px solid #f4a62333; padding-bottom:.5rem; margin-bottom:1rem; }
+    .section-sub { font-size:.875rem; font-weight:700; color:#374151; border-bottom:1px solid #e5e7eb; padding-bottom:.375rem; margin-bottom:.75rem; margin-top:1.25rem; }
+    th { font-size:.75rem; font-weight:700; text-transform:uppercase; color:#6b7280; padding:.5rem .75rem; background:#f9fafb; }
+    td { padding:.4rem .6rem; }
+    .tbl-input { font-size:.8125rem; padding:.35rem .5rem; border:1px solid #d1d5db; border-radius:.375rem; background:#fff; width:100%; outline:none; }
+    .tbl-input:focus { border-color:#D58B00; }
+    .tbl-words { font-size:.75rem; color:#6b7280; font-style:italic; }
+    .badge-saving { background:#fef3c7; color:#92400e; border-radius:9999px; font-size:.7rem; padding:.2rem .7rem; }
+    .badge-saved  { background:#dcfce7; color:#15803d; border-radius:9999px; font-size:.7rem; padding:.2rem .7rem; }
+    .progress-fill { height:4px; background:linear-gradient(90deg,#D58B00,#F4A623); border-radius:9999px; transition:width .4s ease; }
+    .imp-note { background:#fff5f5; border:1px solid #fecaca; border-radius:.5rem; padding:.75rem 1rem; margin-bottom:1rem; font-size:.8125rem; color:#b91c1c; }
+    .imp-note strong { display:block; margin-bottom:.25rem; }
+    .imp-note ul { list-style:disc; padding-left:1.25rem; }
+    .imp-note li { margin-bottom:.125rem; }
+    .prog-block { border:1px solid #e5e7eb; border-radius:.75rem; margin-bottom:1rem; overflow:hidden; }
+    .prog-block-header { background:#f9fafb; padding:.625rem .875rem; font-size:.875rem; font-weight:600; color:#374151; border-bottom:1px solid #e5e7eb; }
+    .prog-block-body { padding:.875rem; }
+    .prog-cb-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+    @media(min-width:640px) { .prog-cb-grid { grid-template-columns:repeat(4,1fr); } }
+    .prog-cb-item { display:flex; align-items:center; gap:.5rem; background:#fff; border:1.5px solid #d1d5db; border-radius:.5rem; padding:.4rem .625rem; cursor:pointer; font-size:.8125rem; color:#374151; transition:border-color .15s; }
+    .prog-cb-item:has(input:checked) { border-color:#D58B00; background:#fffbf0; }
+    .demo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+    @media(min-width:640px) { .demo-grid { grid-template-columns:repeat(4,1fr); } }
+    .fee-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.625rem; margin-top:.75rem; }
+    @media(min-width:640px) { .fee-grid { grid-template-columns:repeat(4,1fr); } }
+    .q-block { margin-bottom:1.25rem; padding-bottom:1.25rem; border-bottom:1px solid #f3f4f6; }
+    .q-block:last-child { border-bottom:none; }
+    .q-text { font-size:.875rem; font-weight:500; color:#374151; margin-bottom:.5rem; }
+    .q-options { display:flex; flex-direction:column; gap:.375rem; }
+    .q-opt { display:flex; align-items:flex-start; gap:.5rem; font-size:.8375rem; color:#374151; cursor:pointer; }
+    .q-opt input { margin-top:.2rem; flex-shrink:0; }
+    .yn-radio { display:flex; gap:1.25rem; }
+    .yn-opt { display:flex; align-items:center; gap:.375rem; font-size:.875rem; color:#374151; cursor:pointer; }
+    .faculty-form-wrap { background:#f9fafb; border:1px solid #e5e7eb; border-radius:.75rem; padding:1rem 1.25rem; margin-top:1rem; }
+    .fac-form-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+    @media(min-width:768px) { .fac-form-grid { grid-template-columns:1fr 1fr; } }
+    .fac-counter { font-size:.8125rem; color:#374151; }
+    .fac-counter span { font-weight:700; color:#D58B00; }
+    .plc-wrap { overflow-x:auto; }
+    .plc-tbl { min-width:700px; width:100%; border-collapse:collapse; }
+    .plc-tbl th { font-size:.7rem; padding:.4rem .5rem; background:#f3f4f6; color:#374151; font-weight:700; border:1px solid #e5e7eb; text-align:center; }
+    .plc-tbl td { padding:.3rem .4rem; border:1px solid #e5e7eb; }
+    .plc-tbl .yr-cell { background:#f9fafb; font-size:.75rem; color:#6b7280; font-weight:600; min-width:60px; }
+    .fin-tbl { width:100%; border-collapse:collapse; }
+    .fin-tbl th { background:#f3f4f6; padding:.5rem .75rem; font-size:.75rem; text-align:center; border:1px solid #e5e7eb; }
+    .fin-tbl td { padding:.375rem .625rem; border:1px solid #e5e7eb; font-size:.8125rem; }
+    .fin-tbl .item-label { font-weight:600; color:#374151; min-width:200px; background:#fff; }
+    .fin-tbl .sub-label { color:#6b7280; font-size:.75rem; font-style:italic; background:#fafafa; }
+    .fin-tbl .fin-input { font-size:.8125rem; padding:.3rem .5rem; }
+    .ipr-tbl { width:100%; border-collapse:collapse; }
+    .ipr-tbl th,.ipr-tbl td { border:1px solid #e5e7eb; padding:.5rem .75rem; font-size:.8125rem; }
+    .ipr-tbl th { background:#f3f4f6; font-weight:700; text-align:center; }
+    .research-tbl { width:100%; border-collapse:collapse; }
+    .research-tbl th,.research-tbl td { border:1px solid #e5e7eb; padding:.5rem .625rem; font-size:.8125rem; }
+    .research-tbl th { background:#f3f4f6; font-weight:700; }
+    .research-tbl .row-label { font-weight:600; color:#374151; background:#fff; }
+    .research-tbl .row-words { color:#6b7280; font-size:.75rem; font-style:italic; background:#fafafa; }
+    @media(max-width:768px) { #sidebarCol { display:none; } }
+    .hidden { display:none !important; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/garvi-supabase.js"></script>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans">
+
+<!-- ─── TOP NAV ─────────────────────────────────────────────────────── -->
+<nav class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-4">
+        <h1 class="text-xl font-bold text-garvi-orange">GARVI</h1>
+        <span class="hidden sm:block text-sm text-gray-500">|</span>
+        <span class="hidden sm:block text-sm font-semibold text-gray-700">GSIRF 2026 — Data Collection Portal</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="text-sm flex items-center gap-1 text-gray-600 hover:text-garvi-orange transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Dashboard
+        </a>
+        <span id="saveBadge" class="badge-saved hidden">● Saved</span>
+        <button onclick="saveDraft()" class="text-sm border border-garvi-orange text-garvi-orange px-3 py-1.5 rounded-lg hover:bg-garvi-orange hover:text-white transition">Save Draft</button>
+        <button onclick="exportJSON()" class="text-sm bg-garvi-orange text-white px-3 py-1.5 rounded-lg hover:bg-garvi-gold transition">Export JSON</button>
+      </div>
+    </div>
+  </div>
+  <div class="h-1 bg-gray-100"><div id="progressFill" class="progress-fill" style="width:12.5%"></div></div>
+</nav>
+
+<!-- ─── MAIN LAYOUT ──────────────────────────────────────────────────── -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex gap-6">
+
+  <!-- Sidebar -->
+  <aside id="sidebarCol" class="w-64 flex-shrink-0">
+    <div class="bg-white rounded-2xl shadow-md p-4 sticky top-24">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Sections</p>
+      <nav id="stepNav" class="space-y-1"></nav>
+      <div class="mt-6 pt-4 border-t border-gray-100">
+        <p class="text-xs text-gray-400 mb-1">Completion</p>
+        <div class="flex items-center gap-2">
+          <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div id="sideProgress" class="h-full bg-garvi-orange rounded-full transition-all" style="width:0%"></div>
+          </div>
+          <span id="pctText" class="text-xs font-bold text-garvi-orange">0%</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">Deadline: <strong class="text-gray-600">31 Jul 2026</strong></p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Form content -->
+  <main class="flex-1 min-w-0">
+
+    <!-- Banner -->
+    <div class="gradient-bg rounded-2xl p-5 text-white mb-6 fade-in">
+      <div class="flex items-start justify-between">
+        <div>
+          <h2 class="text-xl font-extrabold">GSIRF 2026 — Institutional Data Submission</h2>
+          <p class="text-white/80 text-sm mt-1">Gujarat State Institutional Ranking Framework · Ranking Year 2026</p>
+        </div>
+        <div class="text-right text-sm text-white/80">
+          <div>Step <span id="currentStepLabel">1</span> of 8</div>
+          <div class="font-bold text-white mt-1" id="currentStepName">Institute Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 1 — Institute Profile
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel active" id="step-1">
+      <div class="section-card fade-in">
+        <p class="section-title">📋 Institute Profile &amp; Registration</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">GSIRF Institute ID *</label>
+            <input type="text" id="s1_gsirfId" placeholder="e.g., GJ-2026-0042"/>
+          </div>
+          <div>
+            <label class="field-label">Ranking Year</label>
+            <input type="text" value="2026" readonly class="bg-gray-50 text-gray-500"/>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="field-label">Name of Institution *</label>
+            <input type="text" id="s1_instName" placeholder="Full legal name of the institution"/>
+          </div>
+          <div>
+            <label class="field-label">Institution Type *</label>
+            <select id="s1_instType">
+              <option value="">Select type…</option>
+              <option>Government</option>
+              <option>Government-Aided</option>
+              <option>Private Unaided</option>
+              <option>Deemed University</option>
+              <option>Autonomous College</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Affiliated University (if applicable)</label>
+            <input type="text" id="s1_affiliatedUniv" placeholder="e.g., Gujarat Technological University"/>
+          </div>
+          <div>
+            <label class="field-label">City / Place *</label>
+            <input type="text" id="s1_city" placeholder="e.g., Ahmedabad"/>
+          </div>
+          <div>
+            <label class="field-label">District</label>
+            <input type="text" id="s1_district" placeholder="e.g., Ahmedabad"/>
+          </div>
+          <div class="sm:col-span-2 border-t border-gray-100 pt-4 mt-1">
+            <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Nodal Officer Details</p>
+          </div>
+          <div>
+            <label class="field-label">Name of Nodal Officer *</label>
+            <input type="text" id="s1_nodalName" placeholder="Full name"/>
+          </div>
+          <div>
+            <label class="field-label">Designation</label>
+            <input type="text" id="s1_nodalDesig" placeholder="e.g., Registrar / Dean Academics"/>
+          </div>
+          <div>
+            <label class="field-label">Official Email *</label>
+            <input type="email" id="s1_email" placeholder="nodal@institution.ac.in"/>
+          </div>
+          <div>
+            <label class="field-label">Mobile Number *</label>
+            <input type="tel" id="s1_mobile" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+          <div>
+            <label class="field-label">Submission Date</label>
+            <input type="date" id="s1_submitDate"/>
+          </div>
+          <div>
+            <label class="field-label">Is Revised Submission?</label>
+            <select id="s1_isRevised">
+              <option value="N">No (Fresh Submission)</option>
+              <option value="Y">Yes (Revised)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 2 — Sanctioned (Approved) Intake
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-2">
+      <div class="section-card fade-in">
+        <p class="section-title">📝 Sanctioned (Approved) Intake</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Sanctioned approved intake of 1st year to be entered.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+          </ul>
+        </div>
+        <p class="text-sm font-semibold text-gray-700 mb-3">Select program(s) offered by your institution</p>
+        <div class="prog-cb-grid mb-5" id="progCheckboxGrid"></div>
+        <div id="intakeContainer"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 3 — Student Strength & Ph.D. Details
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-3">
+      <div class="section-card fade-in">
+        <p class="section-title">🎓 Total Actual Student Strength (Program(s) Offered by Your Institution)</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Include all programs of all years in the academic year 2025-26.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+            <li>Students counted under socially challenged shall not be counted in economically backward and vice versa.</li>
+            <li>Students whose parental income is less than taxable slab shall be considered under economically backward.</li>
+            <li>The students receiving full tuition fee reimbursement shall only be entered. Students receiving partial tuition fee reimbursements and scholarships shall not be entered.</li>
+          </ul>
+        </div>
+        <div id="strengthContainer"></div>
+      </div>
+
+      <div class="section-card fade-in">
+        <p class="section-title">🔬 Ph.D. Student Details</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Full-time Ph.D. program in your institution as of academic year 2025-26 should be entered.</li>
+            <li>Please note that your own faculty registered for Ph.D. in some other institutions should not be counted.</li>
+            <li>Do not enter students enrolled in PhD program in the academic year 2026-27.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+          </ul>
+        </div>
+        <div class="prog-block">
+          <div class="prog-block-header">Ph.D (Student pursuing doctoral program till 2025-26 — students admitted in 2026-27 should not be entered here)</div>
+          <div class="prog-block-body">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="field-label">Total Full-time Students</label>
+                <input type="number" id="phd_ft_current" min="0" placeholder="0"/>
+              </div>
+              <div>
+                <label class="field-label">Total Part-time Students</label>
+                <input type="number" id="phd_pt_current" min="0" placeholder="0"/>
+              </div>
+              <div>
+                <label class="field-label">Total Students</label>
+                <input type="number" id="phd_total_current" min="0" placeholder="0" class="bg-gray-50"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="prog-block mt-3">
+          <div class="prog-block-header">Graduated Ph.D. Student Details (Including Integrated Ph.D.)</div>
+          <div class="prog-block-body">
+            <p class="text-xs text-gray-500 mb-3 italic">Note: Please include graduated/awarded Ph.D. students as reflected in the approved Annual Report/Convocation Report of your Institution.</p>
+            <div class="overflow-x-auto">
+              <table class="ipr-tbl">
+                <thead>
+                  <tr>
+                    <th class="text-left">Ph.D. Type</th>
+                    <th>2025-26</th><th>2024-25</th><th>2023-24</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="font-semibold">No. of Full-Time Ph.D. Students Graduated/Awarded (Incl. Integrated Ph.D.)</td>
+                    <td><input type="number" class="tbl-input" id="phd_grad_ft_2526" min="0" placeholder="0"/></td>
+                    <td><input type="number" class="tbl-input" id="phd_grad_ft_2425" min="0" placeholder="0"/></td>
+                    <td><input type="number" class="tbl-input" id="phd_grad_ft_2324" min="0" placeholder="0"/></td>
+                  </tr>
+                  <tr>
+                    <td class="font-semibold">No. of Part-Time Ph.D. Students Graduated/Awarded (Incl. Integrated Ph.D.)</td>
+                    <td><input type="number" class="tbl-input" id="phd_grad_pt_2526" min="0" placeholder="0"/></td>
+                    <td><input type="number" class="tbl-input" id="phd_grad_pt_2425" min="0" placeholder="0"/></td>
+                    <td><input type="number" class="tbl-input" id="phd_grad_pt_2324" min="0" placeholder="0"/></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="prog-block mt-3">
+          <div class="prog-block-header">PG (Student pursuing MD/MS/DNB program till 2025-26) — <span class="text-red-600 font-semibold">For Medical Institutions Only</span></div>
+          <div class="prog-block-body">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="field-label">Number of students pursuing PG (MD/MS/DNB) program</label>
+                <input type="number" id="phd_med_pursuing" min="0" placeholder="0"/>
+              </div>
+            </div>
+            <p class="text-sm font-semibold text-gray-700 mt-4 mb-2">No. of students Graduating in PG (MD/MS/DNB) program</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="field-label">2025-26</label>
+                <input type="number" id="phd_med_grad_2526" min="0" placeholder="0"/>
+              </div>
+              <div>
+                <label class="field-label">2024-25</label>
+                <input type="number" id="phd_med_grad_2425" min="0" placeholder="0"/>
+              </div>
+              <div>
+                <label class="field-label">2023-24</label>
+                <input type="number" id="phd_med_grad_2324" min="0" placeholder="0"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 4 — Placement & Higher Studies
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-4">
+      <div class="section-card fade-in">
+        <p class="section-title">💼 Placement &amp; Higher Studies</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Program(s) offered by your institution are as per your selection in sanctioned (approved) intake.</li>
+            <li>Median Salary per annum should be entered.</li>
+            <li>To calculate median salary of placed graduates, arrange the salaries in order from smallest to largest. If odd count, the median is the middle value; if even, it is the average of the two middle values.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+          </ul>
+        </div>
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
+          <p class="text-sm font-semibold text-gray-700 mb-2">Has your institution opted for the transition from a UG 3-year program to a UG 4-year program as per NEP?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_yes" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_no" value="No" checked> No</label>
+          </div>
+        </div>
+        <div id="placementContainer"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 5 — Faculty Details
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-5">
+      <div class="section-card fade-in">
+        <p class="section-title">👩‍🏫 Faculty Details (India Rankings 2026)</p>
+        <p class="text-xs text-gray-500 mb-3">Please enter the details of faculty who has worked with institution in the previous academic year i.e. 2025-26.</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+            <li>To add faculty, click on 'Add New' button, fill in the details and click on 'Save'.</li>
+            <li>Please note that only enter data of the faculty who has taught in the previous academic year i.e. Not found.</li>
+          </ul>
+        </div>
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <p class="fac-counter">Total faculty: <span id="facTotalCount">0</span></p>
+          <button onclick="showFacultyForm()" id="addFacBtn" class="text-sm bg-garvi-orange text-white px-4 py-1.5 rounded-lg hover:bg-garvi-gold transition">+ Add New</button>
+        </div>
+        <!-- Faculty list table -->
+        <div class="overflow-x-auto mb-3" id="facultyListWrap">
+          <table class="min-w-full border border-gray-200 rounded-lg text-sm" id="facultyListTable">
+            <thead>
+              <tr>
+                <th class="text-left">#</th>
+                <th class="text-left">Name</th>
+                <th class="text-center">Gender</th>
+                <th class="text-left">PAN</th>
+                <th class="text-left">Designation</th>
+                <th class="text-center">Highest Degree</th>
+                <th class="text-center">Teaching Exp (Mo)</th>
+                <th class="text-center">Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="facultyListBody">
+              <tr id="facEmptyRow">
+                <td colspan="9" class="text-center py-4 text-gray-400 text-sm italic">No faculty added yet. Click "+ Add New" to begin.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Faculty add/edit form -->
+        <div class="faculty-form-wrap hidden" id="facultyFormWrap">
+          <p class="text-sm font-bold text-gray-700 mb-3 border-b border-gray-200 pb-2">Faculty Details</p>
+          <div class="fac-form-grid">
+            <!-- Personal Details (left) -->
+            <div>
+              <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Personal Details</p>
+              <div class="space-y-3">
+                <div>
+                  <label class="field-label">Name of the faculty *</label>
+                  <input type="text" id="fac_name" placeholder="Full name of faculty"/>
+                </div>
+                <div>
+                  <label class="field-label">Gender</label>
+                  <div class="flex gap-4 mt-1">
+                    <label class="yn-opt"><input type="radio" name="fac_gender" id="fac_gender_m" value="Male"> Male</label>
+                    <label class="yn-opt"><input type="radio" name="fac_gender" id="fac_gender_f" value="Female"> Female</label>
+                    <label class="yn-opt"><input type="radio" name="fac_gender" id="fac_gender_t" value="Transgender"> Transgender</label>
+                  </div>
+                </div>
+                <div>
+                  <label class="field-label">Academic Designation</label>
+                  <select id="fac_designation">
+                    <option value="">-Select-</option>
+                    <option>Professor</option>
+                    <option>Associate Professor</option>
+                    <option>Assistant Professor</option>
+                    <option>Emeritus Professor</option>
+                    <option>Adjunct Professor</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="field-label">Date of Birth</label>
+                    <input type="date" id="fac_dob" onchange="calcAge()"/>
+                  </div>
+                  <div>
+                    <label class="field-label">Age as on 31 Jul 2026</label>
+                    <input type="number" id="fac_age" placeholder="Years" min="0" max="100"/>
+                  </div>
+                </div>
+                <div>
+                  <label class="field-label">Highest University Degree</label>
+                  <select id="fac_degree">
+                    <option value="">-Select-</option>
+                    <option>Ph.D.</option>
+                    <option>M.Phil.</option>
+                    <option>M.Tech./M.E./M.Sc.</option>
+                    <option>LLM</option>
+                    <option>MBA</option>
+                    <option>Others</option>
+                  </select>
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="fac_pan_exempt" class="w-4 h-4"/>
+                  <label for="fac_pan_exempt" class="text-sm text-gray-700">Exempted PAN card as per GOI rules</label>
+                </div>
+                <div>
+                  <label class="field-label">PAN Number</label>
+                  <input type="text" id="fac_pan" placeholder="Enter Your PAN" maxlength="10"/>
+                </div>
+              </div>
+            </div>
+            <!-- Experience Details (right) -->
+            <div>
+              <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Experience Details</p>
+              <div class="space-y-3">
+                <p class="text-xs font-semibold text-gray-600">Faculty experience in the relevant subject area</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="field-label">Total Teaching Experience (In Months) as on 31 Jul 2026</label>
+                    <input type="number" id="fac_teach_exp" placeholder="In Months" min="0"/>
+                  </div>
+                  <div>
+                    <label class="field-label">Total Industry Experience (In Months) as on 31 Jul 2026</label>
+                    <input type="number" id="fac_industry_exp" placeholder="In Months" min="0"/>
+                  </div>
+                </div>
+                <div>
+                  <label class="field-label">Currently working with institution?</label>
+                  <select id="fac_working">
+                    <option value="">--Select--</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label">Association type</label>
+                  <select id="fac_assoc">
+                    <option value="">-Select-</option>
+                    <option>Regular</option>
+                    <option>Adhoc</option>
+                    <option>Contractual</option>
+                    <option>Visiting</option>
+                    <option>Emeritus</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label">Date of joining the institute</label>
+                  <input type="date" id="fac_doj" placeholder="Date of joining (DD-MM-YYYY)"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 mt-4 pt-3 border-t border-gray-200">
+            <button onclick="saveFaculty()" class="bg-garvi-orange text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-garvi-gold transition">Save</button>
+            <button onclick="cancelFaculty()" class="border border-gray-300 text-gray-600 px-5 py-2 rounded-lg text-sm hover:bg-gray-50 transition">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 6 — Institution Details
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-6">
+
+      <!-- 6A: Financial Resources -->
+      <div class="section-card fade-in">
+        <p class="section-title">🏦 Financial Resources: Utilized Amount for the Capital &amp; Operational Expenditure (Previous 3 Years)</p>
+        <div class="imp-note"><strong>Note:</strong> Enter value(s) in all the field(s): if not applicable enter zero [0].</div>
+
+        <p class="section-sub">Annual Capital Expenditure (Excluding expenditure on construction of new buildings)</p>
+        <div class="overflow-x-auto">
+          <table class="fin-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Head of Expenditure</th>
+                <th colspan="1" style="min-width:90px">2025-26</th>
+                <th colspan="1" style="min-width:90px">2024-25</th>
+                <th colspan="1" style="min-width:90px">2023-24</th>
+              </tr>
+              <tr>
+                <th class="text-left text-gray-400 font-normal text-xs">Financial Year</th>
+                <th class="text-gray-400 font-normal text-xs">Utilized Amount</th>
+                <th class="text-gray-400 font-normal text-xs">Utilized Amount</th>
+                <th class="text-gray-400 font-normal text-xs">Utilized Amount</th>
+              </tr>
+            </thead>
+            <tbody id="capexBody"></tbody>
+          </table>
+        </div>
+
+        <p class="section-sub">Annual Operational Expenditure</p>
+        <div class="overflow-x-auto">
+          <table class="fin-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Head of Expenditure</th>
+                <th style="min-width:90px">2025-26</th>
+                <th style="min-width:90px">2024-25</th>
+                <th style="min-width:90px">2023-24</th>
+              </tr>
+              <tr>
+                <th class="text-left text-gray-400 font-normal text-xs">Financial Year</th>
+                <th class="text-gray-400 font-normal text-xs">Utilized Amount</th>
+                <th class="text-gray-400 font-normal text-xs">Utilized Amount</th>
+                <th class="text-gray-400 font-normal text-xs">Utilized Amount</th>
+              </tr>
+            </thead>
+            <tbody id="opexBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 6B: PCS Facilities -->
+      <div class="section-card fade-in">
+        <p class="section-title">♿ PCS Facilities</p>
+        <div class="imp-note"><strong>Important Notes:</strong><ul><li>Please do not include under construction Lifts/Ramps/Toilets.</li></ul></div>
+        <p class="text-sm font-semibold text-gray-700 mb-4">Facilities for Physically Challenged Students</p>
+
+        <div class="q-block">
+          <p class="q-text">1. Do your institution buildings have Lifts/Ramps?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="80+"> Yes, more than 80% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="60+"> Yes, more than 60% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="40+"> Yes, more than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="<40"> Yes, less than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="NA" checked> Not available</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">2. Do your institution have provision for walking aids, including wheelchairs and transportation from one building to another for handicapped students?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="pcs_walking" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="pcs_walking" value="No" checked> No</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">3. Do your institution buildings have specially designed toilets for handicapped students?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="80+"> Yes, more than 80% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="60+"> Yes, more than 60% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="40+"> Yes, more than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="<40"> Yes, less than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="NA" checked> Not available</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6C: Accreditation -->
+      <div class="section-card fade-in">
+        <p class="section-title">🏅 Accreditation</p>
+        <div class="q-block">
+          <p class="text-sm font-semibold text-gray-700 mb-3">NAAC Accreditation</p>
+          <div class="flex items-center gap-4">
+            <label class="field-label mb-0">1. Does your institute have a valid NAAC Accreditation?</label>
+            <select id="naac_accred" style="width:auto;min-width:80px;">
+              <option value="NO">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+          <div id="naacDetailsBlock" class="hidden mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label">NAAC Grade</label>
+              <select id="naac_grade">
+                <option>A++</option><option>A+</option><option>A</option><option>B++</option><option>B+</option><option>B</option><option>C</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">CGPA Score</label>
+              <input type="number" id="naac_cgpa" min="0" max="4" step="0.01" placeholder="e.g., 3.25"/>
+            </div>
+            <div>
+              <label class="field-label">Valid Until</label>
+              <input type="date" id="naac_valid"/>
+            </div>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="text-sm font-semibold text-gray-700 mb-3">NBA Accreditation</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label">Does your institution hold valid NBA accreditation?</label>
+              <select id="nba_accred">
+                <option value="NO">NO</option>
+                <option value="YES">YES</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Total programs (≥ 2 batches graduated)</label>
+              <input type="number" id="nba_total_progs" min="0" placeholder="0"/>
+            </div>
+            <div>
+              <label class="field-label">No. of NBA-accredited programs</label>
+              <input type="number" id="nba_accred_progs" min="0" placeholder="0"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6D: Multiple Entry/Exit & IKS -->
+      <div class="section-card fade-in">
+        <p class="section-title">🔄 Multiple Entry/Exit and Indian Knowledge System</p>
+
+        <div class="q-block">
+          <p class="q-text">1. Has your institution implemented multiple entry/exit in your institution?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q1" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q1" value="No" checked> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">2. Has your institution been teaching courses in Indian Languages?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q2" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q2" value="No" checked> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">3. Has your institution introduced courses on Indian Knowledge System?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q3" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q3" value="No" checked> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">4. Has your institution established the Grievance Redressal Cell?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q4" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q4" value="No" checked> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">5. Is your institution admitting students through National and State Level entrance exam?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q5" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q5" value="No" checked> No</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6E: Sustainable Living Practices -->
+      <div class="section-card fade-in">
+        <p class="section-title">🌿 Sustainable Living Practices</p>
+
+        <div class="q-block">
+          <p class="q-text">1. What specific programs does the institution have in place to reduce or eliminate single-use plastics on campus?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="slp_q1" value="ban"> Ban on single-use plastic items (e.g., straws, cutlery, plates)</label>
+            <label class="q-opt"><input type="radio" name="slp_q1" value="biodeg"> Transition to biodegradable or compostable alternatives</label>
+            <label class="q-opt"><input type="radio" name="slp_q1" value="recycle"> On-campus recycling stations for plastic waste</label>
+            <label class="q-opt"><input type="radio" name="slp_q1" value="none"> No current programs addressing single-use plastics</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">2. What actions has the institution/university taken to reduce its carbon footprint? (Select all that apply)</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q2_a"> A. Energy-efficient buildings</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_b"> B. Renewable energy installations</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_c"> C. Offsetting emissions</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_d"> D. Sustainable procurement</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_e"> E. None</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">3. What is the level of recycling infrastructure available on your campus?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="slp_q3" value="comprehensive"> Comprehensive infrastructure (bins, awareness, collection systems)</label>
+            <label class="q-opt"><input type="radio" name="slp_q3" value="basic"> Basic infrastructure in place in limited areas</label>
+            <label class="q-opt"><input type="radio" name="slp_q3" value="setup"> Infrastructure currently being set up</label>
+            <label class="q-opt"><input type="radio" name="slp_q3" value="none"> No recycling infrastructure on campus</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">4. What type of rainwater harvesting system has been implemented at your institution/university?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q4_a"> A. Rooftop Rainwater Harvesting System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_b"> B. Surface Runoff Harvesting System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_c"> C. Percolation Pit System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_d"> D. Recharge Wells</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_e"> E. Storage Tank System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_f"> F. None</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">5. Which renewable energy sources are installed on your institution/university campus? (Select all that apply)</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q5_a"> Solar Panels</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_b"> Wind Turbines</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_c"> Biogas Plants</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_d"> Geothermal Energy</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_e"> None of the above</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">6. What is the institution's approach to minimizing food waste?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q6_a"> Food donation programs</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q6_b"> Composting systems</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q6_c"> Sustainable food procurement</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q6_d"> None</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 7 — Research Funding
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-7">
+
+      <!-- 7A: IPR -->
+      <div class="section-card fade-in">
+        <p class="section-title">🔬 IPR</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+            <li>Please download the Prescribed Format &amp; upload the filled proforma (max 2 Mb).</li>
+          </ul>
+        </div>
+        <button class="text-sm bg-orange-100 text-orange-700 border border-orange-200 px-4 py-1.5 rounded-lg font-semibold mb-4">⬇ Download Prescribed Format</button>
+        <div class="overflow-x-auto">
+          <table class="ipr-tbl">
+            <thead>
+              <tr>
+                <th class="text-left">Calendar Year</th>
+                <th>2025</th><th>2024</th><th>2023</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-semibold">No. of Patents Published</td>
+                <td><input type="number" class="tbl-input" id="ipr_pub_2025" min="0" placeholder="0"/></td>
+                <td><input type="number" class="tbl-input" id="ipr_pub_2024" min="0" placeholder="0"/></td>
+                <td><input type="number" class="tbl-input" id="ipr_pub_2023" min="0" placeholder="0"/></td>
+              </tr>
+              <tr>
+                <td class="font-semibold">No. of Patents Granted</td>
+                <td><input type="number" class="tbl-input" id="ipr_grant_2025" min="0" placeholder="0"/></td>
+                <td><input type="number" class="tbl-input" id="ipr_grant_2024" min="0" placeholder="0"/></td>
+                <td><input type="number" class="tbl-input" id="ipr_grant_2023" min="0" placeholder="0"/></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 7B: Sponsored Research -->
+      <div class="section-card fade-in">
+        <p class="section-title">💡 Sponsored Research Details</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Please make sure that the amount mentioned in various years is actually the amount received during that year and not the sanctioned budget of the project.</li>
+            <li>Fellowship / Scholarship amount received should not be included in research funding.</li>
+            <li>Under process / consideration projects should not be included in the data provided.</li>
+            <li>Self-funded (Institute / Society) funded projects should not be included.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+            <li>Sponsored Research &amp; Consultancy projects from well known established companies are to be entered.</li>
+            <li>Research funding coming from recognised government agencies/foundations and established companies should only be entered.</li>
+          </ul>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="research-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Financial Year</th>
+                <th>2025-26</th><th>2024-25</th><th>2023-24</th>
+              </tr>
+            </thead>
+            <tbody id="sponsoredBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 7C: Consultancy -->
+      <div class="section-card fade-in">
+        <p class="section-title">🤝 Consultancy Project Details</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Please make sure that the amount mentioned in various years is actually the amount received during that year and not the sanctioned budget of the project.</li>
+            <li>Self-Sponsored Consultancy projects (Institute / Society) should not be counted and entered.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+            <li>Sponsored Research &amp; Consultancy projects from well known established companies are to be entered.</li>
+            <li>Consultancy other than your institution should only be entered and consultancy of any sister institution shall not be entered.</li>
+          </ul>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="research-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Financial Year</th>
+                <th>2025-26</th><th>2024-25</th><th>2023-24</th>
+              </tr>
+            </thead>
+            <tbody id="consultancyBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 7D: EDP/MDP -->
+      <div class="section-card fade-in">
+        <p class="section-title">🎓 Executive Development Programs / Management Development Programs</p>
+        <div class="imp-note">
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>No bachelors programme should be counted and entered.</li>
+            <li>Amount received should not include Lodging &amp; Boarding Charges.</li>
+            <li>The amount mentioned for various years is total amount received through executive education programmes for that particular year.</li>
+            <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
+            <li>Faculty Development Programs shall not be entered.</li>
+          </ul>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="research-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Financial Year</th>
+                <th>2025-26</th><th>2024-25</th><th>2023-24</th>
+              </tr>
+            </thead>
+            <tbody id="edpBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 8 — About Institute & Declaration
+    ══════════════════════════════════════════════════════ -->
+    <div class="step-panel" id="step-8">
+
+      <div class="section-card fade-in">
+        <p class="section-title">🏛️ About Institute</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">1. Constituent list of colleges?</label>
+            <select id="about_constituent">
+              <option value="NO">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">2. List of all Campuses?</label>
+            <select id="about_campuses">
+              <option value="NO">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card fade-in">
+        <p class="section-title">📢 Declaration</p>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900">
+          <p class="font-semibold mb-2">I, the Nodal Officer / Authorised Signatory, hereby declare that:</p>
+          <ul class="list-disc pl-4 space-y-1">
+            <li>All information furnished in this submission is true, correct, and verifiable.</li>
+            <li>The institution takes full responsibility for the accuracy of the data submitted.</li>
+            <li>Any incorrect data may lead to disqualification from GSIRF 2026 rankings.</li>
+            <li>The data submitted is consistent with other institutional records (AISHE, UGC, AICTE submissions).</li>
+            <li>Anthropic / GARVI may use this data for ranking and research purposes as per GSIRF guidelines.</li>
+          </ul>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <input type="checkbox" id="declarationCheck" class="w-4 h-4"/>
+          <label for="declarationCheck" class="text-sm text-gray-700">I agree to the above declaration and confirm the data is accurate.</label>
+        </div>
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">Name of Authorised Signatory</label>
+            <input type="text" id="s8_signatoryName" placeholder="Full name"/>
+          </div>
+          <div>
+            <label class="field-label">Date of Submission</label>
+            <input type="date" id="s8_signatoryDate"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="flex items-center justify-between mt-4">
+      <button id="prevBtn" onclick="navigateStep(-1)" class="hidden border border-gray-300 text-gray-600 px-5 py-2.5 rounded-xl font-semibold hover:bg-gray-100 transition">← Previous</button>
+      <div class="flex items-center gap-3 ml-auto">
+        <button onclick="saveDraft()" class="border border-garvi-orange text-garvi-orange px-5 py-2.5 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition">Save Draft</button>
+        <button id="nextBtn" onclick="navigateStep(1)" class="gradient-bg text-white px-6 py-2.5 rounded-xl font-semibold hover:opacity-90 transition">Next →</button>
+        <button id="submitBtn" onclick="submitForm()" class="hidden gradient-bg text-white px-6 py-2.5 rounded-xl font-semibold hover:opacity-90 transition">✓ Submit Data</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-xl shadow-xl text-sm font-semibold hidden z-50">✅ Draft saved</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+let STORAGE_KEY = 'garvi_gsirf2026_v2'; // becomes user-specific after session loads
+const STEPS = [
+  { id:1, name:'Institute Profile',           icon:'📋' },
+  { id:2, name:'Sanctioned Intake',           icon:'📝' },
+  { id:3, name:'Student Strength & Ph.D.',    icon:'🎓' },
+  { id:4, name:'Placement & Higher Studies',  icon:'💼' },
+  { id:5, name:'Faculty Details',             icon:'👩‍🏫' },
+  { id:6, name:'Institution Details',         icon:'🏛️' },
+  { id:7, name:'Research Funding',            icon:'🔬' },
+  { id:8, name:'About Institute & Declaration',icon:'📢' },
+];
+
+const PROGRAMS = [
+  { key:'ug3', label:'UG [3 Years Program(s)]',         dur:3, lateral:true  },
+  { key:'ug4', label:'UG [4 Years Program(s)]',         dur:4, lateral:true  },
+  { key:'ug5', label:'UG [5 Years Program(s)]',         dur:5, lateral:true  },
+  { key:'ug6', label:'UG [6 Years Program(s)]',         dur:6, lateral:false },
+  { key:'pg1', label:'PG [1 Year Program(s)]',          dur:1, lateral:false },
+  { key:'pg2', label:'PG [2 Years Program(s)]',         dur:2, lateral:false },
+  { key:'pg3', label:'PG [3 Years Program(s)]',         dur:3, lateral:true  },
+  { key:'pgi', label:'PG-Integrated [5 Years Program(s)]', dur:5, lateral:true },
+  { key:'pg6', label:'PG [6 Years Program(s)]',         dur:6, lateral:false },
+];
+
+const FIN_YEARS = ['2025-26','2024-25','2023-24'];
+let currentStep = 1;
+let facultyList  = [];
+let editFacIndex = -1;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function acadYr(y) { return `${y}-${String(y+1).slice(-2)}`; }
+
+function getIntakeYears(dur) {
+  const yrs = [];
+  for (let i = 0; i < Math.min(dur, 6); i++) yrs.push(acadYr(2025 - i));
+  return yrs;
+}
+
+function getPlcBatches(dur) {
+  const b = [];
+  for (let i = 0; i < 3; i++) {
+    const gradY = 2025 - i;
+    const intakeY = gradY - (dur - 1);
+    b.push({ intake: acadYr(intakeY), lateral: dur > 2 ? acadYr(intakeY+1) : null, grad: acadYr(gradY) });
+  }
+  return b;
+}
+
+// Number to Words (Indian system)
+function n2w(n) {
+  if (!n || isNaN(n) || Number(n) === 0) return 'Zero Rupees Only';
+  const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  function h(x) {
+    if (!x) return '';
+    if (x < 20) return ones[x];
+    if (x < 100) return tens[Math.floor(x/10)] + (x%10 ? ' '+ones[x%10] : '');
+    return ones[Math.floor(x/100)] + ' Hundred' + (x%100 ? ' '+h(x%100) : '');
+  }
+  function conv(x) {
+    x = Math.round(x); let r = '';
+    if (x >= 10000000) { r += h(Math.floor(x/10000000))+' Crore '; x %= 10000000; }
+    if (x >= 100000)   { r += h(Math.floor(x/100000))+' Lakh '; x %= 100000; }
+    if (x >= 1000)     { r += h(Math.floor(x/1000))+' Thousand '; x %= 1000; }
+    if (x > 0)         { r += h(x); }
+    return r.trim();
+  }
+  return conv(Number(n)) + ' Rupees Only';
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  document.getElementById('stepNav').innerHTML = STEPS.map(s => `
+    <button class="step-nav w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-orange-50 transition ${s.id===1?'active':''}"
+            onclick="goToStep(${s.id})" id="step-nav-${s.id}">
+      <span class="step-dot w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">${s.id}</span>
+      <span class="step-label text-sm text-gray-600 text-left">${s.icon} ${s.name}</span>
+    </button>`).join('');
+}
+
+// ─── PROGRAM CHECKBOXES + INTAKE TABLES ───────────────────────────────────────
+function buildIntakeSection() {
+  // Checkboxes
+  document.getElementById('progCheckboxGrid').innerHTML = PROGRAMS.map(p => `
+    <label class="prog-cb-item">
+      <input type="checkbox" id="cb_${p.key}" value="${p.key}" onchange="toggleProgram('${p.key}',this.checked)">
+      ${p.label}
+    </label>`).join('');
+
+  // Intake tables
+  document.getElementById('intakeContainer').innerHTML = PROGRAMS.map(p => {
+    const yrs = getIntakeYears(p.dur);
+    return `
+    <div class="prog-block" id="intake_block_${p.key}" style="display:none" data-prog-key="${p.key}">
+      <div class="prog-block-header">${p.label}: Sanctioned (approved) students intake</div>
+      <div class="prog-block-body">
+        <div class="grid gap-3" style="grid-template-columns:repeat(${Math.min(yrs.length,4)},1fr)">
+          ${yrs.map(yr => `
+          <div>
+            <label class="field-label text-xs">${yr}</label>
+            <input type="number" class="tbl-input" id="intake_${p.key}_${yr.replace('-','')}" min="0" placeholder="Enter Number Only"/>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleProgram(key, checked) {
+  // Show/hide all blocks across steps that share data-prog-key
+  document.querySelectorAll(`[data-prog-key="${key}"]`).forEach(el => {
+    el.style.display = checked ? 'block' : 'none';
+  });
+}
+
+// ─── STUDENT STRENGTH ────────────────────────────────────────────────────────
+function buildStrengthSection() {
+  document.getElementById('strengthContainer').innerHTML = PROGRAMS.map(p => {
+    const totalYrs = p.dur;
+    const desc = totalYrs === 1
+      ? 'All Students studying during the year'
+      : `All Students studying in ${Array.from({length:totalYrs},(_,i)=>(i===0?'1st':i===1?'2nd':i===2?'3rd':i+1+'th')+' year').join(', ')}.`;
+    const k = p.key.replace(/\W/g,'');
+    return `
+    <div class="prog-block mb-3" id="strength_block_${p.key}" style="display:none" data-prog-key="${p.key}">
+      <div class="prog-block-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>${p.label}: ${desc}</span>
+      </div>
+      <div class="prog-block-body">
+        <div class="demo-grid">
+          <div><label class="field-label text-xs">No. of Male Students</label>
+            <input type="number" class="tbl-input str-gender" id="str_${k}_m" min="0" placeholder="0" data-grp="${k}"/></div>
+          <div><label class="field-label text-xs">No. of Female Students</label>
+            <input type="number" class="tbl-input str-gender" id="str_${k}_f" min="0" placeholder="0" data-grp="${k}"/></div>
+          <div><label class="field-label text-xs">No. of Transgender Students</label>
+            <input type="number" class="tbl-input str-gender" id="str_${k}_t" min="0" placeholder="0" data-grp="${k}"/></div>
+          <div><label class="field-label text-xs">Total Students</label>
+            <input type="number" class="tbl-input" id="str_${k}_tot" min="0" placeholder="0" readonly style="background:#f9fafb"/></div>
+        </div>
+        <div class="demo-grid mt-2">
+          <div><label class="field-label text-xs">Within State (Incl. male &amp; female)</label>
+            <input type="number" class="tbl-input" id="str_${k}_ws" min="0" placeholder="0"/></div>
+          <div><label class="field-label text-xs">Outside State (Incl. male &amp; female)</label>
+            <input type="number" class="tbl-input" id="str_${k}_os" min="0" placeholder="0"/></div>
+          <div><label class="field-label text-xs">Outside Country (Incl. male &amp; female)</label>
+            <input type="number" class="tbl-input" id="str_${k}_oc" min="0" placeholder="0"/></div>
+        </div>
+        <div class="demo-grid mt-2">
+          <div><label class="field-label text-xs">Economically Backward (Incl. male &amp; female)</label>
+            <input type="number" class="tbl-input" id="str_${k}_eb" min="0" placeholder="0"/></div>
+          <div><label class="field-label text-xs">Socially Challenged (SC+ST+OBC Incl. male &amp; female)</label>
+            <input type="number" class="tbl-input" id="str_${k}_sc" min="0" placeholder="0"/></div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p class="text-xs text-gray-500 mb-2 italic">No. of students receiving full tuition fee reimbursement</p>
+          <div class="fee-grid">
+            <div><label class="field-label text-xs">From State &amp; Central Government</label>
+              <input type="number" class="tbl-input" id="str_${k}_fee_gov" min="0" placeholder="0"/></div>
+            <div><label class="field-label text-xs">From Institution Funds</label>
+              <input type="number" class="tbl-input" id="str_${k}_fee_inst" min="0" placeholder="0"/></div>
+            <div><label class="field-label text-xs">From Private Bodies</label>
+              <input type="number" class="tbl-input" id="str_${k}_fee_pvt" min="0" placeholder="0"/></div>
+            <div><label class="field-label text-xs">Not Receiving Full Tuition Fee Reimbursement</label>
+              <input type="number" class="tbl-input" id="str_${k}_fee_none" min="0" placeholder="0"/></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Auto-calc totals
+  document.querySelectorAll('.str-gender').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const g = inp.dataset.grp;
+      const m = Number(document.getElementById(`str_${g}_m`)?.value||0);
+      const f = Number(document.getElementById(`str_${g}_f`)?.value||0);
+      const t = Number(document.getElementById(`str_${g}_t`)?.value||0);
+      const tot = document.getElementById(`str_${g}_tot`);
+      if (tot) tot.value = m + f + t;
+    });
+  });
+}
+
+// ─── PLACEMENT ────────────────────────────────────────────────────────────────
+function buildPlacementSection() {
+  document.getElementById('placementContainer').innerHTML = PROGRAMS.map(p => {
+    const batches = getPlcBatches(p.dur);
+    const haslat = p.lateral;
+    const k = p.key;
+    return `
+    <div class="prog-block mb-4" id="plc_block_${k}" style="display:none" data-prog-key="${k}">
+      <div class="prog-block-header">${p.label}: Placement &amp; higher studies for previous 3 years</div>
+      <div class="prog-block-body plc-wrap">
+        <table class="plc-tbl">
+          <thead>
+            <tr>
+              <th>Academic Year</th>
+              <th>No. of 1st Yr Students Intake</th>
+              <th>No. of 1st Yr Students Admitted</th>
+              ${haslat ? `<th>Academic Year</th><th>No. of Students Admitted Through Lateral Entry</th>` : ''}
+              <th>Academic Year</th>
+              <th>No. of Students Graduating in Min. Stipulated Time</th>
+              <th>No. of Students Placed</th>
+              <th>Median Salary of Placed Graduates per Annum (Amount in Rs.)</th>
+              <th>Median Salary of Placed Graduates per Annum (Amount in Words)</th>
+              <th>No. of Students Selected for Higher Studies</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${batches.map((b,i) => `
+            <tr>
+              <td class="yr-cell">${b.intake}</td>
+              <td><input type="number" class="tbl-input" id="plc_${k}_${i}_intake" min="0" placeholder="0"/></td>
+              <td><input type="number" class="tbl-input" id="plc_${k}_${i}_admitted" min="0" placeholder="0"/></td>
+              ${haslat ? `<td class="yr-cell">${b.lateral||''}</td><td><input type="number" class="tbl-input" id="plc_${k}_${i}_lateral" min="0" placeholder="0"/></td>` : ''}
+              <td class="yr-cell">${b.grad}</td>
+              <td><input type="number" class="tbl-input" id="plc_${k}_${i}_grad" min="0" placeholder="0"/></td>
+              <td><input type="number" class="tbl-input" id="plc_${k}_${i}_placed" min="0" placeholder="0"/></td>
+              <td><input type="number" class="tbl-input amt-rs" id="plc_${k}_${i}_salary" data-words-id="plc_${k}_${i}_salary_w" min="0" placeholder="0"/></td>
+              <td><input type="text" class="tbl-input tbl-words" id="plc_${k}_${i}_salary_w" placeholder="In Words" style="min-width:130px;font-size:.7rem"/></td>
+              <td><input type="number" class="tbl-input" id="plc_${k}_${i}_higher" min="0" placeholder="0"/></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FINANCIAL RESOURCES ──────────────────────────────────────────────────────
+const CAPEX_ITEMS = [
+  { key:'lib',    label:'Library' },
+  { key:'equip',  label:'New Equipment for Laboratories' },
+  { key:'ws',     label:'Engineering Workshops (Equipment, tools and accessories procured for workshop as per the need of curricula)' },
+  { key:'studio', label:'Studios' },
+  { key:'other',  label:'Other expenditure on creation of Capital Assets (excluding expenditure on Land and Building)' },
+];
+const OPEX_ITEMS = [
+  { key:'sal',   label:'Salaries (Teaching and Non Teaching staff)' },
+  { key:'maint', label:'Maintenance of Academic Infrastructure or consumables and other running expenditures (excluding maintenance of hostels and allied services, rent of the building, depreciation cost, etc.)' },
+  { key:'sem',   label:'Seminars / Conferences / Workshops etc.' },
+];
+
+function buildFinancialRows(items, bodyId, prefix) {
+  const body = document.getElementById(bodyId);
+  body.innerHTML = items.flatMap(it => [`
+    <tr>
+      <td class="item-label">${it.label}</td>
+      ${FIN_YEARS.map(yr => `<td><input type="number" class="tbl-input fin-input amt-rs" id="${prefix}_${it.key}_${yr.replace('-','')}" data-words-id="${prefix}_${it.key}_${yr.replace('-','')}_w" min="0" placeholder="0"/></td>`).join('')}
+    </tr>`,`
+    <tr>
+      <td class="sub-label">Amount in Words</td>
+      ${FIN_YEARS.map(yr => `<td><input type="text" class="tbl-input tbl-words" id="${prefix}_${it.key}_${yr.replace('-','')}_w" placeholder="In words" readonly/></td>`).join('')}
+    </tr>`
+  ]).join('');
+}
+
+// ─── RESEARCH TABLES ──────────────────────────────────────────────────────────
+function buildResearchTable(bodyId, rowDefs) {
+  const body = document.getElementById(bodyId);
+  body.innerHTML = rowDefs.flatMap(r => [`
+    <tr>
+      <td class="row-label">${r.label}</td>
+      ${FIN_YEARS.map(yr => `<td><input type="number" class="tbl-input amt-rs" id="${bodyId}_${r.key}_${yr.replace('-','')}" ${r.words ? `data-words-id="${bodyId}_${r.key}_${yr.replace('-','')}_w"` : ''} min="0" placeholder="0"/></td>`).join('')}
+    </tr>`,
+    r.words ? `<tr>
+      <td class="row-words">Amount Received in Words</td>
+      ${FIN_YEARS.map(yr => `<td><input type="text" class="tbl-input tbl-words" id="${bodyId}_${r.key}_${yr.replace('-','')}_w" placeholder="In words" readonly/></td>`).join('')}
+    </tr>` : ''
+  ]).filter(Boolean).join('');
+}
+
+// ─── FACULTY ─────────────────────────────────────────────────────────────────
+function showFacultyForm(idx = -1) {
+  editFacIndex = idx;
+  const wrap = document.getElementById('facultyFormWrap');
+  wrap.classList.remove('hidden');
+  if (idx >= 0) {
+    const f = facultyList[idx];
+    document.getElementById('fac_name').value = f.name||'';
+    document.querySelector(`input[name="fac_gender"][value="${f.gender}"]`)?.click();
+    document.getElementById('fac_designation').value = f.designation||'';
+    document.getElementById('fac_dob').value = f.dob||'';
+    document.getElementById('fac_age').value = f.age||'';
+    document.getElementById('fac_degree').value = f.degree||'';
+    document.getElementById('fac_pan_exempt').checked = f.pan_exempt||false;
+    document.getElementById('fac_pan').value = f.pan||'';
+    document.getElementById('fac_teach_exp').value = f.teach_exp||'';
+    document.getElementById('fac_industry_exp').value = f.industry_exp||'';
+    document.getElementById('fac_working').value = f.working||'';
+    document.getElementById('fac_assoc').value = f.assoc||'';
+    document.getElementById('fac_doj').value = f.doj||'';
+  } else {
+    document.getElementById('fac_name').value = '';
+    document.querySelectorAll('input[name="fac_gender"]').forEach(r => r.checked=false);
+    ['fac_designation','fac_degree','fac_working','fac_assoc'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    ['fac_dob','fac_doj'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    ['fac_age','fac_teach_exp','fac_industry_exp','fac_pan'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('fac_pan_exempt').checked = false;
+  }
+  wrap.scrollIntoView({behavior:'smooth'});
+}
+
+function cancelFaculty() {
+  document.getElementById('facultyFormWrap').classList.add('hidden');
+  editFacIndex = -1;
+}
+
+async function saveFaculty() {
+  const name = document.getElementById('fac_name').value.trim();
+  if (!name) { alert('Please enter the faculty name.'); return; }
+
+  const session = await getSession();
+  if (!session) { alert('Session expired. Please log in again.'); window.location.href = 'login.html'; return; }
+
+  const gender  = document.querySelector('input[name="fac_gender"]:checked')?.value || '';
+  const dobVal  = document.getElementById('fac_dob').value;
+  const dojVal  = document.getElementById('fac_doj').value;
+
+  // DB payload (column names match gsirf_faculty table)
+  const dbRow = {
+    institute_id:    session.user.id,
+    ranking_year:    2026,
+    name,
+    gender,
+    designation:     document.getElementById('fac_designation').value || null,
+    dob:             dobVal  || null,
+    age:             parseInt(document.getElementById('fac_age').value)          || null,
+    highest_degree:  document.getElementById('fac_degree').value                || null,
+    pan_exempt:      document.getElementById('fac_pan_exempt').checked,
+    pan:             document.getElementById('fac_pan').value                    || null,
+    teaching_exp:    parseInt(document.getElementById('fac_teach_exp').value)   || null,
+    industry_exp:    parseInt(document.getElementById('fac_industry_exp').value) || null,
+    working:         document.getElementById('fac_working').value               || null,
+    association:     document.getElementById('fac_assoc').value                 || null,
+    date_of_joining: dojVal  || null,
+  };
+
+  // Local UI object (friendly keys used by renderFacultyList / showFacultyForm)
+  const local = {
+    name, gender,
+    designation: dbRow.designation,
+    dob: dobVal,        age:          dbRow.age,
+    degree: dbRow.highest_degree,
+    pan_exempt: dbRow.pan_exempt, pan: dbRow.pan,
+    teach_exp: dbRow.teaching_exp, industry_exp: dbRow.industry_exp,
+    working: dbRow.working, assoc: dbRow.association, doj: dojVal,
+  };
+
+  if (editFacIndex >= 0) {
+    // UPDATE existing row
+    const dbId = facultyList[editFacIndex].db_id;
+    const { error } = await sb.from('gsirf_faculty').update({
+      name: dbRow.name,           gender: dbRow.gender,
+      designation: dbRow.designation,  dob: dbRow.dob,
+      age: dbRow.age,             highest_degree: dbRow.highest_degree,
+      pan_exempt: dbRow.pan_exempt, pan: dbRow.pan,
+      teaching_exp: dbRow.teaching_exp, industry_exp: dbRow.industry_exp,
+      working: dbRow.working,     association: dbRow.association,
+      date_of_joining: dbRow.date_of_joining
+    }).eq('id', dbId);
+    if (error) { alert('❌ Failed to update faculty: ' + error.message); return; }
+    facultyList[editFacIndex] = { ...local, db_id: dbId };
+  } else {
+    // INSERT new row
+    const { data: inserted, error } = await sb.from('gsirf_faculty').insert(dbRow).select().single();
+    if (error) { alert('❌ Failed to save faculty: ' + error.message); return; }
+    facultyList.push({ ...local, db_id: inserted.id });
+  }
+
+  renderFacultyList();
+  cancelFaculty();
+  showToast('Faculty saved!');
+}
+
+async function removeFaculty(idx) {
+  if (!confirm('Remove this faculty member?')) return;
+  const f = facultyList[idx];
+  if (f.db_id) {
+    const { error } = await sb.from('gsirf_faculty').delete().eq('id', f.db_id);
+    if (error) { alert('❌ Failed to remove faculty: ' + error.message); return; }
+  }
+  facultyList.splice(idx, 1);
+  renderFacultyList();
+}
+
+// ─── LOAD FACULTY FROM SUPABASE ──────────────────────────────────────────────
+async function loadFacultyFromDB() {
+  const session = await getSession();
+  if (!session) return;
+  const { data, error } = await sb
+    .from('gsirf_faculty')
+    .select('*')
+    .eq('institute_id', session.user.id)
+    .eq('ranking_year', 2026)
+    .order('created_at', { ascending: true });
+  if (error) { console.warn('Faculty load error:', error.message); return; }
+  if (data && data.length > 0) {
+    facultyList = data.map(r => ({
+      db_id:        r.id,
+      name:         r.name,
+      gender:       r.gender,
+      designation:  r.designation,
+      dob:          r.dob,
+      age:          r.age,
+      degree:       r.highest_degree,
+      pan_exempt:   r.pan_exempt,
+      pan:          r.pan,
+      teach_exp:    r.teaching_exp,
+      industry_exp: r.industry_exp,
+      working:      r.working,
+      assoc:        r.association,
+      doj:          r.date_of_joining,
+    }));
+    renderFacultyList();
+  }
+}
+
+function renderFacultyList() {
+  const body = document.getElementById('facultyListBody');
+  document.getElementById('facTotalCount').textContent = facultyList.length;
+  const emptyRow = document.getElementById('facEmptyRow');
+  if (!facultyList.length) {
+    body.innerHTML = `<tr id="facEmptyRow"><td colspan="9" class="text-center py-4 text-gray-400 text-sm italic">No faculty added yet. Click "+ Add New" to begin.</td></tr>`;
+    return;
+  }
+  body.innerHTML = facultyList.map((f,i) => `
+    <tr class="border-b border-gray-100 hover:bg-gray-50">
+      <td class="px-3 py-2 text-gray-500">${i+1}</td>
+      <td class="px-3 py-2 font-medium">${f.name}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.gender||'—'}</td>
+      <td class="px-3 py-2 font-mono text-xs">${f.pan_exempt?'Exempted':f.pan||'—'}</td>
+      <td class="px-3 py-2 text-gray-600">${f.designation||'—'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.degree||'—'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.teach_exp||'0'}</td>
+      <td class="px-3 py-2 text-center">
+        <span class="px-2 py-0.5 rounded-full text-xs ${f.working==='Yes'?'bg-green-100 text-green-700':'bg-gray-100 text-gray-500'}">${f.working||'—'}</span>
+      </td>
+      <td class="px-3 py-2 flex gap-2">
+        <button onclick="showFacultyForm(${i})" class="text-blue-500 hover:text-blue-700 text-xs">Edit</button>
+        <button onclick="removeFaculty(${i})" class="text-red-400 hover:text-red-600 text-xs">✕</button>
+      </td>
+    </tr>`).join('');
+}
+
+// Age auto-calc
+function calcAge() {
+  const dob = document.getElementById('fac_dob')?.value;
+  if (!dob) return;
+  const d = new Date(dob);
+  const ref = new Date('2026-07-31');
+  let age = ref.getFullYear() - d.getFullYear();
+  if (ref < new Date(ref.getFullYear(), d.getMonth(), d.getDate())) age--;
+  document.getElementById('fac_age').value = age;
+}
+
+// ─── NAAC TOGGLE ─────────────────────────────────────────────────────────────
+document.getElementById('naac_accred').addEventListener('change', function() {
+  document.getElementById('naacDetailsBlock').classList.toggle('hidden', this.value !== 'YES');
+});
+
+// ─── STEP NAVIGATION ─────────────────────────────────────────────────────────
+function goToStep(n) {
+  if (n < 1 || n > 8) return;
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`step-${n}`)?.classList.add('active');
+  document.querySelectorAll('.step-nav').forEach(b => {
+    b.classList.remove('active');
+    const sid = parseInt(b.id.replace('step-nav-',''));
+    if (sid < n) b.classList.add('done'); else b.classList.remove('done');
+  });
+  document.getElementById(`step-nav-${n}`)?.classList.add('active');
+  currentStep = n;
+  document.getElementById('currentStepLabel').textContent = n;
+  document.getElementById('currentStepName').textContent = STEPS[n-1].name;
+  document.getElementById('progressFill').style.width = (n/8*100)+'%';
+  document.getElementById('prevBtn').classList.toggle('hidden', n===1);
+  document.getElementById('nextBtn').classList.toggle('hidden', n===8);
+  document.getElementById('submitBtn').classList.toggle('hidden', n!==8);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function navigateStep(dir) { goToStep(currentStep+dir); }
+
+// ─── SAVE / EXPORT ────────────────────────────────────────────────────────────
+function collectFormData() {
+  const data = {};
+  document.querySelectorAll('input,select,textarea').forEach(el => {
+    // Skip faculty form UI fields — those are saved directly to gsirf_faculty table
+    if (!el.id || el.id.startsWith('fac_')) return;
+    data[el.id] = el.type==='checkbox' ? el.checked : el.type==='radio' ? (el.checked ? el.value : undefined) : el.value;
+  });
+  // Collect radio groups
+  document.querySelectorAll('input[type=radio]:checked').forEach(r => {
+    if (r.name) data['radio_'+r.name] = r.value;
+  });
+  // Faculty: count only — individual records live in gsirf_faculty Supabase table
+  data['faculty_count'] = facultyList.length;
+  // Selected programs
+  data['_selectedPrograms'] = PROGRAMS.map(p=>({key:p.key,checked:document.getElementById(`cb_${p.key}`)?.checked||false}));
+  return data;
+}
+
+function saveDraft() {
+  const badge = document.getElementById('saveBadge');
+  badge.textContent = '● Saving…'; badge.className = 'badge-saving'; badge.classList.remove('hidden');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormData()));
+  setTimeout(() => { badge.textContent = '● Saved'; badge.className = 'badge-saved'; }, 600);
+  showToast('Draft saved successfully!');
+}
+
+function loadDraft() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  const data = JSON.parse(raw);
+  Object.entries(data).forEach(([id,val]) => {
+    if (id.startsWith('_') || id.startsWith('radio_') || val === undefined) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.type==='checkbox') el.checked = val;
+    else el.value = val;
+  });
+  // Restore radio groups
+  Object.entries(data).forEach(([id,val]) => {
+    if (!id.startsWith('radio_') || !val) return;
+    const name = id.replace('radio_','');
+    const r = document.querySelector(`input[type=radio][name="${name}"][value="${val}"]`);
+    if (r) r.checked = true;
+  });
+  // Faculty is loaded from Supabase via loadFacultyFromDB() — not localStorage
+  // Restore program selections
+  if (data._selectedPrograms) {
+    data._selectedPrograms.forEach(p => {
+      const cb = document.getElementById(`cb_${p.key}`);
+      if (cb && p.checked) { cb.checked = true; toggleProgram(p.key, true); }
+    });
+  }
+  // NAAC toggle
+  const naacEl = document.getElementById('naac_accred');
+  if (naacEl && naacEl.value==='YES') document.getElementById('naacDetailsBlock').classList.remove('hidden');
+
+  document.getElementById('saveBadge').textContent = '● Saved';
+  document.getElementById('saveBadge').className = 'badge-saved';
+  document.getElementById('saveBadge').classList.remove('hidden');
+}
+
+function exportJSON() {
+  const payload = { meta:{ exportedAt:new Date().toISOString(), rankingYear:2026, portal:'GARVI GSIRF 2026' }, data:collectFormData() };
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=`GSIRF2026_${Date.now()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function submitForm() {
+  if (!document.getElementById('declarationCheck')?.checked) {
+    alert('Please accept the declaration in Section 8 before submitting.'); return;
+  }
+  const gsirfId = document.getElementById('s1_gsirfId')?.value?.trim();
+  if (!gsirfId) { alert('Please fill the GSIRF Institute ID in Section 1 before submitting.'); return; }
+
+  const session = await getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
+  const institute = await getMyInstitute();
+  if (!institute) { alert('Session error. Please log in again.'); window.location.href = 'login.html'; return; }
+
+  const formData = collectFormData();
+  const instName = document.getElementById('s1_instName')?.value?.trim() || institute.name;
+
+  const { data: existing } = await sb.from('gsirf_submissions').select('id')
+    .eq('institute_id', session.user.id).maybeSingle();
+
+  let dbError, submissionId;
+
+  if (existing) {
+    // UPDATE existing row — keep the existing ID
+    submissionId = existing.id;
+    const { error } = await sb.from('gsirf_submissions').update({
+      gsirf_id: gsirfId, institute_name: instName,
+      status: 'pending', form_data: formData,
+      submitted_at: new Date().toISOString()
+    }).eq('id', existing.id);
+    dbError = error;
+  } else {
+    // INSERT new row — get back the generated ID
+    const { data: inserted, error } = await sb.from('gsirf_submissions').insert({
+      institute_id: session.user.id, username: institute.username,
+      institute_name: instName, gsirf_id: gsirfId,
+      status: 'pending', form_data: formData
+    }).select('id').single();
+    dbError = error;
+    submissionId = inserted?.id;
+  }
+
+  if (dbError) { alert('❌ Submission failed: ' + dbError.message); return; }
+  saveDraft();
+
+  // ── Launch category submission flow ──────────────────────────────────────
+  // The module shows: category picker → per-category data review → dashboard
+  CategorySubmissionFlow.init(sb, submissionId, formData, session.user.id);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✅ ' + msg; t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 2500);
+}
+
+// ─── AUTO-SAVE + N2W ──────────────────────────────────────────────────────────
+let saveTimer;
+document.addEventListener('input', e => {
+  // Auto words fill
+  if (e.target.classList.contains('amt-rs')) {
+    const wid = e.target.dataset.wordsId;
+    if (wid) {
+      const wel = document.getElementById(wid);
+      if (wel) wel.value = e.target.value ? n2w(Number(e.target.value)) : '';
+    }
+  }
+  clearTimeout(saveTimer);
+  const badge = document.getElementById('saveBadge');
+  badge.textContent = '● Saving…'; badge.className = 'badge-saving'; badge.classList.remove('hidden');
+  saveTimer = setTimeout(saveDraft, 1500);
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+buildSidebar();
+buildIntakeSection();
+buildStrengthSection();
+buildPlacementSection();
+buildFinancialRows(CAPEX_ITEMS, 'capexBody', 'capex');
+buildFinancialRows(OPEX_ITEMS, 'opexBody', 'opex');
+buildResearchTable('sponsoredBody', [
+  { key:'projects', label:'Total no. of Sponsored Projects', words:false },
+  { key:'agencies', label:'Total no. of Funding Agencies', words:false },
+  { key:'amount',   label:'Total Amount Received (Amount in Rupees)', words:true },
+]);
+buildResearchTable('consultancyBody', [
+  { key:'projects', label:'Total no. of Consultancy Projects', words:false },
+  { key:'clients',  label:'Total no. of Client Organizations', words:false },
+  { key:'amount',   label:'Total Amount Received (Amount in Rupees)', words:true },
+]);
+buildResearchTable('edpBody', [
+  { key:'programs',      label:'Total no. of Executive Development Programs / Management Development Programs', words:false },
+  { key:'participants',  label:'Total no. of Participants', words:false },
+  { key:'earnings',      label:'Total Annual Earnings (Excl. Lodging & Boarding Charges)(Amount in Rupees)', words:true },
+]);
+
+// Set default dates
+const today = new Date().toISOString().split('T')[0];
+['s1_submitDate','s8_signatoryDate'].forEach(id => {
+  const el = document.getElementById(id); if(el) el.value = today;
+});
+
+// Load and init — async so we can set a user-specific storage key first.
+// This ensures each institute's draft is isolated: logging in as a different
+// institute on the same browser will never load another institute's saved data.
+(async () => {
+  const session = await getSession();
+  if (session) {
+    STORAGE_KEY = `garvi_gsirf2026_v2_${session.user.id}`;
+  }
+  loadDraft();
+  goToStep(1);
+  await loadFacultyFromDB();
+})();
+
+// Completion tracker
+setInterval(() => {
+  const filled = [...document.querySelectorAll('input,select')].filter(e => e.value && e.value !== '0').length;
+  const total  = document.querySelectorAll('input,select').length;
+  const pct = Math.min(100, Math.round(filled/total*100));
+  document.getElementById('sideProgress').style.width = pct+'%';
+  document.getElementById('pctText').textContent = pct+'%';
+}, 3000);
+</script>
+  <!-- Category Submission Flow — post-submission NIRF category config -->
+  <script src="js/category-submission.js"></script>
+</body>
+</html>

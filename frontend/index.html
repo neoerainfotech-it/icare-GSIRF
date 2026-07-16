@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GSIRF — Gujarat State Institutional Rating Framework</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'garvi-orange': '#D58B00',
+            'garvi-gold':   '#F4A623',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { box-sizing: border-box; }
+    .gradient-bg { background: linear-gradient(135deg, #D58B00 0%, #F4A623 100%); }
+    .hover-lift { transition: all 0.3s ease; }
+    .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(213,139,0,0.2); }
+    .card-hover { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+    .card-hover:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+    .fade-in { opacity: 0; transform: translateY(30px); animation: fadeInUp 0.8s ease forwards; }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .icon-bounce { animation: bounce 2s infinite; }
+    @keyframes bounce { 0%,20%,50%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  </style>
+</head>
+<body class="bg-white text-black font-sans">
+
+  <!-- ── NAVIGATION ── -->
+  <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Brand -->
+        <div class="flex items-center gap-3">
+          <div class="text-2xl font-bold text-garvi-orange">GSIRF</div>
+          <span class="hidden sm:block text-xs text-gray-500 border-l border-gray-200 pl-3">Gujarat State Institutional Rating Framework</span>
+        </div>
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center space-x-1 text-sm">
+          <a href="#about"      class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">About</a>
+          <a href="#framework"  class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">Framework</a>
+          <a href="#parameters" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">Parameters</a>
+          <a href="#garvi"      class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">GARVI</a>
+          <a href="#2026"       class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md transition-colors">2026 Data</a>
+          <a href="landing.html"
+             class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-md gradient-bg text-white font-semibold hover:opacity-90 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Open GARVI Portal
+          </a>
+        </div>
+        <!-- Mobile toggle -->
+        <button id="mobileToggle" class="md:hidden p-2 rounded-md text-gray-700 hover:text-garvi-orange">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-100 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 grid gap-2 text-sm">
+        <a class="py-2 hover:text-garvi-orange" href="#about">About</a>
+        <a class="py-2 hover:text-garvi-orange" href="#framework">Framework</a>
+        <a class="py-2 hover:text-garvi-orange" href="#parameters">Parameters</a>
+        <a class="py-2 hover:text-garvi-orange" href="#garvi">GARVI</a>
+        <a class="py-2 hover:text-garvi-orange" href="#2026">2026 Data</a>
+        <a class="py-2 font-semibold text-garvi-orange" href="landing.html">Open GARVI Portal →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="home" class="pt-20 pb-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center py-20">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 bg-garvi-orange/10 border border-garvi-orange/20 text-garvi-orange text-xs font-semibold px-4 py-1.5 rounded-full mb-6 fade-in">
+          <span class="w-2 h-2 rounded-full bg-garvi-orange pulse-dot"></span>
+          Knowledge Consortium of Gujarat &nbsp;·&nbsp; ICARE
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 fade-in stagger-1">
+          <span class="text-garvi-orange">GSIRF</span>
+        </h1>
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 fade-in stagger-2">
+          Gujarat State Institutional Rating Framework
+        </h2>
+        <p class="text-lg md:text-xl mb-12 max-w-4xl mx-auto text-gray-600 fade-in stagger-3">
+          A pioneering, data-driven framework to Audit, Assess &amp; Rate higher education institutions across Gujarat — empowering them to achieve excellence regionally, nationally, and globally.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center fade-in stagger-4">
+          <a href="#2026"
+             class="gradient-bg text-white min-w-[240px] px-8 py-4 rounded-xl font-semibold hover:opacity-90 transition-all duration-300 hover-lift inline-flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Submit 2026 Data
+          </a>
+          <a href="#about"
+             class="border-2 border-garvi-orange text-garvi-orange bg-white min-w-[240px] px-8 py-4 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition-all duration-300 hover-lift inline-flex items-center justify-center gap-2">
+            Learn About GSIRF
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Stat strip -->
+        <div class="mt-16 grid sm:grid-cols-4 gap-4 max-w-3xl mx-auto fade-in stagger-5">
+          <div class="flex flex-col items-center rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+            <div class="text-3xl font-bold text-garvi-orange">470+</div>
+            <div class="text-sm text-gray-500 mt-1">Institutions Rated</div>
+          </div>
+          <div class="flex flex-col items-center rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+            <div class="text-3xl font-bold text-garvi-orange">5★</div>
+            <div class="text-sm text-gray-500 mt-1">Rating Scale</div>
+          </div>
+          <div class="flex flex-col items-center rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+            <div class="text-3xl font-bold text-garvi-orange">6</div>
+            <div class="text-sm text-gray-500 mt-1">Parameters</div>
+          </div>
+          <div class="flex flex-col items-center rounded-2xl bg-white p-5 shadow-md ring-1 ring-gray-100">
+            <div class="text-3xl font-bold text-garvi-orange">2026</div>
+            <div class="text-sm text-gray-500 mt-1">Cycle Open</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT GSIRF ── -->
+  <section id="about" class="py-20 bg-gray-50 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(213,139,0,0.06)_1px,transparent_1.2px)] [background-size:22px_22px]"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <div class="inline-block">
+          <h2 class="text-3xl md:text-4xl font-bold text-black">What is GSIRF?</h2>
+          <div class="h-1 bg-garvi-orange mt-3"></div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 fade-in">
+        <!-- Purpose card -->
+        <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 p-8 md:p-10 card-hover">
+          <h3 class="text-2xl font-bold mb-6 text-garvi-orange">About GSIRF</h3>
+          <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+            GSIRF is a <strong>pioneering state-level institutional rating initiative</strong> developed by the
+            <strong>Knowledge Consortium of Gujarat (KCG)</strong> — an Education Department initiative of the Gujarat Government —
+            in partnership with <strong>ICARE (Indian Centre for Academic Rankings &amp; Excellence)</strong>,
+            India's most trusted institution ranking and rating authority.
+          </p>
+          <p class="text-lg text-gray-700 leading-relaxed">
+            The framework employs a <strong>highly credible and transparent methodology wholly based on objective data</strong>.
+            ICARE audits, assesses, and rates institutions with a clear focus on outcomes — helping academic leaders
+            identify areas of improvement and achieve excellence at regional, national, and global levels.
+          </p>
+        </div>
+
+        <!-- Authority cards -->
+        <div class="space-y-4">
+          <!-- KCG -->
+          <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 p-6 flex items-start gap-5 card-hover">
+            <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-garvi-orange text-base mb-1">Knowledge Consortium of Gujarat (KCG)</div>
+              <p class="text-gray-600 text-sm leading-relaxed">
+                An Education Department initiative of the Government of Gujarat. KCG conceptualises and governs the GSIRF framework, ensuring it aligns with the state's higher education goals.
+              </p>
+            </div>
+          </div>
+          <!-- ICARE -->
+          <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 p-6 flex items-start gap-5 card-hover">
+            <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-garvi-orange text-base mb-1">ICARE — Indian Centre for Academic Rankings &amp; Excellence</div>
+              <p class="text-gray-600 text-sm leading-relaxed">
+                India's most trusted institution ranking and rating authority. ICARE executes the GSIRF audit, assessment, and rating process with rigorous objectivity and transparency.
+              </p>
+            </div>
+          </div>
+          <!-- KPI strip -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="flex flex-col items-center rounded-2xl bg-white p-4 shadow-md ring-1 ring-gray-100">
+              <div class="text-base font-bold text-garvi-orange">Objective</div>
+              <div class="text-xs text-gray-500 mt-0.5 text-center">Data-driven only</div>
+            </div>
+            <div class="flex flex-col items-center rounded-2xl bg-white p-4 shadow-md ring-1 ring-gray-100">
+              <div class="text-base font-bold text-garvi-orange">Transparent</div>
+              <div class="text-xs text-gray-500 mt-0.5 text-center">Full visibility</div>
+            </div>
+            <div class="flex flex-col items-center rounded-2xl bg-white p-4 shadow-md ring-1 ring-gray-100">
+              <div class="text-base font-bold text-garvi-orange">Outcome</div>
+              <div class="text-xs text-gray-500 mt-0.5 text-center">Result-focused</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STAR RATING FRAMEWORK ── -->
+  <section id="framework" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <div class="inline-block">
+          <h2 class="text-3xl md:text-4xl font-bold text-black">Star-Based Rating Framework</h2>
+          <div class="h-1 bg-garvi-orange mt-3"></div>
+        </div>
+        <p class="mt-5 text-gray-500 max-w-2xl mx-auto">GSIRF awards a star rating to each institution based on objective performance data across all evaluation parameters.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center card-hover border border-gray-100 fade-in stagger-1">
+          <div class="text-3xl mb-2 text-gray-400">★</div>
+          <div class="font-extrabold text-xl text-gray-700 mb-2">1 Star</div>
+          <p class="text-gray-500 text-xs leading-relaxed">Developing institutions beginning their quality improvement journey.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center card-hover border border-blue-100 fade-in stagger-2">
+          <div class="text-3xl mb-2 text-blue-400">★★</div>
+          <div class="font-extrabold text-xl text-blue-600 mb-2">2 Stars</div>
+          <p class="text-gray-500 text-xs leading-relaxed">Institutions with foundational quality systems in place across most parameters.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center card-hover border border-amber-100 fade-in stagger-3">
+          <div class="text-3xl mb-2 text-amber-500">★★★</div>
+          <div class="font-extrabold text-xl text-amber-600 mb-2">3 Stars</div>
+          <p class="text-gray-500 text-xs leading-relaxed">Good quality institutions performing well at the state level.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center card-hover border border-orange-100 fade-in stagger-4">
+          <div class="text-3xl mb-2 text-orange-500">★★★★</div>
+          <div class="font-extrabold text-xl text-orange-600 mb-2">4 Stars</div>
+          <p class="text-gray-500 text-xs leading-relaxed">Excellent institutions aligned with national standards, demonstrating outstanding outcomes.</p>
+        </div>
+        <div class="gradient-bg rounded-2xl shadow-xl p-6 text-center card-hover fade-in stagger-5">
+          <div class="text-3xl mb-2 text-white">★★★★★</div>
+          <div class="font-extrabold text-xl text-white mb-2">5 Stars</div>
+          <p class="text-white/80 text-xs leading-relaxed">World-class institutions achieving global excellence in all evaluation parameters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6 PARAMETERS ── -->
+  <section id="parameters" class="py-20 bg-gray-50 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(213,139,0,0.06)_1px,transparent_1.2px)] [background-size:22px_22px]"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <div class="inline-block">
+          <h2 class="text-3xl md:text-4xl font-bold text-black">6 Core Evaluation Parameters</h2>
+          <div class="h-1 bg-garvi-orange mt-3"></div>
+        </div>
+        <p class="mt-5 text-gray-500 max-w-2xl mx-auto">Every institution is evaluated across six comprehensive parameters covering all dimensions of higher education quality.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100 fade-in stagger-1">
+          <div class="text-center mb-5">
+            <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Teaching &amp; Learning</h3>
+          </div>
+          <p class="text-gray-600 text-center leading-relaxed text-sm">Quality of curriculum, pedagogical practices, faculty qualifications, student-teacher ratios, and learning outcomes.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100 fade-in stagger-2">
+          <div class="text-center mb-5">
+            <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay:0.2s">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Research &amp; Innovation</h3>
+          </div>
+          <p class="text-gray-600 text-center leading-relaxed text-sm">Publications, patents (IPR), sponsored research projects, research funding, and innovation ecosystem strength.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100 fade-in stagger-3">
+          <div class="text-center mb-5">
+            <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay:0.4s">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Infrastructure</h3>
+          </div>
+          <p class="text-gray-600 text-center leading-relaxed text-sm">Physical campus, laboratories, library resources, digital infrastructure, sports and welfare facilities.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100 fade-in stagger-1">
+          <div class="text-center mb-5">
+            <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay:0.6s">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Student Support &amp; Outcomes</h3>
+          </div>
+          <p class="text-gray-600 text-center leading-relaxed text-sm">Placements, higher education progression, scholarships, student grievance mechanisms, and holistic development programmes.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100 fade-in stagger-2">
+          <div class="text-center mb-5">
+            <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay:0.8s">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Governance &amp; Leadership</h3>
+          </div>
+          <p class="text-gray-600 text-center leading-relaxed text-sm">Institutional governance structure, leadership quality, IQAC functioning, accreditation status, and strategic planning.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border border-gray-100 fade-in stagger-3">
+          <div class="text-center mb-5">
+            <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 icon-bounce" style="animation-delay:1s">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3">Sustainability &amp; Social Responsibility</h3>
+          </div>
+          <p class="text-gray-600 text-center leading-relaxed text-sm">Green campus initiatives, financial sustainability, community engagement, and social responsibility activities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GARVI SECTION ── -->
+  <section id="garvi" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <div class="inline-block">
+          <h2 class="text-3xl md:text-4xl font-bold text-black">Meet GARVI — The Analytics Portal for GSIRF</h2>
+          <div class="h-1 bg-garvi-orange mt-3"></div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Left — what is GARVI -->
+        <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 p-8 md:p-10 card-hover">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-garvi-orange">GARVI</h3>
+            <span class="px-3 py-1 text-xs rounded-full bg-garvi-orange/10 text-garvi-orange font-medium">Powered by GSIRF</span>
+          </div>
+          <p class="text-lg text-gray-700 mb-5 leading-relaxed">
+            <strong>GARVI</strong> (Gujarat Academic Ratings Visualization for Improvement) is the official analytics and data intelligence platform built on top of GSIRF data. It transforms raw institutional data into powerful, actionable insights.
+          </p>
+          <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+            Using GSIRF data as its backbone, GARVI gives institutions three powerful tools — <strong class="text-garvi-orange">Analytics</strong>, <strong class="text-garvi-orange">Benchmarking</strong>, and a <strong class="text-garvi-orange">Simulator</strong> — to understand their standing, compare with peers, and model the impact of strategic decisions.
+          </p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-center gap-3">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="text-gray-700 text-sm">Real-time performance dashboards powered by GSIRF data</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="text-gray-700 text-sm">Benchmarking against 470+ Gujarat institutions</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="text-gray-700 text-sm">What-if simulator to model strategic improvements</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-garvi-orange/10 text-garvi-orange flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="text-gray-700 text-sm">Dedicated GSIRF 2026 data collection portal</span>
+            </div>
+          </div>
+          <a href="landing.html"
+             class="inline-flex items-center gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all duration-300">
+            Open GARVI Portal
+            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+
+        <!-- Right — tool cards -->
+        <div class="flex flex-col gap-6">
+          <div class="bg-white rounded-2xl shadow-xl p-6 card-hover border border-gray-100">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0 icon-bounce">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-gray-900 text-lg">Analytics Tool</div>
+                <div class="text-gray-500 text-sm">KPI dashboards, trend analysis, parameter-wise performance</div>
+              </div>
+            </div>
+            <a href="login.html" class="text-garvi-orange text-sm font-semibold hover:text-garvi-gold transition-colors">Explore Analytics →</a>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-xl p-6 card-hover border border-gray-100">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0 icon-bounce" style="animation-delay:0.2s">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-gray-900 text-lg">Benchmarking Tool</div>
+                <div class="text-gray-500 text-sm">Compare against peers, identify performance gaps</div>
+              </div>
+            </div>
+            <a href="login.html" class="text-garvi-orange text-sm font-semibold hover:text-garvi-gold transition-colors">Start Benchmarking →</a>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-xl p-6 card-hover border border-gray-100">
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0 icon-bounce" style="animation-delay:0.4s">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-gray-900 text-lg">Simulator Tool</div>
+                <div class="text-gray-500 text-sm">Model what-if scenarios, predict rating impact</div>
+              </div>
+            </div>
+            <a href="login.html" class="text-garvi-orange text-sm font-semibold hover:text-garvi-gold transition-colors">Launch Simulator →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2026 DATA COLLECTION ── -->
+  <section id="2026" class="py-20 bg-gray-50 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(213,139,0,0.06)_1px,transparent_1.2px)] [background-size:22px_22px]"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Banner -->
+      <div class="gradient-bg rounded-2xl p-8 md:p-12 text-white mb-12 fade-in">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          <div>
+            <div class="inline-flex items-center gap-2 bg-white/20 border border-white/30 text-white text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-widest">
+              <span class="w-2 h-2 rounded-full bg-white pulse-dot"></span>
+              Now Open — GSIRF 2026
+            </div>
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-3">GSIRF 2026 Data Collection</h2>
+            <p class="text-white/85 text-base max-w-xl leading-relaxed mb-4">
+              The data collection for <strong>GSIRF 2026</strong> is now underway. This year's institutional data is collected directly through the <strong>GARVI portal</strong>. Registered institutions can log in and complete the 8-section data submission form.
+            </p>
+            <div class="flex flex-wrap gap-4 text-sm text-white/80">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Deadline: <strong class="text-white ml-1">31 July 2026</strong>
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <strong class="text-white">8 Sections</strong>&nbsp;to complete
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-3 flex-shrink-0">
+            <a href="landing.html"
+               class="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white text-garvi-orange font-extrabold rounded-xl hover:bg-gray-50 transition-all shadow-lg text-sm whitespace-nowrap">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              Go to GARVI Portal →
+            </a>
+            <a href="login.html"
+               class="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white/20 border border-white/40 text-white font-semibold rounded-xl hover:bg-white/30 transition-all text-sm whitespace-nowrap">
+              Submit Data Directly
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to participate -->
+      <div class="text-center mb-10">
+        <div class="inline-block">
+          <h3 class="text-2xl md:text-3xl font-bold text-black">How to Participate in GSIRF 2026</h3>
+          <div class="h-1 bg-garvi-orange mt-2"></div>
+        </div>
+        <p class="text-gray-500 mt-3 text-sm">Four simple steps to complete your 2026 data submission via GARVI</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white rounded-2xl shadow-xl p-7 text-center card-hover border border-gray-100 fade-in stagger-1">
+          <div class="w-14 h-14 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 text-white font-extrabold text-xl">1</div>
+          <h4 class="font-bold text-gray-900 mb-2">Contact Admin</h4>
+          <p class="text-gray-500 text-sm">Contact the GSIRF administrator to register your institution and receive your GARVI login credentials.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-7 text-center card-hover border border-gray-100 fade-in stagger-2">
+          <div class="w-14 h-14 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 text-white font-extrabold text-xl">2</div>
+          <h4 class="font-bold text-gray-900 mb-2">Log in to GARVI</h4>
+          <p class="text-gray-500 text-sm">Use your credentials to log in to the GARVI portal and access the GSIRF 2026 data submission form.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-7 text-center card-hover border border-gray-100 fade-in stagger-3">
+          <div class="w-14 h-14 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 text-white font-extrabold text-xl">3</div>
+          <h4 class="font-bold text-gray-900 mb-2">Fill 8 Sections</h4>
+          <p class="text-gray-500 text-sm">Complete all 8 sections covering faculty, students, research, IPR, financials, governance, and sustainability.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-xl p-7 text-center card-hover border border-gray-100 fade-in stagger-4">
+          <div class="w-14 h-14 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4 text-white font-extrabold text-xl">4</div>
+          <h4 class="font-bold text-gray-900 mb-2">Submit &amp; Track</h4>
+          <p class="text-gray-500 text-sm">Submit your data and track its review status in real time on your GARVI dashboard — from Pending to Accepted.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="contact" class="bg-gray-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8">
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <div class="text-3xl font-bold mb-4 text-garvi-orange">GSIRF</div>
+          <p class="text-gray-300 mb-6 leading-relaxed">Gujarat State Institutional Rating Framework — a pioneering initiative by the Knowledge Consortium of Gujarat in partnership with ICARE for objective, transparent institutional rating.</p>
+          <a href="mailto:garvi@gujarat.gov.in" class="inline-flex items-center gap-2 text-garvi-orange hover:text-garvi-gold transition-colors">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="m22 8-10 6L2 8"/></svg>
+            <span>garvi@gujarat.gov.in</span>
+          </a>
+        </div>
+        <!-- Quick Links -->
+        <div>
+          <h4 class="font-semibold mb-4 text-lg">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="#about"      class="hover:text-garvi-orange transition-colors">About GSIRF</a></li>
+            <li><a href="#framework"  class="hover:text-garvi-orange transition-colors">Rating Framework</a></li>
+            <li><a href="#parameters" class="hover:text-garvi-orange transition-colors">6 Parameters</a></li>
+            <li><a href="#garvi"      class="hover:text-garvi-orange transition-colors">GARVI Portal</a></li>
+            <li><a href="#2026"       class="hover:text-garvi-orange transition-colors">2026 Data Collection</a></li>
+          </ul>
+        </div>
+        <!-- GARVI Tools -->
+        <div>
+          <h4 class="font-semibold mb-4 text-lg">GARVI Tools</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="landing.html"       class="hover:text-garvi-orange transition-colors">GARVI Home</a></li>
+            <li><a href="login.html"     class="hover:text-garvi-orange transition-colors">Analytics</a></li>
+            <li><a href="login.html"  class="hover:text-garvi-orange transition-colors">Benchmarking</a></li>
+            <li><a href="login.html"     class="hover:text-garvi-orange transition-colors">Simulator</a></li>
+            <li><a href="login.html" class="hover:text-garvi-orange transition-colors">Submit 2026 Data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-12 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center text-gray-400">
+          <p>&copy; <span id="yearSpan"></span> GSIRF — Knowledge Consortium of Gujarat &amp; ICARE. All rights reserved.</p>
+          <div class="flex items-center space-x-4 mt-4 md:mt-0">
+            <span>Executed by <span class="text-garvi-orange font-semibold">ICARE</span></span>
+            <span>•</span>
+            <span><span class="text-garvi-orange font-semibold">Government of Gujarat</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('mobileToggle');
+      const menu = document.getElementById('mobileMenu');
+      if(btn && menu) btn.addEventListener('click', ()=> menu.classList.toggle('hidden'));
+    })();
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if(href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    document.getElementById('yearSpan').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
