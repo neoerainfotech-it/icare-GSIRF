@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // =================================================================
-// 1. ACTIVE API ENDPOINTS
+// ACTIVE API ENDPOINTS
 // =================================================================
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
