@@ -225,11 +225,32 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-sm space-y-4" id="modalBody">
-        </div>
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-sm space-y-4" id="modalBody"></div>
       <div class="px-6 py-3.5 border-t border-gray-100 bg-gray-50 rounded-b-xl flex justify-end">
         <button id="closeModalBtnSecondary" class="bg-gray-900 text-white font-semibold px-4 py-2 rounded-lg text-xs hover:bg-gray-800 transition-colors">Close Profile</button>
       </div>
+    </div>
+  </div>
+
+  <div id="passwordModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-premium border border-gray-200 max-w-md w-full flex flex-col">
+      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-xl">
+        <h3 class="font-bold text-gray-900 text-base" id="pwdModalTitle">Update Institute Password</h3>
+        <button onclick="closePasswordModal()" class="text-gray-400 hover:text-gray-600 rounded-lg p-1 hover:bg-gray-200/60 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="passwordForm" class="p-6 space-y-4" autocomplete="off">
+        <input type="hidden" id="pwdTargetUserId" />
+        <div>
+          <label for="newTargetPwd" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">New Secure Password</label>
+          <input id="newTargetPwd" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="Enter new secure credentials" />
+        </div>
+        <div class="flex justify-end gap-2.5 pt-2 border-t border-gray-50">
+          <button type="button" onclick="closePasswordModal()" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-50 text-xs transition-colors">Cancel</button>
+          <button type="submit" class="bg-garvi-orange text-white font-bold px-4 py-2 rounded-lg text-xs hover:bg-orange-600 transition-colors shadow-sm">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -246,12 +267,14 @@
       loadInstitutes();
       loadSubmissions();
       
-      // Hook Modal Closure Listeners
       document.getElementById('closeModalBtn').addEventListener('click', closeModal);
       document.getElementById('closeModalBtnSecondary').addEventListener('click', closeModal);
       document.getElementById('viewModal').addEventListener('click', (e) => {
         if (e.target.id === 'viewModal') closeModal();
       });
+
+      // Hook password update submission
+      document.getElementById('passwordForm').addEventListener('submit', executePasswordUpdate);
     });
 
     // ── CREATE INSTITUTE ACCOUNT WORKFLOW ───────────────────────────
@@ -318,9 +341,11 @@
                 ${u.is_active ? 'Active' : 'Inactive'}
               </span>
             </td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-4 text-xs font-bold flex gap-4 items-center">
+              <button onclick="openPasswordModal('${u.id}','${u.name}')"
+                class="text-garvi-orange hover:text-orange-700 hover:underline transition-colors">Change Password</button>
               <button onclick="deleteInstitute('${u.id}','${u.name}')"
-                class="text-red-600 hover:text-red-800 hover:underline text-xs font-bold transition-colors">Delete</button>
+                class="text-red-600 hover:text-red-800 hover:underline transition-colors">Delete</button>
             </td>
           </tr>`).join('');
       } catch (err) {
@@ -334,6 +359,50 @@
         row.style.display = !q || row.textContent.toLowerCase().includes(q) ? '' : 'none';
       });
     });
+
+    // ── PASSWORD UPDATE MODAL CONTROL ────────────────────────────────
+    function openPasswordModal(id, name) {
+      document.getElementById('pwdTargetUserId').value = id;
+      document.getElementById('pwdModalTitle').textContent = `Change Password — ${name}`;
+      document.getElementById('newTargetPwd').value = '';
+      const modal = document.getElementById('passwordModal');
+      modal.classList.remove('hidden');
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.add('hidden');
+    }
+
+    async function executePasswordUpdate(e) {
+      e.preventDefault();
+      const userId = document.getElementById('pwdTargetUserId').value;
+      const newPassword = document.getElementById('newTargetPwd').value.trim();
+      if (!userId || !newPassword) return;
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true; submitBtn.textContent = 'Saving…';
+
+      try {
+        const res = await fetch(`/api/admin/institutes/${userId}/password`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: newPassword })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          alert('✅ Password encrypted and updated successfully.');
+          closePasswordModal();
+          loadInstitutes();
+        } else {
+          alert('❌ ' + result.error);
+        }
+      } catch (err) {
+        alert('❌ Network timeout modifying target record.');
+      } finally {
+        submitBtn.disabled = false; submitBtn.textContent = 'Save Changes';
+      }
+    }
 
     // ── PURGE INDIVIDUAL RECORD ─────────────────────────────────────
     async function deleteInstitute(userId, name) {
@@ -386,7 +455,6 @@
       }
     }
 
-    // ── RENDER SUBMISSIONS DATA ROWS WITH INLINE SVG BADGES ────────
     function renderSubRows(data, catMap, filterCat) {
       let filtered = data;
       if (filterCat === 'overall') {
@@ -432,7 +500,6 @@
       renderSubRows(window._submissions || [], window._catMap || {}, this.value);
     });
 
-    // ── PREMIUM CONTEXTUAL BADGE ENGINE ────────────────────────────
     function statusBadge(status) {
       const map = {
         pending:  'bg-amber-50 text-amber-800 border-amber-200 <svg class=\"w-3 h-3 text-amber-600\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg> Pending',
@@ -444,7 +511,6 @@
       return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${rawMarkup} shadow-sm"></span>`;
     }
 
-    // ── TRANSITION SUBMISSION STATUS ────────────────────────────────
     async function updateStatus(id, newStatus) {
       if (!confirm(`Transition this operational submission status to "${newStatus}"?`)) return;
       try {
@@ -463,16 +529,13 @@
       }
     }
 
-    // ── PREMIUM IN-PAGE INJECTED SQUARE DIALOG MODAL ───────────────
     function viewSubmission(id) {
       const s = (window._submissions || []).find(x => x.id === id);
       if (!s) return;
-      
       const cats = (window._catMap || {})[s.institute_id] || [];
       const catList = cats.length ? cats.map(c => NIRF_CAT_LABELS[c] || c).join(', ') : 'Overall only';
       
       document.getElementById('modalTitle').textContent = `Data Profile — ${s.institute_name}`;
-      
       let htmlContent = `
         <div class="grid grid-cols-2 gap-4 border-b border-gray-100 pb-4 mb-4 text-xs">
           <div><p class="text-gray-400 font-semibold uppercase tracking-wide">GSIRF Tracking Identifier</p><p class="font-mono text-gray-900 font-bold mt-0.5">${s.gsirf_id || '—'}</p></div>
@@ -481,8 +544,7 @@
           <div><p class="text-gray-400 font-semibold uppercase tracking-wide">Associated Categories</p><p class="font-medium text-gray-900 mt-0.5">${catList}</p></div>
         </div>
         <p class="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">Form Data Payload Preview (Top Fields)</p>
-        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-x-auto h-64 border border-gray-800 custom-scrollbar space-y-1">
-      `;
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-x-auto h-64 border border-gray-800 custom-scrollbar space-y-1">`;
       
       const entries = Object.entries(s.form_data || {}).slice(0, 30);
       if(entries.length === 0) {
@@ -492,24 +554,20 @@
           htmlContent += `<p class="truncate"><span class="text-amber-400">${k}:</span> ${typeof v === 'object' ? JSON.stringify(v) : v}</p>`;
         });
       }
-      
       htmlContent += `</div>`;
-      
       document.getElementById('modalBody').innerHTML = htmlContent;
       
-      // Reveal Modal Box
       const modal = document.getElementById('viewModal');
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
-      const modal = document.getElementById('viewModal');
-      modal.classList.add('hidden');
+      document.getElementById('viewModal').classList.add('hidden');
       document.body.style.overflow = '';
     }
 
-    // ── ACCREDITED MASTER DATA EXPORT CONTROLS ─────────────────────
+    // ── DATA EXPORT CONTROLS ────────────────────────────────────────
     document.getElementById('exportCSV').addEventListener('click', async () => {
       try {
         const res = await fetch('/api/admin/institutes');
