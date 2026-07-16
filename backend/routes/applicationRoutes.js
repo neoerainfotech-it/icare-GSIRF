@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-// Placeholder route
-router.get('/test', (req, res) => res.json({ msg: "Route working" }));
+// Test endpoint to verify the file works
+router.get('/test', (req, res) => {
+    res.json({ success: true, message: "Application routes working cleanly" });
+});
 
 module.exports = router;

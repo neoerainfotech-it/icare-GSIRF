@@ -11,16 +11,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve Frontend Files Statically
-// Since app.js is inside /backend, we step out one level to access /frontend
+// This handles bringing up all your HTML, CSS, and JS assets automatically
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Placeholder Core API Routes (We will hook up the files next)
+// Core API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 
-// Fallback to serve index.html for any undefined routes
-app.get('*', (req, res) => {
+// SAFE CATCH-ALL MIDDLEWARE
+// Using app.use() completely avoids path-to-regexp string compilation errors
+app.use((req, res, next) => {
+    // If an API route wasn't found, don't serve the HTML page—let it pass to the error handler
+    if (req.url.startsWith('/api/')) {
+        return next();
+    }
+    // For all other page requests, fallback safely to index.html
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
