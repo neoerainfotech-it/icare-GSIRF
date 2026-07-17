@@ -394,28 +394,31 @@
           <button onclick="showFacultyForm()" id="addFacBtn" class="text-sm bg-garvi-orange text-white px-4 py-1.5 rounded-lg hover:bg-garvi-gold transition">+ Add New</button>
         </div>
         <!-- Faculty list table -->
-        <div class="overflow-x-auto mb-3" id="facultyListWrap">
-          <table class="min-w-full border border-gray-200 rounded-lg text-sm" id="facultyListTable">
-            <thead>
-              <tr>
-                <th class="text-left">#</th>
-                <th class="text-left">Name</th>
-                <th class="text-center">Gender</th>
-                <th class="text-left">PAN</th>
-                <th class="text-left">Designation</th>
-                <th class="text-center">Highest Degree</th>
-                <th class="text-center">Teaching Exp (Mo)</th>
-                <th class="text-center">Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="facultyListBody">
-              <tr id="facEmptyRow">
-                <td colspan="9" class="text-center py-4 text-gray-400 text-sm italic">No faculty added yet. Click "+ Add New" to begin.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <!-- Faculty list table layout alignment fix -->
+<div class="overflow-x-auto mb-3" id="facultyListWrap">
+  <table class="min-w-full border border-gray-200 rounded-lg text-sm" id="facultyListTable">
+    <thead>
+      <tr class="bg-gray-50 border-b border-gray-200">
+        <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">#</th>
+        <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">Name</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Gender</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">DOB (Age)</th>
+        <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">PAN</th>
+        <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">Designation</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Highest Degree</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Teaching Exp (Mo)</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Industry Exp (Mo)</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Association</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">DOJ</th>
+        <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Status</th>
+        <th class="px-3 py-2"></th>
+      </tr>
+    </thead>
+    <tbody id="facultyListBody">
+      <!-- Generated dynamically by script loop -->
+    </tbody>
+  </table>
+</div>
         <!-- Faculty add/edit form -->
         <div class="faculty-form-wrap hidden" id="facultyFormWrap">
           <p class="text-sm font-bold text-gray-700 mb-3 border-b border-gray-200 pb-2">Faculty Details</p>
@@ -1278,20 +1281,24 @@ function renderFacultyList() {
   const body = document.getElementById('facultyListBody');
   document.getElementById('facTotalCount').textContent = facultyList.length;
   if (!facultyList.length) {
-    body.innerHTML = `<tr id="facEmptyRow"><td colspan="9" class="text-center py-4 text-gray-400 text-sm italic">No faculty added yet. Click "+ Add New" to begin.</td></tr>`;
-    return;
+  body.innerHTML = `<tr id="facEmptyRow"><td colspan="13" class="text-center py-4 text-gray-400 text-sm italic">No faculty added yet. Click "+ Add New" to begin.</td></tr>`;
+  return;
   }
-  body.innerHTML = facultyList.map((f,i) => `
-    <tr class="border-b border-gray-100 hover:bg-gray-50">
-      <td class="px-3 py-2 text-gray-500">${i+1}</td>
+  body.innerHTML = facultyList.map((f, i) => `
+    <tr class="border-b border-gray-100 hover:bg-gray-50 text-xs">
+      <td class="px-3 py-2 text-gray-500">${i + 1}</td>
       <td class="px-3 py-2 font-medium">${f.name}</td>
-      <td class="px-3 py-2 text-center text-gray-600">${f.gender||'—'}</td>
-      <td class="px-3 py-2 font-mono text-xs">${f.pan_exempt?'Exempted':f.pan||'—'}</td>
-      <td class="px-3 py-2 text-gray-600">${f.designation||'—'}</td>
-      <td class="px-3 py-2 text-center text-gray-600">${f.degree||'—'}</td>
-      <td class="px-3 py-2 text-center text-gray-600">${f.teach_exp||'0'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.gender || '—'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.dob ? f.dob : '—'} (${f.age || '—'})</td>
+      <td class="px-3 py-2 font-mono">${f.pan_exempt ? 'Exempted' : f.pan || '—'}</td>
+      <td class="px-3 py-2 text-gray-600">${f.designation || '—'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.degree || '—'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.teach_exp || '0'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.industry_exp || '0'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.assoc || '—'}</td>
+      <td class="px-3 py-2 text-center text-gray-600">${f.doj || '—'}</td>
       <td class="px-3 py-2 text-center">
-        <span class="px-2 py-0.5 rounded-full text-xs ${f.working==='Yes'?'bg-green-100 text-green-700':'bg-gray-100 text-gray-500'}">${f.working||'—'}</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] ${f.working === 'Yes' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">${f.working || '—'}</span>
       </td>
       <td class="px-3 py-2 flex gap-2">
         <button onclick="showFacultyForm(${i})" class="text-blue-500 hover:text-blue-700 text-xs">Edit</button>
@@ -1831,7 +1838,7 @@ async function saveFaculty() {
     const localRecord = {
       db_id: isEditing ? facultyList[editFacIndex].db_id : result.id,
       name, gender, designation: payload.designation, dob: dobVal, age: payload.age,
-      degree: payload.highest_degree, pan_exempt: !!payload.pan_exempt, pan: payload.pan,
+      degree: payload.highest_degree, pan_exempt: payload.pan_exempt === 1, pan: payload.pan,
       teach_exp: payload.teaching_exp, industry_exp: payload.industry_exp,
       working: payload.working, assoc: payload.association, doj: dojVal
     };

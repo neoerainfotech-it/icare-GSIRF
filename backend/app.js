@@ -62,6 +62,9 @@ app.get('/simulator', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/cms/dashboard/simulator.html')); 
 });
 
+app.get('/review-submission', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/cms/dashboard/review-submission.html'));
+});
 
 // Serve Frontend Files Statically (For assets like CSS, images, client JS files)
 app.use(express.static(path.join(__dirname, '../frontend')));

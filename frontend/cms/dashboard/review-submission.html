@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GARVI — Evaluator Submission Review Desk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { 'garvi-orange':'#D58B00','garvi-gold':'#F4A623' } } }
+    };
+  </script>
+  <style>
+    body { box-sizing:border-box; }
+    .fade-in { opacity:0; transform:translateY(16px); animation:fadeUp .5s ease forwards; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .gradient-bg { background:linear-gradient(135deg,#D58B00 0%,#F4A623 100%); }
+    .step-panel { display:none; }
+    .step-panel.active { display:block; }
+    .step-nav.active .step-dot { background:#D58B00; color:#fff; }
+    .step-nav.active .step-label { color:#D58B00; font-weight:600; }
+    .step-nav.done .step-dot { background:#16a34a; color:#fff; }
+    .step-nav.done .step-label { color:#16a34a; }
+    .step-nav .step-dot { background:#e5e7eb; color:#6b7280; }
+    input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],select,textarea {
+      border:1px solid #d1d5db; border-radius:.5rem; padding:.5rem .75rem; width:100%;
+      font-size:.875rem; outline:none; background:#f9fafb; color:#374151; cursor: not-allowed;
+    }
+    input[type=radio],input[type=checkbox] { accent-color:#D58B00; pointer-events: none; }
+    label.field-label { display:block; font-size:.8125rem; font-weight:600; color:#374151; margin-bottom:.25rem; }
+    .section-card { background:#fff; border-radius:1rem; box-shadow:0 4px 24px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
+    .section-title { font-size:1rem; font-weight:700; color:#D58B00; border-bottom:2px solid #f4a62333; padding-bottom:.5rem; margin-bottom:1rem; }
+    .section-sub { font-size:.875rem; font-weight:700; color:#374151; border-bottom:1px solid #e5e7eb; padding-bottom:.375rem; margin-bottom:.75rem; margin-top:1.25rem; }
+    th { font-size:.75rem; font-weight:700; text-transform:uppercase; color:#6b7280; padding:.5rem .75rem; background:#f9fafb; }
+    td { padding:.4rem .6rem; }
+    .tbl-input { font-size:.8125rem; padding:.35rem .5rem; border:1px solid #d1d5db; border-radius:.375rem; background:#f9fafb; color:#374151; width:100%; outline:none; cursor:not-allowed; }
+    .tbl-words { font-size:.75rem; color:#6b7280; font-style:italic; min-height:1.5rem; display:block; }
+    .progress-fill { height:4px; background:linear-gradient(90deg,#D58B00,#F4A623); border-radius:9999px; transition:width .4s ease; }
+    .imp-note { background:#fff5f5; border:1px solid #fecaca; border-radius:.5rem; padding:.75rem 1rem; margin-bottom:1rem; font-size:.8125rem; color:#b91c1c; }
+    .imp-note strong { display:block; margin-bottom:.25rem; }
+    .prog-block { border:1px solid #e5e7eb; border-radius:.75rem; margin-bottom:1rem; overflow:hidden; }
+    .prog-block-header { background:#f9fafb; padding:.625rem .875rem; font-size:.875rem; font-weight:600; color:#374151; border-bottom:1px solid #e5e7eb; }
+    .prog-block-body { padding:.875rem; }
+    .prog-cb-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+    @media(min-width:640px) { .prog-cb-grid { grid-template-columns:repeat(4,1fr); } }
+    .prog-cb-item { display:flex; align-items:center; gap:.5rem; background:#f9fafb; border:1.5px solid #d1d5db; border-radius:.5rem; padding:.4rem .625rem; font-size:.8125rem; color:#374151; cursor:not-allowed; }
+    .prog-cb-item:has(input:checked) { border-color:#D58B00; background:#fffbf0; }
+    .demo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+    @media(min-width:640px) { .demo-grid { grid-template-columns:repeat(4,1fr); } }
+    .fee-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.625rem; margin-top:.75rem; }
+    @media(min-width:640px) { .fee-grid { grid-template-columns:repeat(4,1fr); } }
+    .q-block { margin-bottom:1.25rem; padding-bottom:1.25rem; border-bottom:1px solid #f3f4f6; }
+    .q-block:last-child { border-bottom:none; }
+    .q-text { font-size:.875rem; font-weight:500; color:#374151; margin-bottom:.5rem; }
+    .q-options { display:flex; flex-direction:column; gap:.375rem; }
+    .q-opt { display:flex; align-items:flex-start; gap:.5rem; font-size:.8375rem; color:#374151; cursor:not-allowed; }
+    .q-opt input { margin-top:.2rem; flex-shrink:0; }
+    .yn-radio { display:flex; gap:1.25rem; }
+    .yn-opt { display:flex; align-items:center; gap:.375rem; font-size:.875rem; color:#374151; cursor:not-allowed; }
+    .plc-wrap { overflow-x:auto; }
+    .plc-tbl { min-width:700px; width:100%; border-collapse:collapse; }
+    .plc-tbl th { font-size:.7rem; padding:.4rem .5rem; background:#f3f4f6; color:#374151; font-weight:700; border:1px solid #e5e7eb; text-align:center; }
+    .plc-tbl td { padding:.3rem .4rem; border:1px solid #e5e7eb; }
+    .plc-tbl .yr-cell { background:#f9fafb; font-size:.75rem; color:#6b7280; font-weight:600; min-width:60px; }
+    .fin-tbl { width:100%; border-collapse:collapse; }
+    .fin-tbl th { background:#f3f4f6; padding:.5rem .75rem; font-size:.75rem; text-align:center; border:1px solid #e5e7eb; }
+    .fin-tbl td { padding:.375rem .625rem; border:1px solid #e5e7eb; font-size:.8125rem; }
+    .fin-tbl .item-label { font-weight:600; color:#374151; min-width:200px; background:#fff; }
+    .fin-tbl .sub-label { color:#6b7280; font-size:.75rem; font-style:italic; background:#fafafa; }
+    .ipr-tbl { width:100%; border-collapse:collapse; }
+    .ipr-tbl th,.ipr-tbl td { border:1px solid #e5e7eb; padding:.5rem .75rem; font-size:.8125rem; }
+    .ipr-tbl th { background:#f3f4f6; font-weight:700; text-align:center; }
+    .research-tbl { width:100%; border-collapse:collapse; }
+    .research-tbl th,.research-tbl td { border:1px solid #e5e7eb; padding:.5rem .625rem; font-size:.8125rem; }
+    .research-tbl th { background:#f3f4f6; font-weight:700; }
+    .research-tbl .row-label { font-weight:600; color:#374151; background:#fff; }
+    .research-tbl .row-words { color:#6b7280; font-size:.75rem; font-style:italic; background:#fafafa; }
+    @media(max-width:768px) { #sidebarCol { display:none; } }
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans">
+
+<!-- ─── TOP NAV ─────────────────────────────────────────────────────── -->
+<nav class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-4">
+        <h1 class="text-xl font-bold text-garvi-orange">GARVI</h1>
+        <span class="hidden sm:block text-sm text-gray-400">|</span>
+        <span class="hidden sm:block text-sm font-semibold text-gray-700">Administrative Submission Evaluation Desk</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs bg-blue-100 text-blue-800 font-bold px-3 py-1.5 rounded-full shadow-sm">🔒 Read-Only Evaluation</span>
+        <button onclick="window.close()" class="text-sm bg-gray-900 text-white px-4 py-1.5 rounded-lg hover:bg-gray-800 transition">Close Review</button>
+      </div>
+    </div>
+  </div>
+  <div class="h-1 bg-gray-100"><div id="progressFill" class="progress-fill" style="width:12.5%"></div></div>
+</nav>
+
+<!-- ─── MAIN LAYOUT ──────────────────────────────────────────────────── -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex gap-6">
+
+  <!-- Sidebar -->
+  <aside id="sidebarCol" class="w-64 flex-shrink-0">
+    <div class="bg-white rounded-2xl shadow-md p-4 sticky top-24">
+      <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Sections</p>
+      <nav id="stepNav" class="space-y-1"></nav>
+      <div class="mt-6 pt-4 border-t border-gray-100">
+        <p class="text-xs text-gray-400 mb-1">Completion Status</p>
+        <div class="flex items-center gap-2">
+          <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div id="sideProgress" class="h-full bg-garvi-orange rounded-full transition-all" style="width:0%"></div>
+          </div>
+          <span id="pctText" class="text-xs font-bold text-garvi-orange">0%</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content Form Mirror -->
+  <main class="flex-1 min-w-0">
+
+    <!-- Banner -->
+    <div class="gradient-bg rounded-2xl p-5 text-white mb-6 fade-in">
+      <div class="flex items-start justify-between">
+        <div>
+          <h2 id="bannerInstName" class="text-xl font-extrabold">Evaluating Submission Log</h2>
+          <p class="text-white/80 text-sm mt-1">Gujarat State Institutional Ranking Framework · Verification Desk Year 2026</p>
+        </div>
+        <div class="text-right text-sm text-white/80">
+          <div>Step <span id="currentStepLabel">1</span> of 8</div>
+          <div class="font-bold text-white mt-1" id="currentStepName">Institute Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1 — Institute Profile -->
+    <div class="step-panel active" id="step-1">
+      <div class="section-card fade-in">
+        <p class="section-title">📋 Institute Profile &amp; Registration</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><label class="field-label">GSIRF Institute ID</label><input type="text" id="s1_gsirfId" readonly/></div>
+          <div><label class="field-label">Ranking Year</label><input type="text" value="2026" readonly class="bg-gray-50 text-gray-500"/></div>
+          <div class="sm:col-span-2"><label class="field-label">Name of Institution</label><input type="text" id="s1_instName" readonly/></div>
+          <div><label class="field-label">Institution Type</label><select id="s1_instType" disabled><option value="">Select type…</option><option>Government</option><option>Government-Aided</option><option>Private Unaided</option><option>Deemed University</option><option>Autonomous College</option></select></div>
+          <div><label class="field-label">Affiliated University</label><input type="text" id="s1_affiliatedUniv" readonly/></div>
+          <div><label class="field-label">City / Place</label><input type="text" id="s1_city" readonly/></div>
+          <div><label class="field-label">District</label><input type="text" id="s1_district" readonly/></div>
+          <div class="sm:col-span-2 border-t border-gray-100 pt-4 mt-1"><p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Nodal Officer Details</p></div>
+          <div><label class="field-label">Name of Nodal Officer</label><input type="text" id="s1_nodalName" readonly/></div>
+          <div><label class="field-label">Designation</label><input type="text" id="s1_nodalDesig" readonly/></div>
+          <div><label class="field-label">Official Email</label><input type="email" id="s1_email" readonly/></div>
+          <div><label class="field-label">Mobile Number</label><input type="text" id="s1_mobile" readonly/></div>
+          <div><label class="field-label">Submission Date</label><input type="date" id="s1_submitDate" readonly/></div>
+          <div><label class="field-label">Is Revised Submission?</label><select id="s1_isRevised" disabled><option value="N">No (Fresh Submission)</option><option value="Y">Yes (Revised)</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 — Sanctioned Intake -->
+    <div class="step-panel" id="step-2">
+      <div class="section-card fade-in">
+        <p class="section-title">📝 Sanctioned (Approved) Intake</p>
+        <p class="text-sm font-semibold text-gray-700 mb-3">Program(s) offered by institution</p>
+        <div class="prog-cb-grid mb-5" id="progCheckboxGrid"></div>
+        <div id="intakeContainer"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Student Strength -->
+    <div class="step-panel" id="step-3">
+      <div class="section-card fade-in">
+        <p class="section-title">🎓 Total Actual Student Strength</p>
+        <div id="strengthContainer"></div>
+      </div>
+      <div class="section-card fade-in">
+        <p class="section-title">🔬 Ph.D. Student Details</p>
+        <div class="prog-block">
+          <div class="prog-block-header">Ph.D (Student pursuing doctoral program till 2025-26)</div>
+          <div class="prog-block-body">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div><label class="field-label">Total Full-time Students</label><input type="number" id="phd_ft_current" readonly/></div>
+              <div><label class="field-label">Total Part-time Students</label><input type="number" id="phd_pt_current" readonly/></div>
+              <div><label class="field-label">Total Students</label><input type="number" id="phd_total_current" readonly/></div>
+            </div>
+          </div>
+        </div>
+        <div class="prog-block mt-3">
+          <div class="prog-block-header">Graduated Ph.D. Student Details</div>
+          <div class="prog-block-body">
+            <table class="ipr-tbl">
+              <thead><tr><th class="text-left">Ph.D. Type</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead>
+              <tbody>
+                <tr><td class="font-semibold">Full-Time Ph.D. Students Graduated</td><td><input type="number" class="tbl-input" id="phd_grad_ft_2526" readonly/></td><td><input type="number" class="tbl-input" id="phd_grad_ft_2425" readonly/></td><td><input type="number" class="tbl-input" id="phd_grad_ft_2324" readonly/></td></tr>
+                <tr><td class="font-semibold">Part-Time Ph.D. Students Graduated</td><td><input type="number" class="tbl-input" id="phd_grad_pt_2526" readonly/></td><td><input type="number" class="tbl-input" id="phd_grad_pt_2425" readonly/></td><td><input type="number" class="tbl-input" id="phd_grad_pt_2324" readonly/></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="prog-block mt-3">
+          <div class="prog-block-header">PG (Student pursuing MD/MS/DNB program till 2025-26)</div>
+          <div class="prog-block-body">
+            <div><label class="field-label">Number of students pursuing PG program</label><input type="number" id="phd_med_pursuing" readonly/></div>
+            <p class="text-sm font-semibold text-gray-700 mt-4 mb-2">No. of students Graduating in PG program</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div><label class="field-label">2025-26</label><input type="number" id="phd_med_grad_2526" readonly/></div>
+              <div><label class="field-label">2024-25</label><input type="number" id="phd_med_grad_2425" readonly/></div>
+              <div><label class="field-label">2023-24</label><input type="number" id="phd_med_grad_2324" readonly/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 — Placement -->
+    <div class="step-panel" id="step-4">
+      <div class="section-card fade-in">
+        <p class="section-title">💼 Placement &amp; Higher Studies</p>
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
+          <p class="text-sm font-semibold text-gray-700 mb-2">Opted for transition to UG 4-year program as per NEP?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_yes" value="Yes" disabled> Yes</label>
+            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_no" value="No" disabled> No</label>
+          </div>
+        </div>
+        <div id="placementContainer"></div>
+      </div>
+    </div>
+
+    <!-- STEP 5 — Faculty Details -->
+    <div class="step-panel" id="step-5">
+      <div class="section-card fade-in">
+        <p class="section-title">👩‍🏫 Faculty Details</p>
+        <div class="mb-4"><p class="fac-counter">Total faculty roster rows: <span id="facTotalCount">0</span></p></div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full border border-gray-200 rounded-lg text-sm" id="facultyListTable">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">#</th>
+                <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">Name</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Gender</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">DOB (Age)</th>
+                <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">PAN</th>
+                <th class="px-3 py-2 text-left text-xs font-bold uppercase text-gray-500">Designation</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Highest Degree</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Teaching Exp (Mo)</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Industry Exp (Mo)</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Assoc. Type</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">DOJ</th>
+                <th class="px-3 py-2 text-center text-xs font-bold uppercase text-gray-500">Status</th>
+              </tr>
+            </thead>
+            <tbody id="facultyListBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6 — Institution Details -->
+    <div class="step-panel" id="step-6">
+      <div class="section-card fade-in">
+        <p class="section-title">🏦 Financial Resources Expenditure</p>
+        <p class="section-sub">Annual Capital Expenditure</p>
+        <div class="overflow-x-auto"><table class="fin-tbl"><thead><tr><th class="text-left">Head of Expenditure</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="capexBody"></tbody></table></div>
+        <p class="section-sub">Annual Operational Expenditure</p>
+        <div class="overflow-x-auto"><table class="fin-tbl"><thead><tr><th class="text-left">Head of Expenditure</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="opexBody"></tbody></table></div>
+      </div>
+      <div class="section-card fade-in">
+        <p class="section-title">♿ PCS Facilities</p>
+        <div class="q-block">
+          <p class="q-text">1. Do institution buildings have Lifts/Ramps?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="80+" disabled> Yes, more than 80%</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="60+" disabled> Yes, more than 60%</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="40+" disabled> Yes, more than 40%</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="&lt;40" disabled> Yes, less than 40%</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="NA" disabled> Not available</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">2. Provision for walking aids, wheelchairs?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="pcs_walking" value="Yes" disabled> Yes</label>
+            <label class="yn-opt"><input type="radio" name="pcs_walking" value="No" disabled> No</label>
+          </div>
+        </div>
+      </div>
+      <div class="section-card fade-in">
+        <p class="section-title">🏅 Accreditation</p>
+        <div class="q-block">
+          <label class="field-label">Valid NAAC Accreditation?</label><select id="naac_accred" disabled><option value="NO">NO</option><option value="YES">YES</option></select>
+          <div id="naacDetailsBlock" class="hidden mt-4 grid grid-cols-3 gap-4">
+            <div><label class="field-label">NAAC Grade</label><select id="naac_grade" disabled><option>A++</option><option>A+</option><option>A</option></select></div>
+            <div><label class="field-label">CGPA Score</label><input type="text" id="naac_cgpa" readonly/></div>
+            <div><label class="field-label">Valid Until</label><input type="date" id="naac_valid" readonly/></div>
+          </div>
+        </div>
+        <div class="q-block">
+          <div class="grid grid-cols-3 gap-4">
+            <div><label class="field-label">Valid NBA accreditation?</label><select id="nba_accred" disabled><option value="NO">NO</option><option value="YES">YES</option></select></div>
+            <div><label class="field-label">Total programs</label><input type="number" id="nba_total_progs" readonly/></div>
+            <div><label class="field-label">No. of accredited programs</label><input type="number" id="nba_accred_progs" readonly/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 — Research Funding -->
+    <div class="step-panel" id="step-7">
+      <div class="section-card fade-in">
+        <p class="section-title">🔬 Intellectual Property Rights (IPR)</p>
+        <table class="ipr-tbl">
+          <thead><tr><th class="text-left">Calendar Year</th><th>2025</th><th>2024</th><th>2023</th></tr></thead>
+          <tbody>
+            <tr><td class="font-semibold">No. of Patents Published</td><td><input type="number" class="tbl-input" id="ipr_pub_2025" readonly/></td><td><input type="number" class="tbl-input" id="ipr_pub_2024" readonly/></td><td><input type="number" class="tbl-input" id="ipr_pub_2023" readonly/></td></tr>
+            <tr><td class="font-semibold">No. of Patents Granted</td><td><input type="number" class="tbl-input" id="ipr_grant_2025" readonly/></td><td><input type="number" class="tbl-input" id="ipr_grant_2024" readonly/></td><td><input type="number" class="tbl-input" id="ipr_grant_2023" readonly/></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-card fade-in">
+        <p class="section-title">💡 Sponsored Research Details</p>
+        <table class="research-tbl"><thead><tr><th class="text-left">Financial Year</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="sponsoredBody"></tbody></table>
+      </div>
+      <div class="section-card fade-in">
+        <p class="section-title">🤝 Consultancy Project Details</p>
+        <table class="research-tbl"><thead><tr><th class="text-left">Financial Year</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="consultancyBody"></tbody></table>
+      </div>
+      <div class="section-card fade-in">
+        <p class="section-title">🎓 Executive Development Programs (EDP/MDP)</p>
+        <table class="research-tbl"><thead><tr><th class="text-left">Financial Year</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="edpBody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- STEP 8 — Declaration -->
+    <div class="step-panel" id="step-8">
+      <!-- Added the missing About Institute card block to match data-collection layout -->
+      <div class="section-card fade-in">
+        <p class="section-title">🏛️ About Institute</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">1. Constituent list of colleges?</label>
+            <select id="about_constituent" disabled>
+              <option value="NO">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">2. List of all Campuses?</label>
+            <select id="about_campuses" disabled>
+              <option value="NO">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card fade-in">
+        <p class="section-title">📢 Declaration and Sign-off</p>
+        <div class="mt-4 flex items-center gap-3 mb-4">
+          <input type="checkbox" id="declarationCheck" disabled/>
+          <label class="text-sm text-gray-700">Declaration agreed by institution.</label>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="field-label">Name of Authorised Signatory</label><input type="text" id="s8_signatoryName" readonly/></div>
+          <div><label class="field-label">Date of Submission</label><input type="date" id="s8_signatoryDate" readonly/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav Controls -->
+    <div class="flex items-center justify-between mt-4">
+      <button id="prevBtn" onclick="navigateStep(-1)" class="hidden border border-gray-300 text-gray-600 px-5 py-2.5 rounded-xl font-semibold hover:bg-gray-100 transition">← Previous</button>
+      <button id="nextBtn" onclick="navigateStep(1)" class="gradient-bg text-white px-6 py-2.5 rounded-xl font-semibold hover:opacity-90 transition ml-auto">Next →</button>
+    </div>
+  </main>
+</div>
+
+<script>
+const STEPS = [
+  { id:1, name:'Institute Profile',            icon:'📋' },
+  { id:2, name:'Sanctioned Intake',           icon:'📝' },
+  { id:3, name:'Student Strength & Ph.D.',    icon:'🎓' },
+  { id:4, name:'Placement & Higher Studies',  icon:'💼' },
+  { id:5, name:'Faculty Details',              icon:'👩‍🏫' },
+  { id:6, name:'Institution Details',         icon:'🏛️' },
+  { id:7, name:'Research Funding',             icon:'🔬' },
+  { id:8, name:'About Institute & Declaration',icon:'📢' },
+];
+
+const PROGRAMS = [
+  { key:'ug3', label:'UG [3 Years Program(s)]',         dur:3, lateral:true  },
+  { key:'ug4', label:'UG [4 Years Program(s)]',         dur:4, lateral:true  },
+  { key:'ug5', label:'UG [5 Years Program(s)]',         dur:5, lateral:true  },
+  { key:'ug6', label:'UG [6 Years Program(s)]',         dur:6, lateral:false },
+  { key:'pg1', label:'PG [1 Year Program(s)]',          dur:1, lateral:false },
+  { key:'pg2', label:'PG [2 Years Program(s)]',         dur:2, lateral:false },
+  { key:'pg3', label:'PG [3 Years Program(s)]',         dur:3, lateral:true  },
+  { key:'pgi', label:'PG-Integrated [5 Years Program(s)]', dur:5, lateral:true },
+  { key:'pg6', label:'PG [6 Years Program(s)]',         dur:6, lateral:false },
+];
+
+const FIN_YEARS = ['2025-26','2024-25','2023-24'];
+let currentStep = 1;
+
+function acadYr(y) { return `${y}-${String(y+1).slice(-2)}`; }
+function getIntakeYears(dur) {
+  const yrs = [];
+  for (let i = 0; i < Math.min(dur, 6); i++) yrs.push(acadYr(2025 - i));
+  return yrs;
+}
+function getPlcBatches(dur) {
+  const b = [];
+  for (let i = 0; i < 3; i++) {
+    const gradY = 2025 - i;
+    const intakeY = gradY - (dur - 1);
+    b.push({ intake: acadYr(intakeY), lateral: dur > 2 ? acadYr(intakeY+1) : null, grad: acadYr(gradY) });
+  }
+  return b;
+}
+
+function buildSidebar() {
+  document.getElementById('stepNav').innerHTML = STEPS.map(s => `
+    <button class="step-nav w-full flex items-center gap-3 px-3 py-2 rounded-lg transition" onclick="goToStep(${s.id})" id="step-nav-${s.id}">
+      <span class="step-dot w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">${s.id}</span>
+      <span class="step-label text-sm text-gray-600 text-left">${s.icon} ${s.name}</span>
+    </button>`).join('');
+}
+
+function buildIntakeSection() {
+  document.getElementById('progCheckboxGrid').innerHTML = PROGRAMS.map(p => `
+    <label class="prog-cb-item">
+      <input type="checkbox" id="cb_${p.key}" disabled> ${p.label}
+    </label>`).join('');
+
+  document.getElementById('intakeContainer').innerHTML = PROGRAMS.map(p => {
+    const yrs = getIntakeYears(p.dur);
+    return `
+    <div class="prog-block" id="intake_block_${p.key}" style="display:none" data-prog-key="${p.key}">
+      <div class="prog-block-header">${p.label}: Sanctioned students intake</div>
+      <div class="prog-block-body">
+        <div class="grid gap-3" style="grid-template-columns:repeat(${Math.min(yrs.length,4)},1fr)">
+          ${yrs.map(yr => `<div><label class="field-label text-xs">${yr}</label><input type="text" class="tbl-input" id="intake_${p.key}_${yr.replace('-','')}" readonly/></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildStrengthSection() {
+  document.getElementById('strengthContainer').innerHTML = PROGRAMS.map(p => {
+    const k = p.key.replace(/\W/g,'');
+    return `
+    <div class="prog-block mb-3" id="strength_block_${p.key}" style="display:none" data-prog-key="${p.key}">
+      <div class="prog-block-header">${p.label} Strength</div>
+      <div class="prog-block-body">
+        <div class="demo-grid">
+          <div><label class="field-label text-xs">Male</label><input type="text" class="tbl-input" id="str_${k}_m" readonly/></div>
+          <div><label class="field-label text-xs">Female</label><input type="text" class="tbl-input" id="str_${k}_f" readonly/></div>
+          <div><label class="field-label text-xs">Transgender</label><input type="text" class="tbl-input" id="str_${k}_t" readonly/></div>
+          <div><label class="field-label text-xs">Total</label><input type="text" class="tbl-input" id="str_${k}_tot" readonly/></div>
+        </div>
+        <div class="demo-grid mt-2">
+          <div><label class="field-label text-xs">Within State</label><input type="text" class="tbl-input" id="str_${k}_ws" readonly/></div>
+          <div><label class="field-label text-xs">Outside State</label><input type="text" class="tbl-input" id="str_${k}_os" readonly/></div>
+          <div><label class="field-label text-xs">Outside Country</label><input type="text" class="tbl-input" id="str_${k}_oc" readonly/></div>
+        </div>
+        <div class="demo-grid mt-2">
+          <div><label class="field-label text-xs">Economically Backward</label><input type="text" class="tbl-input" id="str_${k}_eb" readonly/></div>
+          <div><label class="field-label text-xs">Socially Challenged</label><input type="text" class="tbl-input" id="str_${k}_sc" readonly/></div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p class="text-xs text-gray-500 mb-2 italic">No. of students receiving full tuition fee reimbursement</p>
+          <div class="fee-grid">
+            <div><label class="field-label text-xs">From State &amp; Central Government</label><input type="text" class="tbl-input" id="str_${k}_fee_gov" readonly/></div>
+            <div><label class="field-label text-xs">From Institution Funds</label><input type="text" class="tbl-input" id="str_${k}_fee_inst" readonly/></div>
+            <div><label class="field-label text-xs">From Private Bodies</label><input type="text" class="tbl-input" id="str_${k}_fee_pvt" readonly/></div>
+            <div><label class="field-label text-xs">Not Receiving Full Reimbursement</label><input type="text" class="tbl-input" id="str_${k}_fee_none" readonly/></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildPlacementSection() {
+  document.getElementById('placementContainer').innerHTML = PROGRAMS.map(p => {
+    const batches = getPlcBatches(p.dur);
+    const haslat = p.lateral;
+    return `
+    <div class="prog-block mb-4" id="plc_block_${p.key}" style="display:none" data-prog-key="${p.key}">
+      <div class="prog-block-header">${p.label} Placement</div>
+      <div class="prog-block-body plc-wrap">
+        <table class="plc-tbl">
+          <thead>
+            <tr><th>AY</th><th>Intake</th><th>Admitted</th>${haslat?'<th>AY</th><th>Lateral</th>':''}<th>Grad AY</th><th>Graduates</th><th>Placed</th><th>Median Salary</th><th>Selected Higher Studies</th></tr>
+          </thead>
+          <tbody>
+            ${batches.map((b,i) => `
+            <tr>
+              <td class="yr-cell">${b.intake}</td>
+              <td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_intake" readonly/></td>
+              <td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_admitted" readonly/></td>
+              ${haslat ? `<td class="yr-cell">${b.lateral||''}</td><td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_lateral" readonly/></td>` : ''}
+              <td class="yr-cell">${b.grad}</td>
+              <td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_grad" readonly/></td>
+              <td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_placed" readonly/></td>
+              <td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_salary" readonly/><div class="text-[10px] text-gray-500 mt-1 tbl-words" id="plc_${p.key}_${i}_salary_w"></div></td>
+              <td><input type="text" class="tbl-input" id="plc_${p.key}_${i}_higher" readonly/></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildFinancialRows(items, bodyId, prefix) {
+  document.getElementById(bodyId).innerHTML = items.map(it => `
+    <tr><td class="item-label">${it.label}</td>${FIN_YEARS.map(yr => `<td><input type="text" class="tbl-input" id="${prefix}_${it.key}_${yr.replace('-','')}" readonly/><div class="text-[10px] text-gray-500 mt-1 tbl-words" id="${prefix}_${it.key}_${yr.replace('-','')}_w"></div></td>`).join('')}</tr>
+  `).join('');
+}
+
+function buildResearchTable(bodyId, rowDefs) {
+  document.getElementById(bodyId).innerHTML = rowDefs.map(r => `
+    <tr><td class="row-label">${r.label}</td>${FIN_YEARS.map(yr => `<td><input type="text" class="tbl-input" id="${bodyId}_${r.key}_${yr.replace('-','')}" readonly/>${r.words?`<div class="text-[10px] text-gray-500 mt-1 tbl-words" id="${bodyId}_${r.key}_${yr.replace('-','')}_w"></div>`:''}</td>`).join('')}</tr>
+  `).join('');
+}
+
+const CAPEX_ITEMS = [
+  { key:'lib',    label:'Library' },
+  { key:'equip',  label:'New Equipment for Laboratories' },
+  { key:'ws',     label:'Engineering Workshops' },
+  { key:'studio', label:'Studios' },
+  { key:'other',  label:'Other expenditure on creation of Capital Assets' },
+];
+const OPEX_ITEMS = [
+  { key:'sal',   label:'Salaries (Teaching and Non Teaching staff)' },
+  { key:'maint', label:'Maintenance of Academic Infrastructure or consumables...' },
+  { key:'sem',   label:'Seminars / Conferences / Workshops etc.' },
+];
+
+function goToStep(n) {
+  if (n < 1 || n > 8) return;
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`step-${n}`).classList.add('active');
+  document.querySelectorAll('.step-nav').forEach(b => {
+    b.classList.remove('active');
+    const sid = parseInt(b.id.replace('step-nav-',''));
+    if (sid < n) b.classList.add('done'); else b.classList.remove('done');
+  });
+  document.getElementById(`step-nav-${n}`).classList.add('active');
+  currentStep = n;
+  document.getElementById('currentStepLabel').textContent = n;
+  document.getElementById('currentStepName').textContent = STEPS[n-1].name;
+  document.getElementById('progressFill').style.width = (n/8*100)+'%';
+  document.getElementById('prevBtn').classList.toggle('hidden', n===1);
+  document.getElementById('nextBtn').classList.toggle('hidden', n===8);
+}
+function navigateStep(dir) { goToStep(currentStep+dir); }
+
+function toggleProgram(key, checked) {
+  document.querySelectorAll(`[data-prog-key="${key}"]`).forEach(el => {
+    el.style.display = checked ? 'block' : 'none';
+  });
+}
+
+// ─── RUN PIPELINE FLOW HYDRATOR ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  buildSidebar();
+  buildIntakeSection();
+  buildStrengthSection();
+  buildPlacementSection();
+  buildFinancialRows(CAPEX_ITEMS, 'capexBody', 'capex');
+  buildFinancialRows(OPEX_ITEMS, 'opexBody', 'opex');
+  buildResearchTable('sponsoredBody', [
+    { key:'projects', label:'Total Sponsored Projects', words:false },
+    { key:'agencies', label:'Total Funding Agencies', words:false },
+    { key:'amount',   label:'Total Amount Received', words:true },
+  ]);
+  buildResearchTable('consultancyBody', [
+    { key:'projects', label:'Total Consultancy Projects', words:false },
+    { key:'clients',  label:'Total Client Organizations', words:false },
+    { key:'amount',   label:'Total Amount Received', words:true },
+  ]);
+  buildResearchTable('edpBody', [
+    { key:'programs',      label:'Total Programs', words:false },
+    { key:'participants',  label:'Total Participants', words:false },
+    { key:'earnings',      label:'Total Annual Earnings', words:true },
+  ]);
+
+  goToStep(1);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const subId = urlParams.get('id');
+  if(!subId) return;
+
+  try {
+    const res = await fetch('/api/admin/submissions');
+    const result = await res.json();
+    if(!result.success) return;
+
+    const s = result.submissions.find(x => x.id === subId);
+    if(!s) return;
+
+    document.getElementById('bannerInstName').textContent = s.institute_name;
+    
+    // Safely parse form data text column string to standard object[cite: 1]
+    const fd = typeof s.form_data === 'string' ? JSON.parse(s.form_data) : (s.form_data || {});
+
+    // First handle and toggle the selected programs checkboxes to generate required fields
+    if(fd._selectedPrograms) {
+      fd._selectedPrograms.forEach(p => {
+        const cb = document.getElementById(`cb_${p.key}`);
+        if(cb && p.checked) {
+          cb.checked = true;
+          toggleProgram(p.key, true);
+        }
+      });
+    }
+
+    // Now map straight to layout fields element nodes
+    Object.entries(fd).forEach(([id, val]) => {
+      if(id.startsWith('_') || val === undefined) return;
+      
+      const el = document.getElementById(id);
+      if(!el) return;
+
+      if(el.type === 'checkbox') {
+        el.checked = val;
+      } else if(el.type === 'radio') {
+        // Handled via group loop next
+      } else {
+        el.value = val;
+      }
+    });
+
+    // Check radio groupings values setup
+    Object.entries(fd).forEach(([id, val]) => {
+      if(!id.startsWith('radio_') || !val) return;
+      const name = id.replace('radio_','');
+      const r = document.querySelector(`input[type=radio][name="${name}"][value="${val}"]`);
+      if(r) r.checked = true;
+    });
+
+    // ✅ NEW INTERACTIVE TEXTCONTENT MAPPING ENGINE FOR ALL AMOUNT IN WORDS:
+    Object.entries(fd).forEach(([id, val]) => {
+      if (id.endsWith('_w') && val) {
+        const wEl = document.getElementById(id);
+        if (wEl) {
+          wEl.textContent = val;
+        }
+      }
+    });
+
+    // Toggle conditional block states elements mapping validation toggles
+    if (fd['naac_accred'] === 'YES') {
+      document.getElementById('naacDetailsBlock').classList.remove('hidden');
+    }
+
+    // Pull and map Roster Faculty Lists elements from backend relational maps[cite: 2]
+    const fRes = await fetch(`/api/applications/faculty/${s.institute_id}`);
+    const fResult = await fRes.json();
+    if(fResult.success && Array.isArray(fResult.faculty)) {
+      document.getElementById('facTotalCount').textContent = fResult.faculty.length;
+      document.getElementById('facultyListBody').innerHTML = fResult.faculty.map((f, i) => `
+        <tr class="border-b border-gray-100 hover:bg-gray-50 text-xs">
+          <td class="px-3 py-2 text-gray-500">${i+1}</td>
+          <td class="px-3 py-2 font-medium">${f.name}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.gender||'—'}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.dob ? f.dob : '—'} (${f.age || '—'})</td>
+          <td class="px-3 py-2 font-mono">${f.pan_exempt?'Exempted':f.pan||'—'}</td>
+          <td class="px-3 py-2 text-gray-600">${f.designation||'—'}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.highest_degree||'—'}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.teaching_exp||'0'}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.industry_exp||'0'}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.association||'—'}</td>
+          <td class="px-3 py-2 text-center text-gray-600">${f.date_of_joining ? f.date_of_joining.split('T')[0] : '—'}</td>
+          <td class="px-3 py-2 text-center">
+            <span class="px-2 py-0.5 rounded-full ${f.working==='Yes'?'bg-green-100 text-green-700':'bg-gray-100 text-gray-500'}">${f.working||'—'}</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Auto calculate progress percentage trackers metrics
+    const filled = Object.values(fd).filter(v => v && v !== '0' && v !== 'false').length;
+    const total = Object.keys(fd).length || 1;
+    const pct = Math.min(100, Math.round(filled / total * 100)) + '%';
+    document.getElementById('sideProgress').style.width = pct;
+    document.getElementById('pctText').textContent = pct;
+
+  } catch (err) {
+    console.error('Handshake verification error mapping payload fields matrix:', err);
+  }
+});
+</script>
+</body>
+</html>
