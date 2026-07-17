@@ -90,8 +90,6 @@
     @media(max-width:768px) { #sidebarCol { display:none; } }
     .hidden { display:none !important; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/garvi-supabase.js"></script>
 </head>
 <body class="min-h-screen bg-gray-50 font-sans">
 
@@ -156,9 +154,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 1 — Institute Profile
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 1 — Institute Profile -->
     <div class="step-panel active" id="step-1">
       <div class="section-card fade-in">
         <p class="section-title">📋 Institute Profile &amp; Registration</p>
@@ -232,9 +228,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 2 — Sanctioned (Approved) Intake
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 2 — Sanctioned Intake -->
     <div class="step-panel" id="step-2">
       <div class="section-card fade-in">
         <p class="section-title">📝 Sanctioned (Approved) Intake</p>
@@ -251,9 +245,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 3 — Student Strength & Ph.D. Details
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 3 — Student Strength & Ph.D. Details -->
     <div class="step-panel" id="step-3">
       <div class="section-card fade-in">
         <p class="section-title">🎓 Total Actual Student Strength (Program(s) Offered by Your Institution)</p>
@@ -359,9 +351,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 4 — Placement & Higher Studies
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 4 — Placement & Higher Studies -->
     <div class="step-panel" id="step-4">
       <div class="section-card fade-in">
         <p class="section-title">💼 Placement &amp; Higher Studies</p>
@@ -385,9 +375,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 5 — Faculty Details
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 5 — Faculty Details -->
     <div class="step-panel" id="step-5">
       <div class="section-card fade-in">
         <p class="section-title">👩‍🏫 Faculty Details (India Rankings 2026)</p>
@@ -397,7 +385,7 @@
           <ul>
             <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
             <li>To add faculty, click on 'Add New' button, fill in the details and click on 'Save'.</li>
-            <li>Please note that only enter data of the faculty who has taught in the previous academic year i.e. Not found.</li>
+            <li>Please note that only enter data of the faculty who has taught in the previous academic year.</li>
           </ul>
         </div>
         <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -540,11 +528,8 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 6 — Institution Details
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 6 — Institution Details -->
     <div class="step-panel" id="step-6">
-
       <!-- 6A: Financial Resources -->
       <div class="section-card fade-in">
         <p class="section-title">🏦 Financial Resources: Utilized Amount for the Capital &amp; Operational Expenditure (Previous 3 Years)</p>
@@ -792,11 +777,8 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 7 — Research Funding
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 7 — Research Funding -->
     <div class="step-panel" id="step-7">
-
       <!-- 7A: IPR -->
       <div class="section-card fade-in">
         <p class="section-title">🔬 IPR</p>
@@ -841,7 +823,7 @@
           <strong>Important Notes:</strong>
           <ul>
             <li>Please make sure that the amount mentioned in various years is actually the amount received during that year and not the sanctioned budget of the project.</li>
-            <li>Fellowship / Scholarship amount received should not be included in research funding.</li>
+            <li>Fellowship / Scholarship amount received should not include research funding.</li>
             <li>Under process / consideration projects should not be included in the data provided.</li>
             <li>Self-funded (Institute / Society) funded projects should not be included.</li>
             <li>Enter value(s) in all the field(s): if not applicable enter zero [0].</li>
@@ -915,11 +897,8 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════
-         STEP 8 — About Institute & Declaration
-    ══════════════════════════════════════════════════════ -->
+    <!-- STEP 8 — About Institute & Declaration -->
     <div class="step-panel" id="step-8">
-
       <div class="section-card fade-in">
         <p class="section-title">🏛️ About Institute</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -986,7 +965,7 @@
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-let STORAGE_KEY = 'garvi_gsirf2026_v2'; // becomes user-specific after session loads
+let STORAGE_KEY = 'garvi_gsirf2026_v2'; 
 const STEPS = [
   { id:1, name:'Institute Profile',           icon:'📋' },
   { id:2, name:'Sanctioned Intake',           icon:'📝' },
@@ -1034,7 +1013,6 @@ function getPlcBatches(dur) {
   return b;
 }
 
-// Number to Words (Indian system)
 function n2w(n) {
   if (!n || isNaN(n) || Number(n) === 0) return 'Zero Rupees Only';
   const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
@@ -1056,6 +1034,11 @@ function n2w(n) {
   return conv(Number(n)) + ' Rupees Only';
 }
 
+function getSessionLocal() {
+  const raw = localStorage.getItem('garvi_session');
+  return raw ? JSON.parse(raw) : null;
+}
+
 // ─── SIDEBAR ─────────────────────────────────────────────────────────────────
 function buildSidebar() {
   document.getElementById('stepNav').innerHTML = STEPS.map(s => `
@@ -1068,14 +1051,12 @@ function buildSidebar() {
 
 // ─── PROGRAM CHECKBOXES + INTAKE TABLES ───────────────────────────────────────
 function buildIntakeSection() {
-  // Checkboxes
   document.getElementById('progCheckboxGrid').innerHTML = PROGRAMS.map(p => `
     <label class="prog-cb-item">
       <input type="checkbox" id="cb_${p.key}" value="${p.key}" onchange="toggleProgram('${p.key}',this.checked)">
       ${p.label}
     </label>`).join('');
 
-  // Intake tables
   document.getElementById('intakeContainer').innerHTML = PROGRAMS.map(p => {
     const yrs = getIntakeYears(p.dur);
     return `
@@ -1095,7 +1076,6 @@ function buildIntakeSection() {
 }
 
 function toggleProgram(key, checked) {
-  // Show/hide all blocks across steps that share data-prog-key
   document.querySelectorAll(`[data-prog-key="${key}"]`).forEach(el => {
     el.style.display = checked ? 'block' : 'none';
   });
@@ -1156,7 +1136,6 @@ function buildStrengthSection() {
     </div>`;
   }).join('');
 
-  // Auto-calc totals
   document.querySelectorAll('.str-gender').forEach(inp => {
     inp.addEventListener('input', () => {
       const g = inp.dataset.grp;
@@ -1258,7 +1237,7 @@ function buildResearchTable(bodyId, rowDefs) {
   ]).filter(Boolean).join('');
 }
 
-// ─── FACULTY ─────────────────────────────────────────────────────────────────
+// ─── FACULTY UI HANDLERS ─────────────────────────────────────────────────────
 function showFacultyForm(idx = -1) {
   editFacIndex = idx;
   const wrap = document.getElementById('facultyFormWrap');
@@ -1294,120 +1273,9 @@ function cancelFaculty() {
   editFacIndex = -1;
 }
 
-async function saveFaculty() {
-  const name = document.getElementById('fac_name').value.trim();
-  if (!name) { alert('Please enter the faculty name.'); return; }
-
-  const session = await getSession();
-  if (!session) { alert('Session expired. Please log in again.'); window.location.href = 'login.html'; return; }
-
-  const gender  = document.querySelector('input[name="fac_gender"]:checked')?.value || '';
-  const dobVal  = document.getElementById('fac_dob').value;
-  const dojVal  = document.getElementById('fac_doj').value;
-
-  // DB payload (column names match gsirf_faculty table)
-  const dbRow = {
-    institute_id:    session.user.id,
-    ranking_year:    2026,
-    name,
-    gender,
-    designation:     document.getElementById('fac_designation').value || null,
-    dob:             dobVal  || null,
-    age:             parseInt(document.getElementById('fac_age').value)          || null,
-    highest_degree:  document.getElementById('fac_degree').value                || null,
-    pan_exempt:      document.getElementById('fac_pan_exempt').checked,
-    pan:             document.getElementById('fac_pan').value                    || null,
-    teaching_exp:    parseInt(document.getElementById('fac_teach_exp').value)   || null,
-    industry_exp:    parseInt(document.getElementById('fac_industry_exp').value) || null,
-    working:         document.getElementById('fac_working').value               || null,
-    association:     document.getElementById('fac_assoc').value                 || null,
-    date_of_joining: dojVal  || null,
-  };
-
-  // Local UI object (friendly keys used by renderFacultyList / showFacultyForm)
-  const local = {
-    name, gender,
-    designation: dbRow.designation,
-    dob: dobVal,        age:          dbRow.age,
-    degree: dbRow.highest_degree,
-    pan_exempt: dbRow.pan_exempt, pan: dbRow.pan,
-    teach_exp: dbRow.teaching_exp, industry_exp: dbRow.industry_exp,
-    working: dbRow.working, assoc: dbRow.association, doj: dojVal,
-  };
-
-  if (editFacIndex >= 0) {
-    // UPDATE existing row
-    const dbId = facultyList[editFacIndex].db_id;
-    const { error } = await sb.from('gsirf_faculty').update({
-      name: dbRow.name,           gender: dbRow.gender,
-      designation: dbRow.designation,  dob: dbRow.dob,
-      age: dbRow.age,             highest_degree: dbRow.highest_degree,
-      pan_exempt: dbRow.pan_exempt, pan: dbRow.pan,
-      teaching_exp: dbRow.teaching_exp, industry_exp: dbRow.industry_exp,
-      working: dbRow.working,     association: dbRow.association,
-      date_of_joining: dbRow.date_of_joining
-    }).eq('id', dbId);
-    if (error) { alert('❌ Failed to update faculty: ' + error.message); return; }
-    facultyList[editFacIndex] = { ...local, db_id: dbId };
-  } else {
-    // INSERT new row
-    const { data: inserted, error } = await sb.from('gsirf_faculty').insert(dbRow).select().single();
-    if (error) { alert('❌ Failed to save faculty: ' + error.message); return; }
-    facultyList.push({ ...local, db_id: inserted.id });
-  }
-
-  renderFacultyList();
-  cancelFaculty();
-  showToast('Faculty saved!');
-}
-
-async function removeFaculty(idx) {
-  if (!confirm('Remove this faculty member?')) return;
-  const f = facultyList[idx];
-  if (f.db_id) {
-    const { error } = await sb.from('gsirf_faculty').delete().eq('id', f.db_id);
-    if (error) { alert('❌ Failed to remove faculty: ' + error.message); return; }
-  }
-  facultyList.splice(idx, 1);
-  renderFacultyList();
-}
-
-// ─── LOAD FACULTY FROM SUPABASE ──────────────────────────────────────────────
-async function loadFacultyFromDB() {
-  const session = await getSession();
-  if (!session) return;
-  const { data, error } = await sb
-    .from('gsirf_faculty')
-    .select('*')
-    .eq('institute_id', session.user.id)
-    .eq('ranking_year', 2026)
-    .order('created_at', { ascending: true });
-  if (error) { console.warn('Faculty load error:', error.message); return; }
-  if (data && data.length > 0) {
-    facultyList = data.map(r => ({
-      db_id:        r.id,
-      name:         r.name,
-      gender:       r.gender,
-      designation:  r.designation,
-      dob:          r.dob,
-      age:          r.age,
-      degree:       r.highest_degree,
-      pan_exempt:   r.pan_exempt,
-      pan:          r.pan,
-      teach_exp:    r.teaching_exp,
-      industry_exp: r.industry_exp,
-      working:      r.working,
-      assoc:        r.association,
-      doj:          r.date_of_joining,
-    }));
-    renderFacultyList();
-  }
-}
-
 function renderFacultyList() {
   const body = document.getElementById('facultyListBody');
   document.getElementById('facTotalCount').textContent = facultyList.length;
-  const emptyRow = document.getElementById('facEmptyRow');
   if (!facultyList.length) {
     body.innerHTML = `<tr id="facEmptyRow"><td colspan="9" class="text-center py-4 text-gray-400 text-sm italic">No faculty added yet. Click "+ Add New" to begin.</td></tr>`;
     return;
@@ -1431,7 +1299,6 @@ function renderFacultyList() {
     </tr>`).join('');
 }
 
-// Age auto-calc
 function calcAge() {
   const dob = document.getElementById('fac_dob')?.value;
   if (!dob) return;
@@ -1470,30 +1337,67 @@ function goToStep(n) {
 
 function navigateStep(dir) { goToStep(currentStep+dir); }
 
-// ─── SAVE / EXPORT ────────────────────────────────────────────────────────────
+// ─── FORM COLLECTION AND DRAFT ACTIONS ────────────────────────────────────────
 function collectFormData() {
   const data = {};
   document.querySelectorAll('input,select,textarea').forEach(el => {
-    // Skip faculty form UI fields — those are saved directly to gsirf_faculty table
     if (!el.id || el.id.startsWith('fac_')) return;
     data[el.id] = el.type==='checkbox' ? el.checked : el.type==='radio' ? (el.checked ? el.value : undefined) : el.value;
   });
-  // Collect radio groups
   document.querySelectorAll('input[type=radio]:checked').forEach(r => {
     if (r.name) data['radio_'+r.name] = r.value;
   });
-  // Faculty: count only — individual records live in gsirf_faculty Supabase table
   data['faculty_count'] = facultyList.length;
-  // Selected programs
   data['_selectedPrograms'] = PROGRAMS.map(p=>({key:p.key,checked:document.getElementById(`cb_${p.key}`)?.checked||false}));
   return data;
 }
 
 function saveDraft() {
   const badge = document.getElementById('saveBadge');
-  badge.textContent = '● Saving…'; badge.className = 'badge-saving'; badge.classList.remove('hidden');
+  if (badge) {
+    badge.textContent = '● Saving…'; 
+    badge.className = 'badge-saving'; 
+    badge.classList.remove('hidden');
+  }
+
+  if (currentStep === 1) {
+    saveSection1Profile().then(res => {
+      if (res && res.success) console.log('✅ Section 1 database profile configured successfully.');
+    });
+  } else if (currentStep === 2) {
+    saveSection2Intake().then(res => {
+      if (res && res.success) console.log('✅ Section 2 database intake matrix configured successfully.');
+    });
+  } else if (currentStep === 3) {
+    saveSection3StudentStrength().then(res => {
+      if (res && res.success) console.log('✅ Section 3 student demographics configured successfully.');
+    });
+  } else if (currentStep === 4) {
+    saveSection4Placement().then(res => {
+      if (res && res.success) console.log('✅ Section 4 placement performance matrices configured successfully.');
+    });
+  } else if (currentStep === 6) {
+    saveSection6Details().then(res => {
+      if (res && res.success) console.log('✅ Section 6 structural configuration sets successfully synchronized.');
+    });
+  } else if (currentStep === 7) {
+    saveSection7ResearchFunding().then(res => {
+      if (res && res.success) console.log('✅ Section 7 metrics tables synchronized cleanly.');
+    });
+  } else if (currentStep === 8) {
+    saveSection8Declaration('draft').then(res => {
+      if (res && res.success) console.log('✅ Section 8 declaration profile recorded successfully.');
+    });
+  }
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormData()));
-  setTimeout(() => { badge.textContent = '● Saved'; badge.className = 'badge-saved'; }, 600);
+  
+  setTimeout(() => { 
+    if (badge) {
+      badge.textContent = '● Saved'; 
+      badge.className = 'badge-saved'; 
+    }
+  }, 600);
   showToast('Draft saved successfully!');
 }
 
@@ -1508,22 +1412,18 @@ function loadDraft() {
     if (el.type==='checkbox') el.checked = val;
     else el.value = val;
   });
-  // Restore radio groups
   Object.entries(data).forEach(([id,val]) => {
     if (!id.startsWith('radio_') || !val) return;
     const name = id.replace('radio_','');
     const r = document.querySelector(`input[type=radio][name="${name}"][value="${val}"]`);
     if (r) r.checked = true;
   });
-  // Faculty is loaded from Supabase via loadFacultyFromDB() — not localStorage
-  // Restore program selections
   if (data._selectedPrograms) {
     data._selectedPrograms.forEach(p => {
       const cb = document.getElementById(`cb_${p.key}`);
       if (cb && p.checked) { cb.checked = true; toggleProgram(p.key, true); }
     });
   }
-  // NAAC toggle
   const naacEl = document.getElementById('naac_accred');
   if (naacEl && naacEl.value==='YES') document.getElementById('naacDetailsBlock').classList.remove('hidden');
 
@@ -1547,45 +1447,51 @@ async function submitForm() {
   const gsirfId = document.getElementById('s1_gsirfId')?.value?.trim();
   if (!gsirfId) { alert('Please fill the GSIRF Institute ID in Section 1 before submitting.'); return; }
 
-  const session = await getSession();
+  const session = getSessionLocal();
   if (!session) { window.location.href = 'login.html'; return; }
-  const institute = await getMyInstitute();
-  if (!institute) { alert('Session error. Please log in again.'); window.location.href = 'login.html'; return; }
+  const userId = session.userId || (session.user ? session.user.id : null);
+  const username = session.username || 'institution';
+  const instName = document.getElementById('s1_instName')?.value?.trim() || "Institution";
 
   const formData = collectFormData();
-  const instName = document.getElementById('s1_instName')?.value?.trim() || institute.name;
 
-  const { data: existing } = await sb.from('gsirf_submissions').select('id')
-    .eq('institute_id', session.user.id).maybeSingle();
+  try {
+    const response = await fetch('/api/applications/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        institute_id: userId,
+        username: username,
+        institute_name: instName,
+        gsirf_id: gsirfId,
+        form_data: formData
+      })
+    });
+    
+    const result = await response.json();
+    if (!result.success) {
+      alert('❌ Submission failed: ' + (result.error || 'Unknown error'));
+      return;
+    }
 
-  let dbError, submissionId;
+    saveDraft();
 
-  if (existing) {
-    // UPDATE existing row — keep the existing ID
-    submissionId = existing.id;
-    const { error } = await sb.from('gsirf_submissions').update({
-      gsirf_id: gsirfId, institute_name: instName,
-      status: 'pending', form_data: formData,
-      submitted_at: new Date().toISOString()
-    }).eq('id', existing.id);
-    dbError = error;
-  } else {
-    // INSERT new row — get back the generated ID
-    const { data: inserted, error } = await sb.from('gsirf_submissions').insert({
-      institute_id: session.user.id, username: institute.username,
-      institute_name: instName, gsirf_id: gsirfId,
-      status: 'pending', form_data: formData
-    }).select('id').single();
-    dbError = error;
-    submissionId = inserted?.id;
+    if (document.getElementById('declarationCheck')?.checked) {
+      const s8Res = await saveSection8Declaration('submitted');
+      if (s8Res && s8Res.success) console.log('🔒 Section 8 Form status flipped to SUBMITTED in relational database.');
+    }
+
+    if (typeof CategorySubmissionFlow !== 'undefined') {
+      CategorySubmissionFlow.init(result.submissionId, formData, userId);
+    } else {
+      showToast('Form submitted successfully!');
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+    }
+
+  } catch (err) {
+    console.error('Submission Error:', err);
+    alert('❌ Submission failed due to a server connection error.');
   }
-
-  if (dbError) { alert('❌ Submission failed: ' + dbError.message); return; }
-  saveDraft();
-
-  // ── Launch category submission flow ──────────────────────────────────────
-  // The module shows: category picker → per-category data review → dashboard
-  CategorySubmissionFlow.init(sb, submissionId, formData, session.user.id);
 }
 
 function showToast(msg) {
@@ -1594,10 +1500,9 @@ function showToast(msg) {
   setTimeout(() => t.classList.add('hidden'), 2500);
 }
 
-// ─── AUTO-SAVE + N2W ──────────────────────────────────────────────────────────
+// ─── AUTO-SAVE + N2W ENGINE ──────────────────────────────────────────────────
 let saveTimer;
 document.addEventListener('input', e => {
-  // Auto words fill
   if (e.target.classList.contains('amt-rs')) {
     const wid = e.target.dataset.wordsId;
     if (wid) {
@@ -1611,7 +1516,7 @@ document.addEventListener('input', e => {
   saveTimer = setTimeout(saveDraft, 1500);
 });
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ─── INIT SCHEMATIC FLOW GENERATORS ──────────────────────────────────────────
 buildSidebar();
 buildIntakeSection();
 buildStrengthSection();
@@ -1634,26 +1539,25 @@ buildResearchTable('edpBody', [
   { key:'earnings',      label:'Total Annual Earnings (Excl. Lodging & Boarding Charges)(Amount in Rupees)', words:true },
 ]);
 
-// Set default dates
 const today = new Date().toISOString().split('T')[0];
 ['s1_submitDate','s8_signatoryDate'].forEach(id => {
   const el = document.getElementById(id); if(el) el.value = today;
 });
 
-// Load and init — async so we can set a user-specific storage key first.
-// This ensures each institute's draft is isolated: logging in as a different
-// institute on the same browser will never load another institute's saved data.
 (async () => {
-  const session = await getSession();
+  const session = getSessionLocal();
   if (session) {
-    STORAGE_KEY = `garvi_gsirf2026_v2_${session.user.id}`;
+    const userId = session.userId || (session.user ? session.user.id : null);
+    STORAGE_KEY = `garvi_gsirf2026_v2_${userId}`;
+  } else {
+    window.location.href = 'login.html';
+    return;
   }
   loadDraft();
   goToStep(1);
   await loadFacultyFromDB();
 })();
 
-// Completion tracker
 setInterval(() => {
   const filled = [...document.querySelectorAll('input,select')].filter(e => e.value && e.value !== '0').length;
   const total  = document.querySelectorAll('input,select').length;
@@ -1661,8 +1565,477 @@ setInterval(() => {
   document.getElementById('sideProgress').style.width = pct+'%';
   document.getElementById('pctText').textContent = pct+'%';
 }, 3000);
+
+// ─── BACKEND CONNECTION API CALL MODULES ──────────────────────────────────
+async function saveSection1Profile() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const gsirfId = document.getElementById('s1_gsirfId')?.value.trim();
+  const instName = document.getElementById('s1_instName')?.value.trim();
+  const instType = document.getElementById('s1_instType')?.value;
+  if (!gsirfId || !instName || !instType) return { success: false, error: 'Missing mandatory parameters.' };
+
+  const profilePayload = {
+    institute_id:          userId,
+    gsirf_id:              gsirfId,
+    ranking_year:          2026,
+    institute_name:        instName,
+    institute_type:        instType,
+    affiliated_university: document.getElementById('s1_affiliatedUniv')?.value.trim() || null,
+    city:                  document.getElementById('s1_city')?.value.trim(),
+    district:              document.getElementById('s1_district')?.value.trim() || null,
+    nodal_name:            document.getElementById('s1_nodalName')?.value.trim(),
+    nodal_designation:     document.getElementById('s1_nodalDesig')?.value.trim() || null,
+    official_email:        document.getElementById('s1_email')?.value.trim(),
+    mobile_number:         document.getElementById('s1_mobile')?.value.trim(),
+    submission_date:       document.getElementById('s1_submitDate')?.value || new Date().toISOString().split('T')[0],
+    is_revised:            document.getElementById('s1_isRevised')?.value || 'N'
+  };
+
+  try {
+    const response = await fetch('/api/applications/section1', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profilePayload)
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 1 Sync Fault:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function saveSection2Intake() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const selectedProgs = PROGRAMS.filter(p => document.getElementById(`cb_${p.key}`)?.checked);
+  const intakesPayload = [];
+
+  selectedProgs.forEach(p => {
+    const yrs = getIntakeYears(p.dur);
+    const intakeValues = { program_key: p.key, year_1: 0, year_2: 0, year_3: 0, year_4: 0, year_5: 0, year_6: 0 };
+    yrs.forEach((yr, index) => {
+      const inputId = `intake_${p.key}_${yr.replace('-', '')}`;
+      const inputVal = document.getElementById(inputId)?.value;
+      intakeValues[`year_${index + 1}`] = parseInt(inputVal) || 0;
+    });
+    intakesPayload.push(intakeValues);
+  });
+
+  try {
+    const response = await fetch('/api/applications/section2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ institute_id: userId, ranking_year: 2026, intakes: intakesPayload })
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 2 Sync Fault:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function saveSection3StudentStrength() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const selectedProgs = PROGRAMS.filter(p => document.getElementById(`cb_${p.key}`)?.checked);
+  const strengthsPayload = [];
+
+  selectedProgs.forEach(p => {
+    const k = p.key.replace(/\W/g, '');
+    strengthsPayload.push({
+      program_key:           p.key,
+      male:                  parseInt(document.getElementById(`str_${k}_m`)?.value) || 0,
+      female:                parseInt(document.getElementById(`str_${k}_f`)?.value) || 0,
+      transgender:           parseInt(document.getElementById(`str_${k}_t`)?.value) || 0,
+      total:                 parseInt(document.getElementById(`str_${k}_tot`)?.value) || 0,
+      within_state:          parseInt(document.getElementById(`str_${k}_ws`)?.value) || 0,
+      outside_state:         parseInt(document.getElementById(`str_${k}_os`)?.value) || 0,
+      outside_country:       parseInt(document.getElementById(`str_${k}_oc`)?.value) || 0,
+      economically_backward: parseInt(document.getElementById(`str_${k}_eb`)?.value) || 0,
+      socially_challenged:   parseInt(document.getElementById(`str_${k}_sc`)?.value) || 0,
+      fee_gov:               parseInt(document.getElementById(`str_${k}_fee_gov`)?.value) || 0,
+      fee_inst:              parseInt(document.getElementById(`str_${k}_fee_inst`)?.value) || 0,
+      fee_pvt:               parseInt(document.getElementById(`str_${k}_fee_pvt`)?.value) || 0,
+      fee_none:              parseInt(document.getElementById(`str_${k}_fee_none`)?.value) || 0
+    });
+  });
+
+  const phdPayload = {
+    phd_ft_current:     parseInt(document.getElementById('phd_ft_current')?.value) || 0,
+    phd_pt_current:     parseInt(document.getElementById('phd_pt_current')?.value) || 0,
+    phd_total_current:  parseInt(document.getElementById('phd_total_current')?.value) || 0,
+    phd_grad_ft_2526:   parseInt(document.getElementById('phd_grad_ft_2526')?.value) || 0,
+    phd_grad_ft_2425:   parseInt(document.getElementById('phd_grad_ft_2425')?.value) || 0,
+    phd_grad_ft_2324:   parseInt(document.getElementById('phd_grad_ft_2324')?.value) || 0,
+    phd_grad_pt_2526:   parseInt(document.getElementById('phd_grad_pt_2526')?.value) || 0,
+    phd_grad_pt_2425:   parseInt(document.getElementById('phd_grad_pt_2425')?.value) || 0,
+    phd_grad_pt_2324:   parseInt(document.getElementById('phd_grad_pt_2324')?.value) || 0,
+    phd_med_pursuing:   parseInt(document.getElementById('phd_med_pursuing')?.value) || 0,
+    phd_med_grad_2526:  parseInt(document.getElementById('phd_med_grad_2526')?.value) || 0,
+    phd_med_grad_2425:  parseInt(document.getElementById('phd_med_grad_2425')?.value) || 0,
+    phd_med_grad_2324:  parseInt(document.getElementById('phd_med_grad_2324')?.value) || 0
+  };
+
+  try {
+    const response = await fetch('/api/applications/section3', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ institute_id: userId, ranking_year: 2026, strengths: strengthsPayload, phd: phdPayload })
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 3 Sync Fault:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function saveSection4Placement() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const nepTransitionVal = document.querySelector('input[name="nep_transition"]:checked')?.value || 'No';
+  const selectedProgs = PROGRAMS.filter(p => document.getElementById(`cb_${p.key}`)?.checked);
+  const placementsPayload = [];
+
+  selectedProgs.forEach(p => {
+    const batches = getPlcBatches(p.dur);
+    const k = p.key;
+    batches.forEach((b, index) => {
+      placementsPayload.push({
+        program_key:            k,
+        batch_index:            index, 
+        intake_year:            b.intake,
+        intake_count:           parseInt(document.getElementById(`plc_${k}_${index}_intake`)?.value) || 0,
+        admitted_count:         parseInt(document.getElementById(`plc_${k}_${index}_admitted`)?.value) || 0,
+        lateral_year:           b.lateral || null,
+        lateral_admitted_count: p.lateral ? (parseInt(document.getElementById(`plc_${k}_${index}_lateral`)?.value) || 0) : 0,
+        grad_year:              b.grad,
+        grad_min_time_count:    parseInt(document.getElementById(`plc_${k}_${index}_grad`)?.value) || 0,
+        placed_count:           parseInt(document.getElementById(`plc_${k}_${index}_placed`)?.value) || 0,
+        median_salary:          parseFloat(document.getElementById(`plc_${k}_${index}_salary`)?.value) || 0.00,
+        median_salary_words:    document.getElementById(`plc_${k}_${index}_salary_w`)?.value.trim() || null,
+        higher_studies_count:   parseInt(document.getElementById(`plc_${k}_${index}_higher`)?.value) || 0
+      });
+    });
+  });
+
+  try {
+    const response = await fetch('/api/applications/section4', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ institute_id: userId, ranking_year: 2026, nep_transition: nepTransitionVal, placements: placementsPayload })
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 4 Sync Fault:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function loadFacultyFromDB() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return;
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return;
+
+  try {
+    const response = await fetch(`/api/applications/faculty/${userId}`);
+    const result = await response.json();
+    if (result.success && Array.isArray(result.faculty)) {
+      facultyList = result.faculty.map(r => ({
+        db_id:        r.id,
+        name:         r.name,
+        gender:       r.gender,
+        designation:  r.designation,
+        dob:          r.dob ? r.dob.split('T')[0] : '', 
+        age:          r.age,
+        degree:       r.highest_degree,
+        pan_exempt:   r.pan_exempt === 1 || r.pan_exempt === true,
+        pan:          r.pan,
+        teach_exp:    r.teaching_exp,
+        industry_exp: r.industry_exp,
+        working:      r.working,
+        assoc:        r.association,
+        doj:          r.date_of_joining ? r.date_of_joining.split('T')[0] : '',
+      }));
+      renderFacultyList();
+    }
+  } catch (err) {
+    console.error('Failed to load roster rows:', err);
+  }
+}
+
+async function saveFaculty() {
+  const name = document.getElementById('fac_name').value.trim();
+  if (!name) { alert('Please enter the faculty name.'); return; }
+
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return;
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+
+  const gender = document.querySelector('input[name="fac_gender"]:checked')?.value || '';
+  const dobVal = document.getElementById('fac_dob').value;
+  const dojVal = document.getElementById('fac_doj').value;
+
+  const payload = {
+    institute_id:    userId,
+    name, gender,
+    designation:     document.getElementById('fac_designation').value || null,
+    dob:             dobVal || null,
+    age:             parseInt(document.getElementById('fac_age').value) || null,
+    highest_degree:  document.getElementById('fac_degree').value || null,
+    pan_exempt:      document.getElementById('fac_pan_exempt').checked ? 1 : 0,
+    pan:             document.getElementById('fac_pan').value || null,
+    teaching_exp:    parseInt(document.getElementById('fac_teach_exp').value) || 0,
+    industry_exp:    parseInt(document.getElementById('fac_industry_exp').value) || 0,
+    working:         document.getElementById('fac_working').value || null,
+    association:     document.getElementById('fac_assoc').value || null,
+    date_of_joining: dojVal || null,
+  };
+
+  const isEditing = editFacIndex >= 0;
+  const url = isEditing ? `/api/applications/faculty/${facultyList[editFacIndex].db_id}` : '/api/applications/faculty';
+  const method = isEditing ? 'PUT' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error);
+
+    const localRecord = {
+      db_id: isEditing ? facultyList[editFacIndex].db_id : result.id,
+      name, gender, designation: payload.designation, dob: dobVal, age: payload.age,
+      degree: payload.highest_degree, pan_exempt: !!payload.pan_exempt, pan: payload.pan,
+      teach_exp: payload.teaching_exp, industry_exp: payload.industry_exp,
+      working: payload.working, assoc: payload.association, doj: dojVal
+    };
+
+    if (isEditing) facultyList[editFacIndex] = localRecord;
+    else facultyList.push(localRecord);
+
+    renderFacultyList();
+    cancelFaculty();
+    showToast('Faculty record saved successfully!');
+  } catch (err) {
+    alert('❌ Error saving faculty row: ' + err.message);
+  }
+}
+
+async function removeFaculty(idx) {
+  if (!confirm('Are you sure you want to remove this faculty member?')) return;
+  const target = facultyList[idx];
+
+  if (target.db_id) {
+    try {
+      const response = await fetch(`/api/applications/faculty/${target.db_id}`, { method: 'DELETE' });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
+    } catch (err) {
+      alert('❌ Error deleting faculty row: ' + err.message);
+      return;
+    }
+  }
+  facultyList.splice(idx, 1);
+  renderFacultyList();
+  showToast('Faculty record removed successfully.');
+}
+
+async function saveSection6Details() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const financesPayload = [];
+  CAPEX_ITEMS.forEach(it => {
+    FIN_YEARS.forEach(yr => {
+      financesPayload.push({
+        expenditure_type: 'capex',
+        head_key:         it.key,
+        financial_year:   yr,
+        utilized_amount:  parseFloat(document.getElementById(`capex_${it.key}_${yr.replace('-','')}`)?.value) || 0.00,
+        amount_in_words:  document.getElementById(`capex_${it.key}_${yr.replace('-','')}_w`)?.value.trim() || null
+      });
+    });
+  });
+
+  OPEX_ITEMS.forEach(it => {
+    FIN_YEARS.forEach(yr => {
+      financesPayload.push({
+        expenditure_type: 'opex',
+        head_key:         it.key,
+        financial_year:   yr,
+        utilized_amount:  parseFloat(document.getElementById(`opex_${it.key}_${yr.replace('-','')}`)?.value) || 0.00,
+        amount_in_words:  document.getElementById(`opex_${it.key}_${yr.replace('-','')}_w`)?.value.trim() || null
+      });
+    });
+  });
+
+  const configsPayload = {
+    pcs_lift:         document.querySelector('input[name="pcs_lift"]:checked')?.value || 'NA',
+    pcs_walking:      document.querySelector('input[name="pcs_walking"]:checked')?.value || 'No',
+    pcs_toilet:       document.querySelector('input[name="pcs_toilet"]:checked')?.value || 'NA',
+    naac_accred:      document.getElementById('naac_accred')?.value || 'NO',
+    naac_grade:       document.getElementById('naac_grade')?.value || null,
+    naac_cgpa:        parseFloat(document.getElementById('naac_cgpa')?.value) || null,
+    naac_valid:       document.getElementById('naac_valid')?.value || null,
+    nba_accred:       document.getElementById('nba_accred')?.value || 'NO',
+    nba_total_progs:  parseInt(document.getElementById('nba_total_progs')?.value) || 0,
+    nba_accred_progs: parseInt(document.getElementById('nba_accred_progs')?.value) || 0,
+    mee_q1:           document.querySelector('input[name="mee_q1"]:checked')?.value || 'No',
+    mee_q2:           document.querySelector('input[name="mee_q2"]:checked')?.value || 'No',
+    mee_q3:           document.querySelector('input[name="mee_q3"]:checked')?.value || 'No',
+    mee_q4:           document.querySelector('input[name="mee_q4"]:checked')?.value || 'No',
+    mee_q5:           document.querySelector('input[name="mee_q5"]:checked')?.value || 'No',
+    slp_q1:           document.querySelector('input[name="slp_q1"]:checked')?.value || 'none',
+    slp_q2_a:         document.getElementById('slp_q2_a')?.checked ? 1 : 0,
+    slp_q2_b:         document.getElementById('slp_q2_b')?.checked ? 1 : 0,
+    slp_q2_c:         document.getElementById('slp_q2_c')?.checked ? 1 : 0,
+    slp_q2_d:         document.getElementById('slp_q2_d')?.checked ? 1 : 0,
+    slp_q2_e:         document.getElementById('slp_q2_e')?.checked ? 1 : 0,
+    slp_q3:           document.querySelector('input[name="slp_q3"]:checked')?.value || 'none',
+    slp_q4_a:         document.getElementById('slp_q4_a')?.checked ? 1 : 0,
+    slp_q4_b:         document.getElementById('slp_q4_b')?.checked ? 1 : 0,
+    slp_q4_c:         document.getElementById('slp_q4_c')?.checked ? 1 : 0,
+    slp_q4_d:         document.getElementById('slp_q4_d')?.checked ? 1 : 0,
+    slp_q4_e:         document.getElementById('slp_q4_e')?.checked ? 1 : 0,
+    slp_q4_f:         document.getElementById('slp_q4_f')?.checked ? 1 : 0,
+    slp_q5_a:         document.getElementById('slp_q5_a')?.checked ? 1 : 0,
+    slp_q5_b:         document.getElementById('slp_q5_b')?.checked ? 1 : 0,
+    slp_q5_c:         document.getElementById('slp_q5_c')?.checked ? 1 : 0,
+    slp_q5_d:         document.getElementById('slp_q5_d')?.checked ? 1 : 0,
+    slp_q5_e:         document.getElementById('slp_q5_e')?.checked ? 1 : 0,
+    slp_q6_a:         document.getElementById('slp_q6_a')?.checked ? 1 : 0,
+    slp_q6_b:         document.getElementById('slp_q6_b')?.checked ? 1 : 0,
+    slp_q6_c:         document.getElementById('slp_q6_c')?.checked ? 1 : 0,
+    slp_q6_d:         document.getElementById('slp_q6_d')?.checked ? 1 : 0
+  };
+
+  try {
+    const response = await fetch('/api/applications/section6', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ institute_id: userId, ranking_year: 2026, finances: financesPayload, configs: configsPayload })
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 6 sync transmission fault:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function saveSection7ResearchFunding() {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const iprYears = [2025, 2024, 2023];
+  const iprPayload = iprYears.map(yr => ({
+    calendar_year:     yr,
+    patents_published: parseInt(document.getElementById(`ipr_pub_${yr}`)?.value) || 0,
+    patents_granted:   parseInt(document.getElementById(`ipr_grant_${yr}`)?.value) || 0
+  }));
+
+  const fundingPayload = [];
+  const finYearsList = ['2025-26', '2024-25', '2023-24'];
+  finYearsList.forEach(yr => {
+    const formatYr = yr.replace('-', '');
+    fundingPayload.push({
+      funding_type:   'sponsored',
+      financial_year: yr,
+      count_1:        parseInt(document.getElementById(`sponsoredBody_projects_${formatYr}`)?.value) || 0,
+      count_2:        parseInt(document.getElementById(`sponsoredBody_agencies_${formatYr}`)?.value) || 0,
+      amount:         parseFloat(document.getElementById(`sponsoredBody_amount_${formatYr}`)?.value) || 0.00,
+      amount_in_words: document.getElementById(`sponsoredBody_amount_${formatYr}_w`)?.value.trim() || null
+    });
+    fundingPayload.push({
+      funding_type:   'consultancy',
+      financial_year: yr,
+      count_1:        parseInt(document.getElementById(`consultancyBody_projects_${formatYr}`)?.value) || 0,
+      count_2:        parseInt(document.getElementById(`consultancyBody_clients_${formatYr}`)?.value) || 0,
+      amount:         parseFloat(document.getElementById(`consultancyBody_amount_${formatYr}`)?.value) || 0.00,
+      amount_in_words: document.getElementById(`consultancyBody_amount_${formatYr}_w`)?.value.trim() || null
+    });
+    fundingPayload.push({
+      funding_type:   'edp_mdp',
+      financial_year: yr,
+      count_1:        parseInt(document.getElementById(`edpBody_programs_${formatYr}`)?.value) || 0,
+      count_2:        parseInt(document.getElementById(`edpBody_participants_${formatYr}`)?.value) || 0,
+      amount:         parseFloat(document.getElementById(`edpBody_earnings_${formatYr}`)?.value) || 0.00,
+      amount_in_words: document.getElementById(`edpBody_earnings_${formatYr}_w`)?.value.trim() || null
+    });
+  });
+
+  try {
+    const response = await fetch('/api/applications/section7', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ institute_id: userId, ranking_year: 2026, ipr: iprPayload, funding: fundingPayload })
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 7 Sync Fault:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function saveSection8Declaration(customStatus = 'draft') {
+  const sessionRaw = localStorage.getItem('garvi_session');
+  if (!sessionRaw) return { success: false, error: 'Auth context invalid' };
+  const session = JSON.parse(sessionRaw);
+  const userId = session.userId || (session.user ? session.user.id : null);
+  if (!userId) return { success: false, error: 'Identifier unresolved.' };
+
+  const payload = {
+    institute_id:      userId,
+    ranking_year:      2026,
+    about_constituent: document.getElementById('about_constituent')?.value || 'NO',
+    about_campuses:    document.getElementById('about_campuses')?.value || 'NO',
+    declaration_agreed: document.getElementById('declarationCheck')?.checked ? 1 : 0,
+    signatory_name:    document.getElementById('s8_signatoryName')?.value.trim() || null,
+    submission_date:   document.getElementById('s8_signatoryDate')?.value || null,
+    form_status:       customStatus
+  };
+
+  try {
+    const response = await fetch('/api/applications/section8', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('Section 8 Sync Fault:', err);
+    return { success: false, error: err.message };
+  }
+}
 </script>
   <!-- Category Submission Flow — post-submission NIRF category config -->
-  <script src="js/category-submission.js"></script>
+  <script src="/js/category-submission.js"></script>
 </body>
 </html>

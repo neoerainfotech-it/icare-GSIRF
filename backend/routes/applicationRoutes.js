@@ -1,6 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db');
+
+// Import the modular section controllers
+const section1Controller = require('../controllers/section1Controller');
+const section2Controller = require('../controllers/section2Controller');
+const section3Controller = require('../controllers/section3Controller');
+const section4Controller = require('../controllers/section4Controller');
+const section5Controller = require('../controllers/section5Controller'); 
+const section6Controller = require('../controllers/section6Controller');
+const section7Controller = require('../controllers/section7Controller');
+const section8Controller = require('../controllers/section8Controller');
+const submitController = require('../controllers/submitController');
+const categoryController = require('../controllers/categoryController');// <-- Add this import
+
+// ─── MODULAR ROUTE TARGETS ──────────────────────────────────────────
+router.post('/section1', section1Controller.saveProfile);
+router.post('/section2', section2Controller.saveIntake);
+router.post('/section3', section3Controller.saveStudentAndPhd);
+router.post('/section4', section4Controller.savePlacementDetails);
+
+// ─── SECTION 5 ROUTE MAPPINGS ───────────────────────────────────────
+router.get('/faculty/:instituteId', section5Controller.getFaculty);
+router.post('/faculty', section5Controller.addFaculty);
+router.put('/faculty/:id', section5Controller.updateFaculty);
+router.delete('/faculty/:id', section5Controller.deleteFaculty);
+router.post('/section6', section6Controller.saveInstitutionDetails);
+router.post('/section7', section7Controller.saveResearchFunding);
+router.post('/section8', section8Controller.saveDeclaration);
+router.post('/submit', submitController.submitApplication);
+router.post('/categories', categoryController.saveCategories);
+
+// ==========================================
+// ─── 📋 EXISTING ACTIVE PIPELINES ─────────
+// ==========================================
 
 // 1. Fetch Complete Faculty Roster for an Institution
 router.get('/faculty/:instituteId', async (req, res) => {
@@ -57,11 +89,8 @@ router.delete('/faculty/:id', async (req, res) => {
 router.post('/submit', async (req, res) => {
     const { id, institute_id, username, institute_name, gsirf_id, status, form_data } = req.body;
     try {
-        // Stringify the form JSON object for storage safety in MySQL JSON field types
         const stringifiedFormData = JSON.stringify(form_data);
         const now = new Date();
-
-        // High-speed transaction mapping via standard clean updates
         await pool.query(
             'INSERT INTO gsirf_submissions (id, institute_id, username, institute_name, gsirf_id, status, form_data, submitted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE gsirf_id=?, institute_name=?, status=?, form_data=?, submitted_at=?',
             [id, institute_id, username, institute_name, gsirf_id, status, stringifiedFormData, now, gsirf_id, institute_name, status, stringifiedFormData, now]
@@ -78,13 +107,10 @@ router.post('/category-submit', async (req, res) => {
     try {
         const stringifiedData = JSON.stringify(data);
         const now = new Date();
-
-        // Leverage Hostinger MySQL's atomic ON DUPLICATE KEY UPDATE engine
         await pool.query(
             'INSERT INTO gsirf_category_submissions (institute_id, overall_submission_id, category, data, status, submitted_at, updated_at) VALUES (?, ?, ?, ?, "submitted", ?, ?) ON DUPLICATE KEY UPDATE data=?, status="submitted", updated_at=?',
             [instituteId, overallSubmissionId, category, stringifiedData, now, now, stringifiedData, now]
         );
-
         res.json({ success: true, message: `Data split mapped perfectly to ${category}.` });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
