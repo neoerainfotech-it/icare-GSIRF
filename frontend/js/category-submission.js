@@ -742,7 +742,8 @@
   function _dash(){ removeOv(); window.location.href='/dashboard'; }
 
   // ─── ARTIFACT ENTRY LOAD INITIALIZER ───────────────────────────────────────
-  async function init(supabaseClientIgnored, submissionId, formData, instituteUserId) {
+  // Cleaned
+  async function init(submissionId, formData, instituteUserId) {
     _subId    = submissionId;
     _data     = formData;
     _instId   = instituteUserId || null;
