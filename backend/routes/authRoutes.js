@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const pool = require('../../config/db'); // Corrected path for backend/routes/ folder depth
+const db = require('../config/db'); // Corrected path for backend/routes/ folder depth
 
 // ── 1. SECURE ACCOUNT FORGOT-PASSWORD VERIFICATION ─────────────────
 router.post('/forgot-password', async (req, res) => {
