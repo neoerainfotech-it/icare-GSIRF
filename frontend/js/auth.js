@@ -15,7 +15,15 @@ function protectPage(requiredRole) {
         localStorage.removeItem('user');
         
         // Eject the user cleanly back to the login screen
-        window.location.href = '../auth/login.html';
+        window.location.href = '/login';
+        
+        // Force the browser to stop processing any subsequent dashboard scripts instantly
+        if (window.stop) {
+            window.stop();
+        } else {
+            document.execCommand('Stop'); // Legacy fallback for absolute safety
+        }
+        return false;
     }
 }
 
@@ -26,5 +34,5 @@ function protectPage(requiredRole) {
 function signOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '../auth/login.html';
+    window.location.href = '/login';
 }

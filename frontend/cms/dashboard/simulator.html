@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulator Tool - GARVI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/auth.js"></script>
     <style>
         body {
             box-sizing: border-box;
@@ -120,7 +121,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold text-garvi-orange hover:text-garvi-gold transition-colors">
+                    <a href="/index" class="text-2xl font-bold text-garvi-orange hover:text-garvi-gold transition-colors">
                         GARVI
                     </a>
                     <div class="ml-2 text-sm text-gray-600 hidden sm:block">
@@ -129,14 +130,14 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:flex items-center space-x-4">
-                        <a href="dashboard.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
+                        <a href="/dashboard" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
                             Back to Dashboard
                         </a>
-                        <a href="analytics.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Analytics</a>
-                        <a href="benchmarking.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Benchmarking</a>
+                        <a href="/analytics" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Analytics</a>
+                        <a href="/benchmarking" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Benchmarking</a>
                     </div>
                 </div>
             </div>
@@ -349,7 +350,7 @@
                         <li><a href="#" class="hover:text-garvi-orange transition-colors">User Guide</a></li>
                         <li><a href="#" class="hover:text-garvi-orange transition-colors">Technical Support</a></li>
                         <li><a href="#" class="hover:text-garvi-orange transition-colors">Training Resources</a></li>
-                        <li><a href="index.html" class="hover:text-garvi-orange transition-colors">Back to Home</a></li>
+                        <li><a href="/index" class="hover:text-garvi-orange transition-colors">Back to Home</a></li>
                     </ul>
                 </div>
             </div>
@@ -380,92 +381,98 @@
     </div>
 
     <script>
-        // Show dashboard immediately and remove loading
-        document.addEventListener('DOMContentLoaded', function() {
-            // Remove loading indicator immediately
-            const loadingIndicator = document.getElementById('loading-indicator');
-            const dashboardFrame = document.getElementById('dashboard-frame');
-            
-            if (loadingIndicator) {
-                loadingIndicator.style.display = 'none';
-            }
-            if (dashboardFrame) {
-                dashboardFrame.classList.remove('hidden');
-                dashboardFrame.style.display = 'block';
-            }
-        });
+    // ── STAGE 0 ROUTE SHIELD ─────────────────────────────────────────
+    // Instantly halts unauthorized users before executing page rendering logic
+    protectPage('institute');
 
-        // Custom notification function
-        function showNotification(icon, title, message) {
-            const modal = document.getElementById('notification-modal');
-            const iconEl = document.getElementById('notification-icon');
-            const titleEl = document.getElementById('notification-title');
-            const messageEl = document.getElementById('notification-message');
-            
-            iconEl.textContent = icon;
-            titleEl.textContent = title;
-            messageEl.textContent = message;
-            
-            modal.style.display = 'flex';
+    // Show dashboard immediately and remove loading
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const dashboardFrame = document.getElementById('dashboard-frame');
+        
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
         }
+        if (dashboardFrame) {
+            dashboardFrame.classList.remove('hidden');
+            dashboardFrame.style.display = 'block';
+        }
+    });
 
-        // Close notification
-        document.getElementById('notification-close').addEventListener('click', function() {
-            document.getElementById('notification-modal').style.display = 'none';
-        });
+    // Custom notification function
+    function showNotification(icon, title, message) {
+        const modal = document.getElementById('notification-modal');
+        const iconEl = document.getElementById('notification-icon');
+        const titleEl = document.getElementById('notification-title');
+        const messageEl = document.getElementById('notification-message');
+        
+        iconEl.textContent = icon;
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        
+        modal.style.display = 'flex';
+    }
 
-        // Close on backdrop click
-        document.getElementById('notification-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
+    // Close notification
+    document.getElementById('notification-close').addEventListener('click', function() {
+        document.getElementById('notification-modal').style.display = 'none';
+    });
+
+    // Close on backdrop click
+    document.getElementById('notification-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+
+    // Dashboard control buttons
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function() {
+            const buttonText = this.textContent.trim();
+            if (buttonText.includes('Export Report')) {
+                showNotification('📊', 'Preparing Report', 'Simulator report is being prepared for download...');
+            } else if (buttonText.includes('Share Dashboard')) {
+                showNotification('🔗', 'Generating Link', 'Creating shareable simulator dashboard link...');
+            } else if (buttonText.includes('Refresh Data')) {
+                showNotification('🔄', 'Refreshing Data', 'Updating simulator data from GSIRF database...');
             }
         });
+    });
 
-        // Dashboard control buttons
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', function() {
-                const buttonText = this.textContent.trim();
-                if (buttonText.includes('Export Report')) {
-                    showNotification('📊', 'Preparing Report', 'Simulator report is being prepared for download...');
-                } else if (buttonText.includes('Share Dashboard')) {
-                    showNotification('🔗', 'Generating Link', 'Creating shareable simulator dashboard link...');
-                } else if (buttonText.includes('Refresh Data')) {
-                    showNotification('🔄', 'Refreshing Data', 'Updating simulator data from GSIRF database...');
-                }
-            });
+    // Navigation links (Only intercepts literal in-page anchor IDs starting with #)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            
+            // Bypass interception if the anchor is just a placeholder or blank link
+            if (href === '#' || href === '#!') return;
+            
+            e.preventDefault();
+            if (href === '#simulator') {
+                showNotification('⚙️', 'Loading Performance Simulator', 'Opening GARVI Simulator...');
+            } else if (href === '#tutorials') {
+                showNotification('📚', 'Opening Tutorials', 'Loading simulator tutorials and guides...');
+            }
         });
+    });
 
-        // Navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const href = this.getAttribute('href');
-                
-                if (href === '#simulator') {
-                    showNotification('⚙️', 'Loading Performance Simulator', 'Opening GARVI Simulator...');
-                } else if (href === '#tutorials') {
-                    showNotification('📚', 'Opening Tutorials', 'Loading simulator tutorials and guides...');
-                }
-            });
+    // Add fade-in animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+            }
         });
+    }, observerOptions);
 
-        // Add fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.hover-lift').forEach(el => {
-            observer.observe(el);
-        });
-    </script>
+    document.querySelectorAll('.hover-lift').forEach(el => {
+        observer.observe(el);
+    });
+</script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992411e6a6c33d2a',t:'MTc2MTA4NDQ2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

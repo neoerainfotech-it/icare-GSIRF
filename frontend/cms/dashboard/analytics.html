@@ -6,6 +6,7 @@
     <title>Analytics Dashboard - GARVI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/auth.js"></script>
     <style>
         body {
             box-sizing: border-box;
@@ -122,7 +123,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold text-garvi-orange hover:text-garvi-gold transition-colors">
+                    <a href="/index" class="text-2xl font-bold text-garvi-orange hover:text-garvi-gold transition-colors">
                         GARVI
                     </a>
                     <div class="ml-2 text-sm text-gray-600 hidden sm:block">
@@ -131,14 +132,14 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:flex items-center space-x-4">
-                        <a href="dashboard.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
+                        <a href="/dashboard" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
                             Back to Dashboard
                         </a>
-                        <a href="benchmarking.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Benchmarking</a>
-                        <a href="simulator.html" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulator</a>
+                        <a href="/benchmarking" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Benchmarking</a>
+                        <a href="/simulator" class="text-gray-700 hover:text-garvi-orange px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulator</a>
                     </div>
                     <div class="md:hidden">
                         <button class="text-gray-700 hover:text-garvi-orange p-2">
@@ -357,7 +358,7 @@
                         <li><a href="#" class="hover:text-garvi-orange transition-colors">User Guide</a></li>
                         <li><a href="#" class="hover:text-garvi-orange transition-colors">Technical Support</a></li>
                         <li><a href="#" class="hover:text-garvi-orange transition-colors">Training Resources</a></li>
-                        <li><a href="index.html" class="hover:text-garvi-orange transition-colors">Back to Home</a></li>
+                        <li><a href="/index" class="hover:text-garvi-orange transition-colors">Back to Home</a></li>
                     </ul>
                 </div>
             </div>
@@ -388,6 +389,7 @@
     </div>
 
     <script>
+        protectPage('institute');
         // Custom notification function
         function showNotification(icon, title, message) {
             const modal = document.getElementById('notification-modal');
@@ -553,23 +555,26 @@
             }, 2000);
         });
 
-        // Navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const href = this.getAttribute('href');
-                
-                if (href === '#simulator') {
-                    showNotification('⚙️', 'Loading Simulator', 'Opening GARVI Performance Simulator...');
-                } else if (href === '#tutorials') {
-                    showNotification('📚', 'Opening Tutorials', 'Loading analytics tutorials and guides...');
-                } else if (href === '#reports') {
-                    showNotification('📋', 'Loading Reports', 'Opening comprehensive analytics reports...');
-                } else if (href === '#insights') {
-                    showNotification('💡', 'Loading Insights', 'Opening AI-powered institutional insights...');
-                }
-            });
+        // Navigation links (Only intercepts literal within-page anchors starting with #)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            
+            // Bypass interception if the anchor is just a layout placeholder or blank link
+            if (href === '#' || href === '#!') return;
+            
+            e.preventDefault();
+            if (href === '#simulator') {
+                showNotification('⚙️', 'Loading Simulator', 'Opening GARVI Performance Simulator...');
+            } else if (href === '#tutorials') {
+                showNotification('📚', 'Opening Tutorials', 'Loading analytics tutorials and guides...');
+            } else if (href === '#reports') {
+                showNotification('📋', 'Loading Reports', 'Opening comprehensive analytics reports...');
+            } else if (href === '#insights') {
+                showNotification('💡', 'Loading Insights', 'Opening AI-powered institutional insights...');
+            }
         });
+    });
 
         // Time range selector
         document.getElementById('timeRange').addEventListener('change', function() {

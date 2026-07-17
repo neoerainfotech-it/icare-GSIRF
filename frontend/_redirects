@@ -1,11 +1,11 @@
 # GARVI Portal — Netlify Redirects
-/gsirf        /index.html       200
-/garvi        /landing.html     200
-/login        /login.html       200
-/dashboard    /dashboard.html   200
-/analytics    /analytics.html   200
-/benchmarking /benchmarking.html 200
-/simulator    /simulator.html   200
-/admin        /admin.html       200
-/data         /gsirf-data-collection.html  200
-/*            /index.html       404
+/gsirf        /index       200
+/garvi        /landing     200
+/login        /login       200
+/dashboard    /dashboard   200
+/analytics    /analytics   200
+/benchmarking /benchmarking 200
+/simulator    /simulator   200
+/admin        /admin       200
+/data         /gsirf-data-collection  200
+/*            /index       404

@@ -24,8 +24,7 @@
     .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
     .gradient-bg { background: linear-gradient(135deg, #D58B00 0%, #F4A623 100%); }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/garvi-supabase.js"></script>
+  
 </head>
 <body class="min-h-screen bg-gray-50 font-sans">
   <!-- Top Navigation -->
@@ -92,7 +91,7 @@
             <p class="text-white/80 text-sm mt-1">Submit your institution's data for the Gujarat State Institutional Ranking Framework 2026. Covers faculty, students, research, financials & governance.</p>
           </div>
           <div id="dc_actionArea" class="flex-shrink-0">
-            <a href="gsirf-data-collection.html" class="bg-white text-garvi-orange font-bold px-6 py-3 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap shadow-md">
+            <a href="/gsirf-data-collection" class="bg-white text-garvi-orange font-bold px-6 py-3 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap shadow-md">
               Start Data Submission →
             </a>
           </div>
@@ -422,63 +421,69 @@
       }
     });
 
-    // Main feature functions
-    // ── Supabase: guard session + load submission status ──────────
-    (async function initDashboard() {
-      const session = await requireAuth('login.html');
-      if (!session) return;
+  
+    // ── NEW SCRIPT INITIALIZATION ───────────────────────────────────────────
+(async function initDashboard() {
+  // 1. Run the guard first. If unauthorized, protectPage stops execution here.
+  protectPage('institute');
 
-      // Show username in header if element exists
-      const institute = await getMyInstitute();
-      const nameEl = document.querySelector('.text-gray-600.text-sm');
-      if (nameEl && institute) nameEl.textContent = institute.name;
+  // 2. Parse the local session data saved during login
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  // Display the institute name in the header cleanly
+  const nameEl = document.querySelector('.text-gray-600.text-sm');
+  if (nameEl && userData.name) {
+    nameEl.textContent = userData.name;
+  }
 
-      // Days remaining to Jul 31 2026
-      const deadline = new Date('2026-07-31');
-      const days = Math.max(0, Math.ceil((deadline - new Date()) / 86400000));
-      const daysEl = document.querySelector('#dc_progressBar')?.closest('.bg-white')?.querySelector('.text-blue-600');
-      if (daysEl) daysEl.textContent = days;
+  // 3. Days remaining calculation
+  const deadline = new Date('2026-07-31');
+  const days = Math.max(0, Math.ceil((deadline - new Date()) / 86400000));
+  const daysEl = document.querySelector('#dc_progressBar')?.closest('.bg-white')?.querySelector('.text-blue-600');
+  if (daysEl) daysEl.textContent = days;
 
-      // Local draft progress (still from localStorage)
-      try {
-        const raw = localStorage.getItem('garvi_gsirf2026_v1');
-        if (raw) {
-          const data = JSON.parse(raw);
-          const vals = Object.values(data).filter(v => v && v !== '0' && v !== 'false');
-          const pct = Math.min(100, Math.round(vals.length / (Object.keys(data).length || 1) * 100)) + '%';
-          if (document.getElementById('dc_pct'))          document.getElementById('dc_pct').textContent = pct;
-          if (document.getElementById('dc_pctLabel'))     document.getElementById('dc_pctLabel').textContent = pct;
-          if (document.getElementById('dc_progressBar'))  document.getElementById('dc_progressBar').style.width = pct;
-          if (document.getElementById('dc_submitted'))    document.getElementById('dc_submitted').textContent = data.s1_gsirfId ? '1' : '0';
-        }
-      } catch(e) {}
+  // 4. Local draft progress calculations from localStorage
+  try {
+    const raw = localStorage.getItem('garvi_gsirf2026_v1');
+    if (raw) {
+      const data = JSON.parse(raw);
+      const vals = Object.values(data).filter(v => v && v !== '0' && v !== 'false');
+      const pct = Math.min(100, Math.round(vals.length / (Object.keys(data).length || 1) * 100)) + '%';
+      if (document.getElementById('dc_pct'))          document.getElementById('dc_pct').textContent = pct;
+      if (document.getElementById('dc_pctLabel'))     document.getElementById('dc_pctLabel').textContent = pct;
+      if (document.getElementById('dc_progressBar'))  document.getElementById('dc_progressBar').style.width = pct;
+      if (document.getElementById('dc_submitted'))    document.getElementById('dc_submitted').textContent = data.s1_gsirfId ? '1' : '0';
+    }
+  } catch(e) {
+    console.error("Draft mapping parsing bypassed:", e);
+  }
 
-      // ── Load submission status from Supabase ────────────────
-      const { data: sub } = await sb
-        .from('gsirf_submissions')
-        .select('status, submitted_at, updated_at')
-        .eq('institute_id', session.user.id)
-        .maybeSingle();
+  // 5. Fetch operational submission status from your Node/Express database instead of Supabase
+  try {
+    const res = await fetch('/api/applications/my-status', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const result = await res.json();
+    
+    const area = document.getElementById('dc_actionArea');
+    if (!area) return;
 
-      const area = document.getElementById('dc_actionArea');
-      if (!area) return;
-
-      if (!sub) {
-        area.innerHTML = `<a href="gsirf-data-collection.html" class="bg-white text-garvi-orange font-bold px-6 py-3 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap shadow-md">Start Data Submission →</a>`;
-      } else if (sub.status === 'pending') {
+    if (!result.success || !result.submission) {
+      area.innerHTML = `<a href="/gsirf-data-collection" class="bg-white text-garvi-orange font-bold px-6 py-3 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap shadow-md">Start Data Submission →</a>`;
+    } else {
+      const sub = result.submission;
+      if (sub.status === 'pending') {
         area.innerHTML = `
           <div class="flex flex-col items-end gap-2">
             <span class="inline-flex items-center gap-2 bg-amber-100 text-amber-800 font-semibold px-4 py-2 rounded-xl text-sm shadow">
-              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
               Pending Admin Review
             </span>
-            <a href="gsirf-data-collection.html" class="text-xs text-white/70 hover:text-white underline">Edit &amp; Resubmit</a>
+            <a href="/gsirf-data-collection" class="text-xs text-white/70 hover:text-white underline">Edit &amp; Resubmit</a>
           </div>`;
       } else if (sub.status === 'accepted') {
         area.innerHTML = `
           <div class="flex flex-col items-end gap-2">
             <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 font-semibold px-4 py-2 rounded-xl text-sm shadow">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Accepted by Admin
             </span>
             <span class="text-xs text-white/70">Accepted on ${new Date(sub.updated_at).toLocaleDateString()}</span>
@@ -487,24 +492,27 @@
         area.innerHTML = `
           <div class="flex flex-col items-end gap-2">
             <span class="inline-flex items-center gap-2 bg-red-100 text-red-800 font-semibold px-4 py-2 rounded-xl text-sm shadow">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Rejected — Resubmit Required
             </span>
-            <a href="gsirf-data-collection.html" class="text-xs text-white/70 hover:text-white underline">Fix &amp; Resubmit</a>
+            <a href="/gsirf-data-collection" class="text-xs text-white/70 hover:text-white underline">Fix &amp; Resubmit</a>
           </div>`;
       }
-    })();
+    }
+  } catch (err) {
+    console.error('Failed to resolve dashboard app metrics:', err);
+  }
+})();
 
     function openAnalytics() {
-      window.location.href = 'analytics.html';
+      window.location.href = '/analytics';
     }
 
     function openBenchmarking() {
-      window.location.href = 'benchmarking.html';
+      window.location.href = '/benchmarking';
     }
 
     function openSimulator() {
-      window.location.href = 'simulator.html';
+      window.location.href = '/simulator';
     }
 
     // Profile menu handlers
