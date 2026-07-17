@@ -71,14 +71,14 @@
   };
 
   const FLAT_GROUPS = [
-    { key:'g1',  label:'Institute Profile & Registration', icon:'📋', test: k => k.startsWith('s1_') },
+    { key:'g1',   label:'Institute Profile & Registration', icon:'📋', test: k => k.startsWith('s1_') },
     { key:'g_phd',label:'Ph.D. Student Details',          icon:'🔬', test: k => k.startsWith('phd_') },
     { key:'g_slp',label:'Sustainable Living Practices',   icon:'🌿', test: k => k.startsWith('slp_') || k.startsWith('radio_slp') },
-    { key:'g_acc',label:'Accreditation',                  icon:'🏅', test: k => k.startsWith('naac_') || k.startsWith('nba_') },
-    { key:'g_nep',label:'Multiple Entry/Exit & NEP',      icon:'🔄', test: k => k.startsWith('nep_') },
+    { key:'g_acc',label:'Accreditation',                   icon:'🏅', test: k => k.startsWith('naac_') || k.startsWith('nba_') },
+    { key:'g_nep',label:'Multiple Entry/Exit & NEP',       icon:'🔄', test: k => k.startsWith('nep_') },
     { key:'g_ipr',label:'Research, Publications & IPR',   icon:'💡', test: k => k.startsWith('ipr_') },
-    { key:'g_ab', label:'About Institute',                icon:'🏛️', test: k => k.startsWith('about_') },
-    { key:'g_dec',label:'Declaration',                    icon:'📢', test: k => k.startsWith('s8_') || k === 'declarationCheck' },
+    { key:'g_ab', label:'About Institute',                 icon:'🏛️', test: k => k.startsWith('about_') },
+    { key:'g_dec',label:'Declaration',                     icon:'📢', test: k => k.startsWith('s8_') || k === 'declarationCheck' },
   ];
 
   const FIELD_LABELS = {
@@ -152,7 +152,6 @@
     return sp.filter(p => p.checked).map(p => p.key);
   }
 
-  // Styles Injection Engine
   function injectStyles() {
     if (document.getElementById('csf-styles')) return;
     document.head.insertAdjacentHTML('beforeend', `<style id="csf-styles">
@@ -172,7 +171,7 @@
       .csf-card .ci{font-size:1.25rem;margin-bottom:.2rem}
       .csf-card .cl{font-size:.75rem;font-weight:700;color:#0f172a}
       .csf-card .cd{font-size:.65rem;color:#64748b;line-height:1.3;margin-top:2px}
-      .csf-pill{position:absolute;top:.35rem;right:.35rem;width:16px;height:18px;border-radius:50%;border:1.5px solid #D58B00;background:#fff;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff}
+      .csf-pill{position:absolute;top:.35rem;right:.35rem;width:16px;height:16px;border-radius:50%;border:1.5px solid #D58B00;background:#fff;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff}
       .csf-card.sel .csf-pill{background:#D58B00}
       .csf-btn{padding:.5rem 1.25rem;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;transition:all .1s;line-height:1}
       .csf-gold{background:#D58B00;color:#fff}
@@ -275,7 +274,7 @@
     const cat   = NIRF_CATS.find(c=>c.id===catId);
     const isLast = _idx===_selected.length-1;
 
-    if (!_sels[catId])     _sels[catId]    = _buildFlatSels();
+    if (!_sels[catId])      _sels[catId]    = _buildFlatSels();
     if (!_progSels[catId]) _progSels[catId] = _buildProgSels();
     if (!_facSels[catId]) {
       _facSels[catId]={};
@@ -332,7 +331,6 @@
     return out;
   }
 
-  // Tree Generator Engine
   function buildTree(catId) {
     const parts = [];
 
@@ -516,6 +514,7 @@
       </div>`);
   }
 
+  // ─── CORE PROPERTY UI MUTATOR INTERFACES ──────────────────────────────────
   function _refreshCnt() {
     const el=document.getElementById('csf-cnt'), btn=document.getElementById('csf-proc');
     if(el) el.textContent=_selected.length;
@@ -538,7 +537,6 @@
     el.textContent=`${chk} / ${_facultyData.length} selected &nbsp;`;
   }
 
-  // ─── Event Core Handlers ──────────────────────────────────────────────────
   function _tc(catId) {
     const i=_selected.indexOf(catId);
     if(i>=0){_selected.splice(i,1);document.getElementById(`csf-card-${catId}`)?.classList.remove('sel');}
@@ -552,10 +550,14 @@
   }
 
   function _proc() { if(!_selected.length) return; _idx=0; showReview(); }
-  function _ts(bodyId, arrowId) { document.getElementById(bodyId)?.classList.toggle('open'); document.getElementById(arrowId)?.classList.toggle('open'); }
+  
+  function _ts(bodyId, arrowId) { 
+    document.getElementById(bodyId)?.classList.toggle('open'); 
+    document.getElementById(arrowId)?.classList.toggle('open'); 
+  }
 
   function _sc(cb) {
-    const catId=cb.dataset.cat, flat=!!cb.dataset.flat;
+    const catId=cb.dataset.cat;
     const keys=(cb.dataset.flist||'').split('|').filter(Boolean);
     const on=cb.checked;
     if(!_sels[catId]) _sels[catId]={};
@@ -679,7 +681,7 @@
 
   function _back() { showCatSel(); }
 
-  // ─── EXPRESS POST SYNCHRONIZER ──────────────────────────────────────────
+  // ─── EXPRESS REGISTRY POST SYNCHRONIZER ───────────────────────────────────
   async function _save(catId) {
     const btn=document.getElementById('csf-savebtn');
     if(btn){btn.disabled=true; btn.innerHTML='<span class="csf-spin"></span>Saving…';}
@@ -710,19 +712,21 @@
         _faculty_count:      selFacultyIds.length,
       };
 
-      // Execute network push to native Node/Express router layer
-      const response = await fetch('/api/applications/category-submit', {
+      // Dispatches mapped rows array down to your relational backend router
+      const response = await fetch('/api/applications/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          instituteId: _instId,
-          overallSubmissionId: _subId,
-          category: catId,
-          data: dataToSave
+          submission_id: _subId,
+          institute_id:  _instId,
+          ranking_year:  2026,
+          categories:    [catId], 
+          category_data: dataToSave 
         })
       });
+      
       const result = await response.json();
-      if (!result.success) throw new Error(result.error || 'Server rejected context save payload.');
+      if (!result.success) throw new Error(result.error || 'Server rejected categorization adjustments.');
 
       _saved.push(catId);
       _idx++;
@@ -730,14 +734,14 @@
 
     } catch(err) {
       console.error('[CSF Migration Error]', err);
-      if(btn){btn.disabled=false; btn.innerHTML=_idx<_selected.length-1?'Save & Next →':'✓ Save & Finish';}
+      if(btn){btn.disabled=false; btn.innerHTML=_idx===_selected.length-1?'✓ Save & Finish':'Save & Next →';}
       alert('Could not synchronize category data mapping: ' + err.message);
     }
   }
 
   function _dash(){ removeOv(); window.location.href='dashboard.html'; }
 
-  // ─── INITIALIZER ENTRY POINT ──────────────────────────────────────────────
+  // ─── ARTIFACT ENTRY LOAD INITIALIZER ───────────────────────────────────────
   async function init(supabaseClientIgnored, submissionId, formData, instituteUserId) {
     _subId    = submissionId;
     _data     = formData;
@@ -753,10 +757,20 @@
 
     try {
       if(_instId){
-        // Pull faculty from clean internal Express API endpoint
+        // Fetch matching workspace personnel arrays
         const response = await fetch(`/api/applications/faculty/${_instId}`);
         const result = await response.json();
-        _facultyData = result.faculty || [];
+        
+        // 🌟 CRITICAL BUG FIX: Maps server elements to match internal f.id lookups
+        if (result.success && Array.isArray(result.faculty)) {
+          _facultyData = result.faculty.map(f => ({
+            id: f.id || f.db_id, 
+            name: f.name,
+            designation: f.designation,
+            highest_degree: f.highest_degree,
+            teaching_exp: f.teaching_exp
+          }));
+        }
       }
     } catch(e){ console.warn('[CSF Initialization Fault]', e); }
 
