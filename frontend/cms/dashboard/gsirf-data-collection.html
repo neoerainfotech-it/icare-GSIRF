@@ -104,7 +104,7 @@
         <span class="hidden sm:block text-sm font-semibold text-gray-700">GSIRF 2026 — Data Collection Portal</span>
       </div>
       <div class="flex items-center gap-3">
-        <a href="dashboard.html" class="text-sm flex items-center gap-1 text-gray-600 hover:text-garvi-orange transition">
+        <a href="/dashboard" class="text-sm flex items-center gap-1 text-gray-600 hover:text-garvi-orange transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Dashboard
         </a>
@@ -1449,7 +1449,7 @@ async function submitForm() {
   if (!gsirfId) { alert('Please fill the GSIRF Institute ID in Section 1 before submitting.'); return; }
 
   const session = getSessionLocal();
-  if (!session) { window.location.href = 'login.html'; return; }
+  if (!session) { window.location.href = '/login'; return; }
   const userId = session.userId || (session.user ? session.user.id : null);
   const username = session.username || 'institution';
   const instName = document.getElementById('s1_instName')?.value?.trim() || "Institution";
@@ -1551,7 +1551,7 @@ const today = new Date().toISOString().split('T')[0];
     const userId = session.userId || (session.user ? session.user.id : null);
     STORAGE_KEY = `garvi_gsirf2026_v2_${userId}`;
   } else {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
   loadDraft();
