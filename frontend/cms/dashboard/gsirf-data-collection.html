@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GARVI — GSIRF 2026 Data Collection</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/auth.js"></script>
   <script>
     tailwind.config = {
       theme: { extend: { colors: { 'garvi-orange':'#D58B00','garvi-gold':'#F4A623' } } }
@@ -1485,7 +1486,7 @@ async function submitForm() {
       CategorySubmissionFlow.init(result.submissionId, formData, userId);
     } else {
       showToast('Form submitted successfully!');
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
+      setTimeout(() => { window.location.href = '/dashboard'; }, 2000);
     }
 
   } catch (err) {
@@ -1599,7 +1600,10 @@ async function saveSection1Profile() {
   try {
     const response = await fetch('/api/applications/section1', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${localStorage.getItem('token')}`
+},
       body: JSON.stringify(profilePayload)
     });
     return await response.json();

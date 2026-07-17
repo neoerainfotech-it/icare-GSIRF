@@ -739,7 +739,7 @@
     }
   }
 
-  function _dash(){ removeOv(); window.location.href='dashboard.html'; }
+  function _dash(){ removeOv(); window.location.href='/dashboard'; }
 
   // ─── ARTIFACT ENTRY LOAD INITIALIZER ───────────────────────────────────────
   async function init(supabaseClientIgnored, submissionId, formData, instituteUserId) {
