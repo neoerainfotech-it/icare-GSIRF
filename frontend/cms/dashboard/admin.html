@@ -41,7 +41,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased font-sans">
+<body class="min-h-screen bg-gray-50 text-gray-800 antialiased font-sans flex flex-col justify-between">
   
   <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -62,7 +62,7 @@
     </div>
   </header>
 
-  <main id="main" class="pb-16">
+  <main id="main" class="pb-16 flex-grow">
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <h1 class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Admin — <span class="text-garvi-orange">Create Institute Logins</span></h1>
       <p class="mt-2 text-base text-gray-600">Add an institute with a user ID and password. Entries are shown below.</p>
@@ -70,29 +70,41 @@
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="md:col-span-2 bg-white rounded-xl p-6 border border-gray-200 shadow-card hover-lift">
-          <h2 class="text-lg font-bold text-gray-900 mb-5 pb-2 border-b border-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-garvi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-            Create Account
-          </h2>
-          <form id="createForm" class="grid sm:grid-cols-3 gap-5" autocomplete="off">
-            <div>
-              <label for="inst" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Institute Name</label>
-              <input id="inst" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., IIT Gandhinagar" />
+        <div class="md:col-span-2 bg-white rounded-xl p-6 border border-gray-200 shadow-card hover-lift flex flex-col justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900 mb-5 pb-2 border-b border-gray-100 flex items-center gap-2">
+              <svg class="w-5 h-5 text-garvi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+              Create Account
+            </h2>
+            
+            <div id="formValidationBanner" class="hidden mb-5 p-4 rounded-xl border flex items-start gap-3 transition-all fade-in">
+              <div id="bannerIcon" class="mt-0.5 shrink-0"></div>
+              <div>
+                <h4 id="bannerTitle" class="font-bold text-sm"></h4>
+                <p id="bannerDesc" class="text-xs mt-0.5 leading-relaxed"></p>
+              </div>
             </div>
-            <div>
-              <label for="uid" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">User ID</label>
-              <input id="uid" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., iitgn_admin" />
-            </div>
-            <div>
-              <label for="pwd" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Password</label>
-              <input id="pwd" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., P@ssw0rd!" />
-            </div>
-            <div class="sm:col-span-3 flex items-center gap-3 mt-3 pt-3 border-t border-gray-50">
-              <button type="submit" class="bg-garvi-orange text-white px-6 py-2 rounded-lg font-bold hover:bg-orange-600 active:scale-95 transition-all text-sm shadow-sm">Create</button>
-              <button type="button" id="clearForm" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-50 active:scale-95 transition-all text-sm">Clear</button>
-            </div>
-          </form>
+
+            <form id="createForm" class="grid sm:grid-cols-3 gap-5" autocomplete="off">
+              <div>
+                <label for="inst" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Institute Name</label>
+                <input id="inst" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., IIT Gandhinagar" />
+              </div>
+              <div>
+                <label for="uid" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">User ID</label>
+                <input id="uid" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., iitgn_admin" />
+              </div>
+              <div>
+                <label for="pwd" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Password</label>
+                <input id="pwd" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="e.g., P@ssw0rd!" />
+                <p class="text-[10px] text-gray-400 mt-1 leading-tight">Min 8 chars: 1 Upper, 1 Lower, 1 Num, 1 Symbol.</p>
+              </div>
+              <div class="sm:col-span-3 flex items-center gap-3 mt-3 pt-3 border-t border-gray-50">
+                <button type="submit" class="bg-garvi-orange text-white px-6 py-2 rounded-lg font-bold hover:bg-orange-600 active:scale-95 transition-all text-sm shadow-sm">Create</button>
+                <button type="button" id="clearForm" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-50 active:scale-95 transition-all text-sm">Clear</button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-card">
@@ -131,14 +143,31 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               Export Category (Excel)
             </button>
-            <hr class="border-gray-200 my-1"/>
-            <button id="clearAll" class="w-full border border-red-200 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 hover:border-red-500 hover:text-white transition-all text-sm font-semibold">Clear All</button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- STEP 8 / MASTER DATA TABLE SECTION -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      
+      <!-- Enterprise Batch Deletion Operational Box (BUG-003) -->
+      <div id="batchDeleteCard" class="hidden mb-6 p-5 bg-red-50 border border-red-200 rounded-xl shadow-sm transition-all fade-in">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <div>
+              <h3 class="font-bold text-red-900 text-sm">Batch Clear Action Desk</h3>
+              <p class="text-xs text-red-700 mt-1">You have selected <span id="selectedCountBadge" class="font-bold underline">0</span> submissions. Enter password token phrase <span class="bg-red-100 text-red-900 px-1.5 py-0.5 rounded font-mono font-bold select-all">PURGE-ALL-DATA</span> to authorize.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button onclick="executeBatchDelete()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors">Confirm Purge</button>
+            <button onclick="cancelBatchDeleteMode()" class="border border-gray-300 text-gray-700 hover:bg-gray-100 bg-white px-3 py-1.5 rounded-lg text-xs font-semibold">Cancel</button>
+          </div>
+        </div>
+      </div>
+
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
         <div class="flex items-center gap-2.5">
           <div class="h-6 w-1 bg-garvi-orange rounded-full"></div>
@@ -163,13 +192,18 @@
             <option value="open_university">Open University</option>
             <option value="skill_university">Skill University</option>
           </select>
+          <button id="clearAll" class="bg-red-50 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Clear All</button>
           <span class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200" id="subCount">0 submissions</span>
         </div>
       </div>
+      
       <div class="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-card">
         <table class="min-w-full text-sm">
           <thead class="bg-gray-50 border-b border-gray-200 text-gray-700">
             <tr>
+              <th id="thSelectAll" class="hidden px-4 py-3.5 text-center w-12 transition-all">
+                <input type="checkbox" id="masterSelectCheckbox" class="w-4 h-4 rounded text-red-600 focus:ring-red-500" onclick="toggleSelectAllRows(this.checked)" />
+              </th>
               <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">#</th>
               <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">Institute</th>
               <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider">GSIRF ID</th>
@@ -184,6 +218,7 @@
       </div>
     </section>
 
+    <!-- REGISTERED INSTITUTES CREDENTIALS SECTION -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
         <div class="flex items-center gap-2.5">
@@ -218,21 +253,7 @@
     </section>
   </main>
 
-  <div id="viewModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-premium border border-gray-200 max-w-2xl w-full flex flex-col max-h-[85vh]">
-      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-xl">
-        <h3 class="font-bold text-gray-900 text-base" id="modalTitle">Submission Complete Data Profile</h3>
-        <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 rounded-lg p-1 hover:bg-gray-200/60 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-sm space-y-4" id="modalBody"></div>
-      <div class="px-6 py-3.5 border-t border-gray-100 bg-gray-50 rounded-b-xl flex justify-end">
-        <button id="closeModalBtnSecondary" class="bg-gray-900 text-white font-semibold px-4 py-2 rounded-lg text-xs hover:bg-gray-800 transition-colors">Close Profile</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- Change Password Selection Modal -->
   <div id="passwordModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-premium border border-gray-200 max-w-md w-full flex flex-col">
       <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-xl">
@@ -247,6 +268,7 @@
           <label for="newTargetPwd" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">New Secure Password</label>
           <input id="newTargetPwd" type="text" required class="w-full rounded-lg border border-gray-300 bg-white focus:border-garvi-orange focus:ring-2 focus:ring-garvi-orange/20 px-3.5 py-2 text-sm transition-all shadow-sm" placeholder="Enter new secure credentials" />
         </div>
+        <div id="modalValidationBanner" class="hidden p-3 rounded-lg border text-xs leading-normal"></div>
         <div class="flex justify-end gap-2.5 pt-2 border-t border-gray-50">
           <button type="button" onclick="closePasswordModal()" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-50 text-xs transition-colors">Cancel</button>
           <button type="submit" class="bg-garvi-orange text-white font-bold px-4 py-2 rounded-lg text-xs hover:bg-orange-600 transition-colors shadow-sm">Save Changes</button>
@@ -263,41 +285,62 @@
   </footer>
 
   <script>
-    const PROGRAMS = [
-    { key:'ug3', label:'UG [3 Years Program(s)]',         dur:3, lateral:true  },
-    { key:'ug4', label:'UG [4 Years Program(s)]',         dur:4, lateral:true  },
-    { key:'ug5', label:'UG [5 Years Program(s)]',         dur:5, lateral:true  },
-    { key:'ug6', label:'UG [6 Years Program(s)]',         dur:6, lateral:false },
-    { key:'pg1', label:'PG [1 Year Program(s)]',          dur:1, lateral:false },
-    { key:'pg2', label:'PG [2 Years Program(s)]',         dur:2, lateral:false },
-    { key:'pg3', label:'PG [3 Years Program(s)]',         dur:3, lateral:true  },
-    { key:'pgi', label:'PG-Integrated [5 Years Program(s)]', dur:5, lateral:true },
-    { key:'pg6', label:'PG [6 Years Program(s)]',         dur:6, lateral:false },
-  ];
-
     protectPage('admin');
+    const FIN_YEARS = ['2025-26','2024-25','2023-24'];
+    let currentStep = 1;
+    let isDeleteModeActive = false;
+
+    function checkPasswordPolicy(password) {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      return regex.test(password);
+    }
+
+    function showFormFeedback(type, title, msg, targetId = 'formValidationBanner') {
+      const banner = document.getElementById(targetId);
+      const bTitle = targetId === 'formValidationBanner' ? document.getElementById('bannerTitle') : null;
+      const bDesc = targetId === 'formValidationBanner' ? document.getElementById('bannerDesc') : null;
+      const iconWrap = document.getElementById('bannerIcon');
+
+      banner.className = `mb-5 p-4 rounded-xl border flex items-start gap-3 transition-all fade-in `;
+      
+      if (type === 'error') {
+        banner.classList.add('bg-red-50', 'border-red-200', 'text-red-900');
+        if (iconWrap) iconWrap.innerHTML = `<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      } else {
+        banner.classList.add('bg-green-50', 'border-green-200', 'text-green-900');
+        if (iconWrap) iconWrap.innerHTML = `<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+
+      if (targetId === 'formValidationBanner') {
+        bTitle.textContent = title;
+        bDesc.textContent = msg;
+      } else {
+        banner.textContent = msg;
+      }
+      banner.classList.remove('hidden');
+    }
+
     // ── INITIALIZATION ─────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       loadInstitutes();
       loadSubmissions();
-      
-      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-      document.getElementById('closeModalBtnSecondary').addEventListener('click', closeModal);
-      document.getElementById('viewModal').addEventListener('click', (e) => {
-        if (e.target.id === 'viewModal') closeModal();
-      });
-
-      // Hook password update submission
       document.getElementById('passwordForm').addEventListener('submit', executePasswordUpdate);
+      document.getElementById('clearAll').addEventListener('click', toggleBatchDeletionDesk);
     });
 
     // ── CREATE INSTITUTE ACCOUNT WORKFLOW ───────────────────────────
     document.getElementById('createForm').addEventListener('submit', async e => {
       e.preventDefault();
-      const inst  = document.getElementById('inst').value.trim();
-      const uid   = document.getElementById('uid').value.trim().toLowerCase();
-      const pwd   = document.getElementById('pwd').value.trim();
+      const inst = document.getElementById('inst').value.trim();
+      const uid = document.getElementById('uid').value.trim().toLowerCase();
+      const pwd = document.getElementById('pwd').value.trim();
+      
       if (!inst || !uid || !pwd) return;
+
+      if (!checkPasswordPolicy(pwd)) {
+        showFormFeedback('error', 'Password Policy Refusal', 'Password must be at least 8 characters long and contain uppercase, lowercase, numerical digits, and special characters.');
+        return;
+      }
 
       const btn = e.target.querySelector('button[type="submit"]');
       btn.disabled = true; btn.textContent = 'Creating…';
@@ -311,14 +354,14 @@
         const result = await res.json();
 
         if (result.error) {
-          alert('❌ ' + result.error);
+          showFormFeedback('error', 'Account Action Failed', result.error);
         } else {
-          alert('✅ ' + result.message);
+          showFormFeedback('success', 'Success', result.message);
           document.getElementById('createForm').reset();
           loadInstitutes();
         }
       } catch (err) {
-        alert('❌ Server handshake failed.');
+        showFormFeedback('error', 'System Handshake Error', 'Server connection timed out or network endpoints dropped.');
       } finally {
         btn.disabled = false; btn.textContent = 'Create';
       }
@@ -326,12 +369,19 @@
 
     document.getElementById('clearForm').addEventListener('click', () => {
       document.getElementById('createForm').reset();
+      document.getElementById('formValidationBanner').classList.add('hidden');
     });
 
     // ── RENDER ACTIVE INSTITUTES FROM MYSQL ─────────────────────────
     async function loadInstitutes() {
       try {
-        const res = await fetch('/api/admin/institutes');
+        const res = await fetch('/api/admin/institutes', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         const result = await res.json();
         const data = result.data || [];
 
@@ -356,10 +406,8 @@
               </span>
             </td>
             <td class="px-6 py-4 text-xs font-bold flex gap-4 items-center">
-              <button onclick="openPasswordModal('${u.id}','${u.name}')"
-                class="text-garvi-orange hover:text-orange-700 hover:underline transition-colors">Change Password</button>
-              <button onclick="deleteInstitute('${u.id}','${u.name}')"
-                class="text-red-600 hover:text-red-800 hover:underline transition-colors">Delete</button>
+              <button onclick="openPasswordModal('${u.id}','${u.name}')" class="text-garvi-orange hover:text-orange-700 hover:underline transition-colors">Change Password</button>
+              <button onclick="deleteInstitute('${u.id}','${u.name}')" class="text-red-600 hover:text-red-800 hover:underline transition-colors">Delete</button>
             </td>
           </tr>`).join('');
       } catch (err) {
@@ -374,13 +422,13 @@
       });
     });
 
-    // ── PASSWORD UPDATE MODAL CONTROL ────────────────────────────────
+    // ── PASSWORD UPDATE MODAL CONTROL ──────────────────────────────
     function openPasswordModal(id, name) {
       document.getElementById('pwdTargetUserId').value = id;
       document.getElementById('pwdModalTitle').textContent = `Change Password — ${name}`;
       document.getElementById('newTargetPwd').value = '';
-      const modal = document.getElementById('passwordModal');
-      modal.classList.remove('hidden');
+      document.getElementById('modalValidationBanner').classList.add('hidden');
+      document.getElementById('passwordModal').classList.remove('hidden');
     }
 
     function closePasswordModal() {
@@ -392,6 +440,11 @@
       const userId = document.getElementById('pwdTargetUserId').value;
       const newPassword = document.getElementById('newTargetPwd').value.trim();
       if (!userId || !newPassword) return;
+
+      if (!checkPasswordPolicy(newPassword)) {
+        showFormFeedback('error', null, 'Password must be at least 8 characters long and contain an uppercase, lowercase, number, and special character.', 'modalValidationBanner');
+        return;
+      }
 
       const submitBtn = e.target.querySelector('button[type="submit"]');
       submitBtn.disabled = true; submitBtn.textContent = 'Saving…';
@@ -409,16 +462,15 @@
           closePasswordModal();
           loadInstitutes();
         } else {
-          alert('❌ ' + result.error);
+          showFormFeedback('error', null, result.error, 'modalValidationBanner');
         }
       } catch (err) {
-        alert('❌ Network timeout modifying target record.');
+        showFormFeedback('error', null, 'Network handshake mutation timeout.', 'modalValidationBanner');
       } finally {
         submitBtn.disabled = false; submitBtn.textContent = 'Save Changes';
       }
     }
 
-    // ── PURGE INDIVIDUAL RECORD ─────────────────────────────────────
     async function deleteInstitute(userId, name) {
       if (!confirm(`Permanently remove access profiles for "${name}"? This action cannot be reversed.`)) return;
       try {
@@ -435,7 +487,6 @@
       }
     }
 
-    // ── GSIRF CATEGORY METADATA DICTIONARY ──────────────────────────
     const NIRF_CAT_LABELS = {
       universities:'Universities', colleges:'Colleges', research:'Research',
       engineering:'Engineering', management:'Management', pharmacy:'Pharmacy',
@@ -455,15 +506,33 @@
         const data = result.submissions || [];
         const catSubs = result.categorySubmissions || [];
 
+        // ✅ Robust map compilation with string-safe ID keys
         const catMap = {};
         catSubs.forEach(c => {
-          if (!catMap[c.institute_id]) catMap[c.institute_id] = [];
-          catMap[c.institute_id].push(c.category);
+          const instKey = String(c.institute_id);
+          if (!catMap[instKey]) catMap[instKey] = [];
+          if (c.category && !catMap[instKey].includes(c.category)) {
+            catMap[instKey].push(c.category);
+          }
+        });
+
+        // Fallback: Check if categories are stored directly inside form_data payload JSON
+        data.forEach(s => {
+          const instKey = String(s.institute_id);
+          if (!catMap[instKey] || catMap[instKey].length === 0) {
+            const fd = typeof s.form_data === 'string' ? JSON.parse(s.form_data || '{}') : (s.form_data || {});
+            const embeddedCats = fd._selectedCategories || fd.categories || [];
+            if (Array.isArray(embeddedCats) && embeddedCats.length > 0) {
+              catMap[instKey] = embeddedCats;
+            }
+          }
         });
 
         window._submissions = data;
-        window._catMap      = catMap;
-        renderSubRows(data, catMap);
+        window._catMap = catMap;
+
+        document.getElementById('subCatFilter').value = ""; 
+        renderSubRows(data, catMap, ""); 
       } catch (err) {
         console.error('Failed to compile application data maps:', err);
       }
@@ -472,24 +541,28 @@
     function renderSubRows(data, catMap, filterCat) {
       let filtered = data;
       if (filterCat === 'overall') {
-        filtered = data.filter(s => !(catMap[s.institute_id]?.length));
+        filtered = data.filter(s => !(catMap[String(s.institute_id)]?.length));
       } else if (filterCat) {
-        filtered = data.filter(s => (catMap[s.institute_id] || []).includes(filterCat));
+        filtered = data.filter(s => (catMap[String(s.institute_id)] || []).includes(filterCat));
       }
 
       const subCount = document.getElementById('subCount');
       subCount.textContent = filtered.length + (filtered.length === 1 ? ' submission' : ' submissions');
 
       document.getElementById('subRows').innerHTML = filtered.length === 0
-        ? '<tr><td colspan="7" class="px-6 py-10 text-center text-gray-400 text-sm font-medium">No applications matching requirements found.</td></tr>'
+        ? '<tr><td colspan="8" class="px-6 py-10 text-center text-gray-400 text-sm font-medium">No applications matching requirements found.</td></tr>'
         : filtered.map((s, i) => {
-            const cats = catMap[s.institute_id] || [];
+            const instKey = String(s.institute_id);
+            const cats = catMap[instKey] || [];
             const catBadges = cats.length
               ? cats.map(c => `<span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 mr-1 mb-1 shadow-sm">${NIRF_CAT_LABELS[c] || c}</span>`).join('')
               : '<span class="text-xs text-gray-400 font-medium italic">Overall only</span>';
 
             return `
-              <tr class="hover:bg-gray-50/70 transition-colors">
+              <tr class="hover:bg-gray-50/70 transition-colors relative sub-data-row" data-sub-id="${s.id}">
+                <td class="px-4 py-4 text-center select-col-cell ${isDeleteModeActive ? '' : 'hidden'}">
+                  <input type="checkbox" value="${s.id}" class="row-select-checkbox w-4 h-4 rounded text-red-600 focus:ring-red-500" onchange="updateSelectedBatchCount()" />
+                </td>
                 <td class="px-6 py-4 text-gray-500 font-medium">${i + 1}</td>
                 <td class="px-6 py-4 font-semibold text-gray-900">${s.institute_name}</td>
                 <td class="px-6 py-4 text-gray-600 font-mono text-xs bg-gray-50/50">${s.gsirf_id || '—'}</td>
@@ -510,29 +583,109 @@
           }).join('');
     }
 
+    function toggleBatchDeletionDesk() {
+      isDeleteModeActive = !isDeleteModeActive;
+      const batchCard = document.getElementById('batchDeleteCard');
+      const thSelectAll = document.getElementById('thSelectAll');
+      const clearBtn = document.getElementById('clearAll');
+      
+      if (isDeleteModeActive) {
+        batchCard.classList.remove('hidden');
+        thSelectAll.classList.remove('hidden');
+        clearBtn.textContent = "Exit Clear Mode";
+        clearBtn.className = "bg-gray-800 text-white border border-gray-700 px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm";
+        document.querySelectorAll('.select-col-cell').forEach(el => el.classList.remove('hidden'));
+      } else {
+        cancelBatchDeleteMode();
+      }
+    }
+
+    function toggleSelectAllRows(checked) {
+      document.querySelectorAll('.row-select-checkbox').forEach(cb => {
+        cb.checked = checked;
+      });
+      updateSelectedBatchCount();
+    }
+
+    function updateSelectedBatchCount() {
+      const checkedCount = document.querySelectorAll('.row-select-checkbox:checked').length;
+      document.getElementById('selectedCountBadge').textContent = checkedCount;
+    }
+
+    function cancelBatchDeleteMode() {
+      isDeleteModeActive = false;
+      document.getElementById('batchDeleteCard').classList.add('hidden');
+      document.getElementById('thSelectAll').classList.add('hidden');
+      document.getElementById('masterSelectCheckbox').checked = false;
+      document.getElementById('batchPurgeInput').value = '';
+      
+      const clearBtn = document.getElementById('clearAll');
+      clearBtn.textContent = "Clear All";
+      clearBtn.className = "bg-red-50 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm";
+      
+      document.querySelectorAll('.select-col-cell').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.row-select-checkbox').forEach(cb => cb.checked = false);
+      updateSelectedBatchCount();
+    }
+
+    async function executeBatchDelete() {
+      const selectedCheckboxes = document.querySelectorAll('.row-select-checkbox:checked');
+      if (selectedCheckboxes.length === 0) {
+        alert('❌ Error: No targeted institutional records have been selected for deletion.');
+        return;
+      }
+
+      // 🛑 Removed the strict 'PURGE-ALL-DATA' phrase check block here
+
+      if (!confirm(`Permanently delete ${selectedCheckboxes.length} selected submission(s)?`)) {
+        return;
+      }
+
+      const targetIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+      try {
+        const response = await fetch('/api/admin/submissions/batch-purge', {
+          method: 'DELETE',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ ids: targetIds })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          alert(`🗑️ Success: ${targetIds.length} targeted data submissions have been cleared successfully.`);
+          cancelBatchDeleteMode();
+          loadSubmissions();
+        } else {
+          alert('❌ Database Exception: Server rejected execution - ' + result.error);
+        }
+      } catch (err) {
+        alert('❌ Network Failure: Failed to transmit instruction array payload matrix.');
+      }
+    }
+
     document.getElementById('subCatFilter').addEventListener('change', function() {
       renderSubRows(window._submissions || [], window._catMap || {}, this.value);
+      if(isDeleteModeActive) {
+        document.querySelectorAll('.select-col-cell').forEach(el => el.classList.remove('hidden'));
+      }
     });
 
-    // ✅ FIXED STATUS BADGE GENERATOR
-function statusBadge(status) {
-  const map = {
-    pending:  'bg-amber-50 text-amber-800 border-amber-200 <svg class="w-3 h-3 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Pending',
-    accepted: 'bg-green-50 text-green-800 border-green-200 <svg class="w-3 h-3 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Accepted',
-    rejected: 'bg-red-50 text-red-800 border-red-200 <svg class="w-3 h-3 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Rejected',
-    draft:    'bg-gray-50 text-gray-700 border-gray-200 <svg class="w-3 h-3 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> Draft',
-  };
-
-  // Graceful structural fallback if status key is missing
-  const content = map[status] || 'bg-gray-50 text-gray-600 border-gray-200 ' + status;
-  
-  // Extract CSS classes up to the first '<' character
-  const spaceIndex = content.indexOf('<');
-  const classes = spaceIndex !== -1 ? content.substring(0, spaceIndex).trim() : content;
-  const innerMarkup = spaceIndex !== -1 ? content.substring(spaceIndex) : '';
-
-  return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-sm ${classes}">${innerMarkup}</span>`;
-}
+    function statusBadge(status) {
+      const map = {
+        pending:  'bg-amber-50 text-amber-800 border-amber-200 <svg class="w-3 h-3 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Pending',
+        accepted: 'bg-green-50 text-green-800 border-green-200 <svg class="w-3 h-3 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Accepted',
+        rejected: 'bg-red-50 text-red-800 border-red-200 <svg class="w-3 h-3 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Rejected',
+        draft:    'bg-gray-50 text-gray-700 border-gray-200 <svg class="w-3 h-3 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg> Draft',
+      };
+      const content = map[status] || 'bg-gray-50 text-gray-600 border-gray-200 ' + status;
+      const spaceIndex = content.indexOf('<');
+      const classes = spaceIndex !== -1 ? content.substring(0, spaceIndex).trim() : content;
+      const innerMarkup = spaceIndex !== -1 ? content.substring(spaceIndex) : '';
+      return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-sm ${classes}">${innerMarkup}</span>`;
+    }
 
     async function updateStatus(id, newStatus) {
       if (!confirm(`Transition this operational submission status to "${newStatus}"?`)) return;
@@ -552,21 +705,19 @@ function statusBadge(status) {
       }
     }
 
-    // ✅ UPDATED PRODUCTION-READY VIEW SUBMISSION PIPELINE
-function viewSubmission(id) {
-  // Opens the clean server route, passing the submission ID as a query parameter
-  window.open(`/review-submission?id=${id}`, '_blank');
-}
-
-    function closeModal() {
-      document.getElementById('viewModal').classList.add('hidden');
-      document.body.style.overflow = '';
+    function viewSubmission(id) {
+      window.open(`/review-submission?id=${id}`, '_blank');
     }
 
-    // ── DATA EXPORT CONTROLS ────────────────────────────────────────
     document.getElementById('exportCSV').addEventListener('click', async () => {
       try {
-        const res = await fetch('/api/admin/institutes');
+        const res = await fetch('/api/admin/institutes', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         const result = await res.json();
         const data = result.data || [];
         if (!data.length) { alert('No tracking logs found.'); return; }
@@ -598,17 +749,53 @@ function viewSubmission(id) {
 
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
-      XLSX.utils.book_append_sheet(wb, ws, 'Accepted Submissions');
-      XLSX.writeFile(wb, 'GARVI_GSIRF_2026_Accepted.xlsx');
+      XLSX.utils.book_append_sheet(wb, ws, 'All Accepted Submissions');
+      XLSX.writeFile(wb, 'GARVI_GSIRF_2026_Overall_Accepted.xlsx');
     });
 
     document.getElementById('exportCatExcel').addEventListener('click', () => {
-      alert('Dynamic category tracking engine loaded.');
-    });
-    
-    document.getElementById('clearAll').addEventListener('click', () => {
-      alert('Administrative clear actions are locked.');
+      const selectedCategory = document.getElementById('catSelect').value;
+      if (!selectedCategory) {
+        alert('❌ Operation Failed: Please select a valid target discipline from the Category dropdown menu first.');
+        return;
+      }
+
+      if (!window._submissions || !window._submissions.length || !window._catMap) {
+        alert('❌ Data Engine Error: Submission arrays are empty or unparsed.');
+        return;
+      }
+
+      const matches = window._submissions.filter(s => {
+        const hasAcceptedStatus = s.status === 'accepted';
+        const associatedCategories = window._catMap[s.institute_id] || [];
+        return hasAcceptedStatus && associatedCategories.includes(selectedCategory);
+      });
+
+      if (matches.length === 0) {
+        alert(`ℹ️ Notice: No accepted entries found for the "${NIRF_CAT_LABELS[selectedCategory] || selectedCategory}" tracking parameter.`);
+        return;
+      }
+
+      const targetKeys = new Set();
+      matches.forEach(s => Object.keys(s.form_data || {}).forEach(k => targetKeys.add(k)));
+      const sortedKeys = Array.from(targetKeys).sort();
+
+      const fileHeader = ['Institute Name', 'Username', 'GSIRF ID', 'Discipline', 'Submitted At', ...sortedKeys];
+      const fileRows = matches.map(s => [
+        s.institute_name,
+        s.username,
+        s.gsirf_id || '',
+        NIRF_CAT_LABELS[selectedCategory] || selectedCategory,
+        new Date(s.submitted_at).toLocaleString(),
+        ...sortedKeys.map(k => {
+          const fieldVal = (s.form_data || {})[k];
+          return (fieldVal === null || fieldVal === undefined) ? '' : (typeof fieldVal === 'object' ? JSON.stringify(fieldVal) : fieldVal);
+        })
+      ]);
+
+      const workbookInstance = XLSX.utils.book_new();
+      const sheetInstance = XLSX.utils.aoa_to_sheet([fileHeader, ...fileRows]);
+      XLSX.utils.book_append_sheet(workbookInstance, sheetInstance, 'Discipline Export');
+      XLSX.writeFile(workbookInstance, `GARVI_GSIRF_2026_Category_${NIRF_CAT_LABELS[selectedCategory] || selectedCategory}.xlsx`);
     });
   </script>
-</body>
-</html>

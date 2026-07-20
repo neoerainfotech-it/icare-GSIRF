@@ -31,11 +31,12 @@
     label.field-label { display:block; font-size:.8125rem; font-weight:600; color:#374151; margin-bottom:.25rem; }
     .section-card { background:#fff; border-radius:1rem; box-shadow:0 4px 24px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
     .section-title { font-size:1rem; font-weight:700; color:#D58B00; border-bottom:2px solid #f4a62333; padding-bottom:.5rem; margin-bottom:1rem; }
+    /* ✅ FIXED SYNTAX BUG: Shifted margin-top from broken 125rem to professional 1.25rem */
     .section-sub { font-size:.875rem; font-weight:700; color:#374151; border-bottom:1px solid #e5e7eb; padding-bottom:.375rem; margin-bottom:.75rem; margin-top:1.25rem; }
     th { font-size:.75rem; font-weight:700; text-transform:uppercase; color:#6b7280; padding:.5rem .75rem; background:#f9fafb; }
     td { padding:.4rem .6rem; }
     .tbl-input { font-size:.8125rem; padding:.35rem .5rem; border:1px solid #d1d5db; border-radius:.375rem; background:#f9fafb; color:#374151; width:100%; outline:none; cursor:not-allowed; }
-    .tbl-words { font-size:.75rem; color:#6b7280; font-style:italic; min-height:1.5rem; display:block; }
+    .tbl-words { font-size:.75rem; color:#6b7280; font-style:italic; display:block; }
     .progress-fill { height:4px; background:linear-gradient(90deg,#D58B00,#F4A623); border-radius:9999px; transition:width .4s ease; }
     .imp-note { background:#fff5f5; border:1px solid #fecaca; border-radius:.5rem; padding:.75rem 1rem; margin-bottom:1rem; font-size:.8125rem; color:#b91c1c; }
     .imp-note strong { display:block; margin-bottom:.25rem; }
@@ -145,7 +146,7 @@
           <div><label class="field-label">GSIRF Institute ID</label><input type="text" id="s1_gsirfId" readonly/></div>
           <div><label class="field-label">Ranking Year</label><input type="text" value="2026" readonly class="bg-gray-50 text-gray-500"/></div>
           <div class="sm:col-span-2"><label class="field-label">Name of Institution</label><input type="text" id="s1_instName" readonly/></div>
-          <div><label class="field-label">Institution Type</label><select id="s1_instType" disabled><option value="">Select type…</option><option>Government</option><option>Government-Aided</option><option>Private Unaided</option><option>Deemed University</option><option>Autonomous College</option></select></div>
+          <div><label class="field-label">Institution Type</label><select id="s1_instType"><option value="">Select type…</option><option>Government</option><option>Government-Aided</option><option>Private Unaided</option><option>Deemed University</option><option>Autonomous College</option></select></div>
           <div><label class="field-label">Affiliated University</label><input type="text" id="s1_affiliatedUniv" readonly/></div>
           <div><label class="field-label">City / Place</label><input type="text" id="s1_city" readonly/></div>
           <div><label class="field-label">District</label><input type="text" id="s1_district" readonly/></div>
@@ -155,7 +156,7 @@
           <div><label class="field-label">Official Email</label><input type="email" id="s1_email" readonly/></div>
           <div><label class="field-label">Mobile Number</label><input type="text" id="s1_mobile" readonly/></div>
           <div><label class="field-label">Submission Date</label><input type="date" id="s1_submitDate" readonly/></div>
-          <div><label class="field-label">Is Revised Submission?</label><select id="s1_isRevised" disabled><option value="N">No (Fresh Submission)</option><option value="Y">Yes (Revised)</option></select></div>
+          <div><label class="field-label">Is Revised Submission?</label><select id="s1_isRevised"><option value="N">No (Fresh Submission)</option><option value="Y">Yes (Revised)</option></select></div>
         </div>
       </div>
     </div>
@@ -222,8 +223,8 @@
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
           <p class="text-sm font-semibold text-gray-700 mb-2">Opted for transition to UG 4-year program as per NEP?</p>
           <div class="yn-radio">
-            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_yes" value="Yes" disabled> Yes</label>
-            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_no" value="No" disabled> No</label>
+            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_yes" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="nep_transition" id="nep_no" value="No"> No</label>
           </div>
         </div>
         <div id="placementContainer"></div>
@@ -261,48 +262,232 @@
 
     <!-- STEP 6 — Institution Details -->
     <div class="step-panel" id="step-6">
+      <!-- 6A: Financial Resources -->
       <div class="section-card fade-in">
-        <p class="section-title">🏦 Financial Resources Expenditure</p>
+        <p class="section-title">🏦 Financial Resources: Utilized Amount for Capital &amp; Operational Expenditure</p>
+        
         <p class="section-sub">Annual Capital Expenditure</p>
-        <div class="overflow-x-auto"><table class="fin-tbl"><thead><tr><th class="text-left">Head of Expenditure</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="capexBody"></tbody></table></div>
+        <div class="overflow-x-auto">
+          <table class="fin-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Head of Expenditure</th>
+                <th>2025-26</th>
+                <th>2024-25</th>
+                <th>2023-24</th>
+              </tr>
+            </thead>
+            <tbody id="capexBody"></tbody>
+          </table>
+        </div>
+
         <p class="section-sub">Annual Operational Expenditure</p>
-        <div class="overflow-x-auto"><table class="fin-tbl"><thead><tr><th class="text-left">Head of Expenditure</th><th>2025-26</th><th>2024-25</th><th>2023-24</th></tr></thead><tbody id="opexBody"></tbody></table></div>
+        <div class="overflow-x-auto">
+          <table class="fin-tbl">
+            <thead>
+              <tr>
+                <th class="text-left" style="min-width:220px">Head of Expenditure</th>
+                <th>2025-26</th>
+                <th>2024-25</th>
+                <th>2023-24</th>
+              </tr>
+            </thead>
+            <tbody id="opexBody"></tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- 6B: PCS Facilities -->
       <div class="section-card fade-in">
         <p class="section-title">♿ PCS Facilities</p>
+        <p class="text-sm font-semibold text-gray-700 mb-4">Facilities for Physically Challenged Students</p>
+
         <div class="q-block">
-          <p class="q-text">1. Do institution buildings have Lifts/Ramps?</p>
+          <p class="q-text">1. Do your institution buildings have Lifts/Ramps?</p>
           <div class="q-options">
-            <label class="q-opt"><input type="radio" name="pcs_lift" value="80+" disabled> Yes, more than 80%</label>
-            <label class="q-opt"><input type="radio" name="pcs_lift" value="60+" disabled> Yes, more than 60%</label>
-            <label class="q-opt"><input type="radio" name="pcs_lift" value="40+" disabled> Yes, more than 40%</label>
-            <label class="q-opt"><input type="radio" name="pcs_lift" value="&lt;40" disabled> Yes, less than 40%</label>
-            <label class="q-opt"><input type="radio" name="pcs_lift" value="NA" disabled> Not available</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="80+"> Yes, more than 80% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="60+"> Yes, more than 60% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="40+"> Yes, more than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="<40"> Yes, less than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_lift" value="NA"> Not available</label>
           </div>
         </div>
+
         <div class="q-block">
-          <p class="q-text">2. Provision for walking aids, wheelchairs?</p>
+          <p class="q-text">2. Provision for walking aids, wheelchairs, and transportation?</p>
           <div class="yn-radio">
-            <label class="yn-opt"><input type="radio" name="pcs_walking" value="Yes" disabled> Yes</label>
-            <label class="yn-opt"><input type="radio" name="pcs_walking" value="No" disabled> No</label>
+            <label class="yn-opt"><input type="radio" name="pcs_walking" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="pcs_walking" value="No"> No</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">3. Do your institution buildings have specially designed toilets?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="80+"> Yes, more than 80% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="60+"> Yes, more than 60% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="40+"> Yes, more than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="<40"> Yes, less than 40% of the buildings</label>
+            <label class="q-opt"><input type="radio" name="pcs_toilet" value="NA"> Not available</label>
           </div>
         </div>
       </div>
+
+      <!-- 6C: Accreditation -->
       <div class="section-card fade-in">
         <p class="section-title">🏅 Accreditation</p>
         <div class="q-block">
-          <label class="field-label">Valid NAAC Accreditation?</label><select id="naac_accred" disabled><option value="NO">NO</option><option value="YES">YES</option></select>
-          <div id="naacDetailsBlock" class="hidden mt-4 grid grid-cols-3 gap-4">
-            <div><label class="field-label">NAAC Grade</label><select id="naac_grade" disabled><option>A++</option><option>A+</option><option>A</option></select></div>
-            <div><label class="field-label">CGPA Score</label><input type="text" id="naac_cgpa" readonly/></div>
-            <div><label class="field-label">Valid Until</label><input type="date" id="naac_valid" readonly/></div>
+          <p class="text-sm font-semibold text-gray-700 mb-3">NAAC Accreditation</p>
+          <div class="flex items-center gap-4">
+            <label class="field-label mb-0">Valid NAAC Accreditation?</label>
+            <select id="naac_accred">
+              <option value="NO">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+          <div id="naacDetailsBlock" class="hidden mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label">NAAC Grade</label>
+              <select id="naac_grade">
+                <option value="">-Select-</option><option value="A++">A++</option><option value="A+">A+</option><option value="A">A</option><option value="B++">B++</option><option value="B+">B+</option><option value="B">B</option><option value="C">C</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">CGPA Score</label>
+              <input type="text" id="naac_cgpa" readonly/>
+            </div>
+            <div>
+              <label class="field-label">Valid Until</label>
+              <input type="date" id="naac_valid" readonly/>
+            </div>
           </div>
         </div>
         <div class="q-block">
-          <div class="grid grid-cols-3 gap-4">
-            <div><label class="field-label">Valid NBA accreditation?</label><select id="nba_accred" disabled><option value="NO">NO</option><option value="YES">YES</option></select></div>
-            <div><label class="field-label">Total programs</label><input type="number" id="nba_total_progs" readonly/></div>
-            <div><label class="field-label">No. of accredited programs</label><input type="number" id="nba_accred_progs" readonly/></div>
+          <p class="text-sm font-semibold text-gray-700 mb-3">NBA Accreditation</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="field-label">Valid NBA accreditation?</label>
+              <select id="nba_accred">
+                <option value="NO">NO</option>
+                <option value="YES">YES</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Total programs (≥ 2 batches graduated)</label>
+              <input type="number" id="nba_total_progs" readonly/>
+            </div>
+            <div>
+              <label class="field-label">No. of NBA-accredited programs</label>
+              <input type="number" id="nba_accred_progs" readonly/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6D: Multiple Entry/Exit & IKS -->
+      <div class="section-card fade-in">
+        <p class="section-title">🔄 Multiple Entry/Exit and Indian Knowledge System</p>
+        <div class="q-block">
+          <p class="q-text">1. Has your institution implemented multiple entry/exit?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q1" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q1" value="No"> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">2. Has your institution been teaching courses in Indian Languages?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q2" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q2" value="No"> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">3. Has your institution introduced courses on Indian Knowledge System?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q3" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q3" value="No"> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">4. Has your institution established the Grievance Redressal Cell?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q4" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q4" value="No"> No</label>
+          </div>
+        </div>
+        <div class="q-block">
+          <p class="q-text">5. Is your institution admitting students through National and State Level entrance exam?</p>
+          <div class="yn-radio">
+            <label class="yn-opt"><input type="radio" name="mee_q5" value="Yes"> Yes</label>
+            <label class="yn-opt"><input type="radio" name="mee_q5" value="No"> No</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6E: Sustainable Living Practices -->
+      <div class="section-card fade-in">
+        <p class="section-title">🌿 Sustainable Living Practices</p>
+        <div class="q-block">
+          <p class="q-text">1. What specific programs are in place to reduce or eliminate single-use plastics?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="slp_q1" value="ban"> Ban on single-use plastic items</label>
+            <label class="q-opt"><input type="radio" name="slp_q1" value="biodeg"> Transition to biodegradable or compostable alternatives</label>
+            <label class="q-opt"><input type="radio" name="slp_q1" value="recycle"> On-campus recycling stations for plastic waste</label>
+            <label class="q-opt"><input type="radio" name="slp_q1" value="none"> No current programs addressing single-use plastics</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">2. What actions has the institution taken to reduce its carbon footprint? (Select all that apply)</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q2_a"> A. Energy-efficient buildings</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_b"> B. Renewable energy installations</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_c"> C. Offsetting emissions</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_d"> D. Sustainable procurement</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q2_e"> E. None</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">3. What is the level of recycling infrastructure available on your campus?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="radio" name="slp_q3" value="comprehensive"> Comprehensive infrastructure</label>
+            <label class="q-opt"><input type="radio" name="slp_q3" value="basic"> Basic infrastructure in place in limited areas</label>
+            <label class="q-opt"><input type="radio" name="slp_q3" value="setup"> Infrastructure currently being set up</label>
+            <label class="q-opt"><input type="radio" name="slp_q3" value="none"> No recycling infrastructure on campus</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">4. What type of rainwater harvesting system has been implemented?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q4_a"> A. Rooftop Rainwater Harvesting System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_b"> B. Surface Runoff Harvesting System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_c"> C. Percolation Pit System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_d"> D. Recharge Wells</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_e"> E. Storage Tank System</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q4_f"> F. None</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">5. Which renewable energy sources are installed on campus? (Select all that apply)</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q5_a"> Solar Panels</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_b"> Wind Turbines</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_c"> Biogas Plants</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_d"> Geothermal Energy</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q5_e"> None of the above</label>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <p class="q-text">6. What is the institution's approach to minimizing food waste?</p>
+          <div class="q-options">
+            <label class="q-opt"><input type="checkbox" id="slp_q6_a"> Food donation programs</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q6_b"> Composting systems</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q6_c"> Sustainable food procurement</label>
+            <label class="q-opt"><input type="checkbox" id="slp_q6_d"> None</label>
           </div>
         </div>
       </div>
@@ -336,20 +521,19 @@
 
     <!-- STEP 8 — Declaration -->
     <div class="step-panel" id="step-8">
-      <!-- Added the missing About Institute card block to match data-collection layout -->
       <div class="section-card fade-in">
         <p class="section-title">🏛️ About Institute</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="field-label">1. Constituent list of colleges?</label>
-            <select id="about_constituent" disabled>
+            <select id="about_constituent">
               <option value="NO">NO</option>
               <option value="YES">YES</option>
             </select>
           </div>
           <div>
             <label class="field-label">2. List of all Campuses?</label>
-            <select id="about_campuses" disabled>
+            <select id="about_campuses">
               <option value="NO">NO</option>
               <option value="YES">YES</option>
             </select>
@@ -384,7 +568,7 @@ const STEPS = [
   { id:2, name:'Sanctioned Intake',           icon:'📝' },
   { id:3, name:'Student Strength & Ph.D.',    icon:'🎓' },
   { id:4, name:'Placement & Higher Studies',  icon:'💼' },
-  { id:5, name:'Faculty Details',              icon:'👩‍🏫' },
+  { id:5, name:'Faculty Details',             icon:'👩‍🏫' },
   { id:6, name:'Institution Details',         icon:'🏛️' },
   { id:7, name:'Research Funding',             icon:'🔬' },
   { id:8, name:'About Institute & Declaration',icon:'📢' },
@@ -519,13 +703,35 @@ function buildPlacementSection() {
 
 function buildFinancialRows(items, bodyId, prefix) {
   document.getElementById(bodyId).innerHTML = items.map(it => `
-    <tr><td class="item-label">${it.label}</td>${FIN_YEARS.map(yr => `<td><input type="text" class="tbl-input" id="${prefix}_${it.key}_${yr.replace('-','')}" readonly/><div class="text-[10px] text-gray-500 mt-1 tbl-words" id="${prefix}_${it.key}_${yr.replace('-','')}_w"></div></td>`).join('')}</tr>
+    <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm">
+      <td class="item-label font-semibold text-gray-700 p-3 bg-white" style="min-width:220px">${it.label}</td>
+      ${FIN_YEARS.map(yr => {
+        const fieldId = `${prefix}_${it.key}_${yr.replace('-','')}`;
+        return `
+          <td class="p-3 bg-white">
+            <input type="text" class="tbl-input w-full font-mono text-gray-800" id="${fieldId}" readonly />
+            <span class="text-[11px] text-gray-500 font-medium italic mt-1 block leading-tight tracking-wide" id="${fieldId}_w"></span>
+          </td>
+        `;
+      }).join('')}
+    </tr>
   `).join('');
 }
 
 function buildResearchTable(bodyId, rowDefs) {
   document.getElementById(bodyId).innerHTML = rowDefs.map(r => `
-    <tr><td class="row-label">${r.label}</td>${FIN_YEARS.map(yr => `<td><input type="text" class="tbl-input" id="${bodyId}_${r.key}_${yr.replace('-','')}" readonly/>${r.words?`<div class="text-[10px] text-gray-500 mt-1 tbl-words" id="${bodyId}_${r.key}_${yr.replace('-','')}_w"></div>`:''}</td>`).join('')}</tr>
+    <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm">
+      <td class="row-label font-semibold text-gray-700 p-3 bg-white" style="min-width:220px">${r.label}</td>
+      ${FIN_YEARS.map(yr => {
+        const fieldId = `${bodyId}_${r.key}_${yr.replace('-','')}`;
+        return `
+          <td class="p-3 bg-white">
+            <input type="text" class="tbl-input w-full font-mono text-gray-800" id="${fieldId}" readonly />
+            ${r.words ? `<span class="text-[11px] text-gray-500 font-medium italic mt-1 block leading-tight tracking-wide" id="${fieldId}_w"></span>` : ''}
+          </td>
+        `;
+      }).join('')}
+    </tr>
   `).join('');
 }
 
@@ -565,6 +771,32 @@ function toggleProgram(key, checked) {
   document.querySelectorAll(`[data-prog-key="${key}"]`).forEach(el => {
     el.style.display = checked ? 'block' : 'none';
   });
+}
+
+// ✅ TRUE DYNAMIC GLOBAL COMPLETION METRICS CALCULATION METHOD
+function calculateReviewCompletion() {
+  const allInputs = document.querySelectorAll('input[type="text"], input[type="number"], select, textarea');
+  
+  const targets = Array.from(allInputs).filter(el => {
+    const hiddenBlock = el.closest('[style*="display:none"], [style*="display: none"]');
+    if (hiddenBlock) return false;
+    if (el.id === 'progressFill' || el.id === 'sideProgress') return false;
+    return true;
+  });
+
+  if (targets.length === 0) return;
+
+  let filledCount = 0;
+  targets.forEach(el => {
+    if (el.value && el.value.trim() !== '' && el.value !== '0') {
+      filledCount++;
+    }
+  });
+
+  const pct = Math.min(100, Math.round((filledCount / targets.length) * 100));
+  
+  document.getElementById('sideProgress').style.width = pct + '%';
+  document.getElementById('pctText').textContent = pct + '%';
 }
 
 // ─── RUN PIPELINE FLOW HYDRATOR ──────────────────────────────────────────────
@@ -607,7 +839,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('bannerInstName').textContent = s.institute_name;
     
-    // Safely parse form data text column string to standard object[cite: 1]
+    // Safely parse form data text column string to standard object
     const fd = typeof s.form_data === 'string' ? JSON.parse(s.form_data) : (s.form_data || {});
 
     // First handle and toggle the selected programs checkboxes to generate required fields
@@ -645,22 +877,36 @@ document.addEventListener('DOMContentLoaded', async () => {
       if(r) r.checked = true;
     });
 
-    // ✅ NEW INTERACTIVE TEXTCONTENT MAPPING ENGINE FOR ALL AMOUNT IN WORDS:
+    // Handle Dropdown settings properties explicitly to map native select attributes
+    ['s1_instType', 's1_isRevised', 'naac_accred', 'naac_grade', 'about_constituent', 'about_campuses'].forEach(selectId => {
+      if (fd[selectId] !== undefined) {
+        const sel = document.getElementById(selectId);
+        if (sel) {
+          sel.value = fd[selectId];
+          // Force execution tracking context explicitly to render dropdown elements
+          sel.removeAttribute('disabled');
+          sel.setAttribute('disabled', 'true');
+        }
+      }
+    });
+
+    // ✅ FIXED TEXT MAPPING ENGINE: Updates innerText/textContent properties cleanly
     Object.entries(fd).forEach(([id, val]) => {
       if (id.endsWith('_w') && val) {
         const wEl = document.getElementById(id);
         if (wEl) {
+          wEl.innerText = val;
           wEl.textContent = val;
         }
       }
     });
 
     // Toggle conditional block states elements mapping validation toggles
-    if (fd['naac_accred'] === 'YES') {
+    if (fd['naac_accred'] === 'YES' || document.getElementById('naac_accred').value === 'YES') {
       document.getElementById('naacDetailsBlock').classList.remove('hidden');
     }
 
-    // Pull and map Roster Faculty Lists elements from backend relational maps[cite: 2]
+    // Pull and map Roster Faculty Lists elements from backend relational maps
     const fRes = await fetch(`/api/applications/faculty/${s.institute_id}`);
     const fResult = await fRes.json();
     if(fResult.success && Array.isArray(fResult.faculty)) {
@@ -685,12 +931,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       `).join('');
     }
 
-    // Auto calculate progress percentage trackers metrics
-    const filled = Object.values(fd).filter(v => v && v !== '0' && v !== 'false').length;
-    const total = Object.keys(fd).length || 1;
-    const pct = Math.min(100, Math.round(filled / total * 100)) + '%';
-    document.getElementById('sideProgress').style.width = pct;
-    document.getElementById('pctText').textContent = pct;
+    // Calculate True Global Form Mirroring Metrics
+    calculateReviewCompletion();
 
   } catch (err) {
     console.error('Handshake verification error mapping payload fields matrix:', err);

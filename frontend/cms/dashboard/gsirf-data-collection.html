@@ -9,6 +9,7 @@
   <script>
     tailwind.config = {
       theme: { extend: { colors: { 'garvi-orange':'#D58B00','garvi-gold':'#F4A623' } } }
+      
     };
   </script>
   <style>
@@ -162,7 +163,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="field-label">GSIRF Institute ID *</label>
-            <input type="text" id="s1_gsirfId" placeholder="e.g., GJ-2026-0042"/>
+            <input type="text" id="s1_gsirfId" readonly class="bg-gray-100 text-gray-500 cursor-not-allowed font-mono font-semibold" placeholder="e.g., GJ-2026-0042"/>
           </div>
           <div>
             <label class="field-label">Ranking Year</label>
@@ -1399,6 +1400,11 @@ function saveDraft() {
   }
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(collectFormData()));
+
+ // Force the layout engine to calculate and paint the new text value instantly
+  if (typeof updateCompletionPercentage === 'function') {
+    updateCompletionPercentage();
+  }
   
   setTimeout(() => { 
     if (badge) {
@@ -1482,7 +1488,8 @@ async function submitForm() {
       return;
     }
 
-    saveDraft();
+    // ✅ Keep the local cache item clear for final submissions
+    localStorage.removeItem(STORAGE_KEY);
 
     if (document.getElementById('declarationCheck')?.checked) {
       const s8Res = await saveSection8Declaration('submitted');
@@ -1509,6 +1516,7 @@ function showToast(msg) {
 }
 
 // ─── AUTO-SAVE + N2W ENGINE ──────────────────────────────────────────────────
+// Replace your current document.addEventListener('input', ...) auto-save observer with this:
 let saveTimer;
 document.addEventListener('input', e => {
   if (e.target.classList.contains('amt-rs')) {
@@ -1518,11 +1526,16 @@ document.addEventListener('input', e => {
       if (wel) wel.value = e.target.value ? n2w(Number(e.target.value)) : '';
     }
   }
+  
+  // ✅ ADD THIS RECALCULATION ACTION TO TRACK PROGRESS WHILE TYPING:
+  updateCompletionPercentage();
+
   clearTimeout(saveTimer);
   const badge = document.getElementById('saveBadge');
   badge.textContent = '● Saving…'; badge.className = 'badge-saving'; badge.classList.remove('hidden');
   saveTimer = setTimeout(saveDraft, 1500);
 });
+
 
 // ─── INIT SCHEMATIC FLOW GENERATORS ──────────────────────────────────────────
 buildSidebar();
@@ -1552,27 +1565,99 @@ const today = new Date().toISOString().split('T')[0];
   const el = document.getElementById(id); if(el) el.value = today;
 });
 
+// Place this directly after your document.addEventListener('input', ...) auto-save engine block
+
+function updateCompletionPercentage() {
+  // 1. Target all structural input fields across all 8 steps globally
+  const allInputs = document.querySelectorAll('input[type="text"]:not([readonly]), input[type="number"], select, textarea');
+  
+  // 2. Filter out fields belonging to programs that aren't checked/offered
+  const targets = Array.from(allInputs).filter(el => {
+    // If a field is inside a dynamic program block that is hidden, ignore it completely
+    const hiddenBlock = el.closest('[style*="display:none"], [style*="display: none"]');
+    if (hiddenBlock) return false;
+    
+    // Ignore faculty form sub-inputs when the wrapper itself is hidden
+    if (el.closest('#facultyFormWrap.hidden')) return false;
+
+    return true;
+  });
+
+  if (targets.length === 0) return;
+  
+  let filledCount = 0;
+  
+  // 3. Scan and count completed data entries across all steps
+  targets.forEach(el => {
+    if (el.value && el.value.trim() !== '' && el.value !== '0') {
+      filledCount++;
+    }
+  });
+
+  // 4. Compute accurate global percentage ratio
+  const pct = Math.min(100, Math.round((filledCount / targets.length) * 100));
+
+  // 5. Update the progress bar components simultaneously
+  const sideProg = document.getElementById('sideProgress');
+  const pctText = document.getElementById('pctText');
+  const progressFill = document.getElementById('progressFill');
+
+  if (sideProg) sideProg.style.width = pct + '%';
+  if (pctText) pctText.textContent = pct + '%';
+  if (progressFill) progressFill.style.width = ((currentStep / 8) * 100) + '%';
+}
+
+
+// 5. Bind real-time change event loops to refresh completion state dynamically as fields update
+document.addEventListener('input', updateCompletionPercentage);
+document.addEventListener('change', updateCompletionPercentage);
+
 (async () => {
   const session = getSessionLocal();
   if (session) {
     const userId = session.userId || (session.user ? session.user.id : null);
     STORAGE_KEY = `garvi_gsirf2026_v2_${userId}`;
+
+    try {
+      // Fetch the registered institutes array from the backend
+      const res = await fetch('/api/admin/institutes', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const result = await res.json();
+      
+      if (result.success && Array.isArray(result.data)) {
+        // Find the record matching the logged-in userId
+        const profile = result.data.find(x => x.id === userId);
+        if (profile) {
+          // ✅ This dynamically splits 'iit@gmail.com' into 'IIT' and assigns 'GSIRF-IIT'
+          document.getElementById('s1_gsirfId').value = `GSIRF-${profile.username.split('@')[0].toUpperCase()}`;
+        } else {
+          document.getElementById('s1_gsirfId').value = 'GSIRF-01'; // Fallback if profile not found
+        }
+      } else {
+        document.getElementById('s1_gsirfId').value = 'GSIRF-01'; // Fallback if API fails
+      }
+    } catch (err) {
+      console.error('Failed to auto-populate institutional GSIRF ID:', err);
+      document.getElementById('s1_gsirfId').value = 'GSIRF-01'; // Safe structural fallback
+    }
+
   } else {
     window.location.href = '/login';
     return;
   }
+
   loadDraft();
   goToStep(1);
   await loadFacultyFromDB();
+  updateCompletionPercentage(); // ✅ BUG-013: Forces progress calculation immediately on boot
 })();
 
-setInterval(() => {
-  const filled = [...document.querySelectorAll('input,select')].filter(e => e.value && e.value !== '0').length;
-  const total  = document.querySelectorAll('input,select').length;
-  const pct = Math.min(100, Math.round(filled/total*100));
-  document.getElementById('sideProgress').style.width = pct+'%';
-  document.getElementById('pctText').textContent = pct+'%';
-}, 3000);
+
 
 // ─── BACKEND CONNECTION API CALL MODULES ──────────────────────────────────
 async function saveSection1Profile() {
@@ -1968,6 +2053,7 @@ async function saveSection7ResearchFunding() {
   const iprYears = [2025, 2024, 2023];
   const iprPayload = iprYears.map(yr => ({
     calendar_year:     yr,
+    // ✅ FIXED STRUCTURE: Maps parameters cleanly to match data collection IDs
     patents_published: parseInt(document.getElementById(`ipr_pub_${yr}`)?.value) || 0,
     patents_granted:   parseInt(document.getElementById(`ipr_grant_${yr}`)?.value) || 0
   }));

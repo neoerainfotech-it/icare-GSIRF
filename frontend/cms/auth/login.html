@@ -39,7 +39,7 @@
     <div class="floating-shape w-12 h-12 sm:w-16 sm:h-16 bg-garvi-gold rounded-lg bottom-32 right-6 sm:right-16" style="animation-delay:1s"></div>
   </div>
 
-  <!-- Top Header Navigation Bar (Updated to clean /landing route) -->
+  <!-- Top Header Navigation Bar -->
   <header class="bg-white shadow-md fixed top-0 inset-x-0 z-50">
     <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
       <div class="flex items-center gap-2 sm:gap-3">
@@ -199,7 +199,6 @@
         role === 'admin' ? 'admin@garvi.gujarat.gov.in' : 'you@institution.edu.in';
     }
 
-    // Password visibility toggle
     const pwd = document.getElementById('password');
     document.getElementById('togglePwd').addEventListener('click', () => {
       const show = pwd.type === 'password';
@@ -209,7 +208,6 @@
         : `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />`;
     });
 
-    // Node.js API Login Form Submission Pipeline
     document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
       
@@ -222,13 +220,19 @@
         return;
       }
 
+      // ✅ FRONTEND REGEX ENFORCEMENT TO SOLVE BUG-001
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        showMsg('❌ Password Policy Violation: Must be at least 8 characters long and contain uppercase letters, lowercase letters, numbers, and a special character.', 'bg-red-500');
+        return;
+      }
+
       const btn = document.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.textContent = 'Signing in…';
       btn.classList.add('opacity-75', 'cursor-not-allowed');
 
       try {
-        // Updated to use dynamic relative routing path
         const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -241,7 +245,6 @@
           throw new Error(data.message || 'Authentication rejected.');
         }
 
-        // Assemble combined session object safely
         const combinedSession = {
           token: data.token,
           user: data.user,
@@ -249,14 +252,11 @@
           username: username
         };
         localStorage.setItem('garvi_session', JSON.stringify(combinedSession));
-        
-        // Retain backups for validation compatibility across route guards
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
         showMsg('✅ Authentication verified! Redirecting...', 'bg-green-500');
 
-        // Redirecting flawlessly to extensionless server route domains
         setTimeout(() => {
           if (data.user.role === 'admin') {
             window.location.href = '/admin'; 
@@ -280,7 +280,6 @@
       msg.classList.remove('hidden');
     }
 
-    // Mobile Footer Toggle
     document.getElementById('helpToggle').addEventListener('click', () => {
       const mh = document.getElementById('mobileHelp');
       const icon = document.getElementById('helpToggleIcon');
@@ -288,7 +287,6 @@
       icon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
     });
 
-    // Help bar event interceptors
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();

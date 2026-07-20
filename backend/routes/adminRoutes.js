@@ -76,9 +76,12 @@ router.get('/submissions', async (req, res) => {
         const [submissions] = await pool.query(
             'SELECT id, institute_id, institute_name, gsirf_id, status, form_data, submitted_at FROM gsirf_submissions ORDER BY submitted_at DESC'
         );
+        
+        // ✅ FIXED TABLE NAME AND COLUMN ALIASING
         const [categorySubmissions] = await pool.query(
-            'SELECT institute_id, category FROM gsirf_category_submissions'
+            'SELECT institute_id, category_key AS category FROM gsirf_submission_categories'
         );
+        
         res.json({ 
             success: true, 
             submissions: submissions, 
@@ -100,5 +103,30 @@ router.put('/submissions/:id/status', async (req, res) => {
     }
 });
 
+// 7. Enterprise Batch Purge / Delete Submissions Route
+router.delete('/submissions/batch-purge', async (req, res) => {
+    const { ids } = req.body;
+    
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, error: 'No submission IDs provided for deletion.' });
+    }
+
+    try {
+        // Delete categories first to maintain relational integrity (if foreign keys aren't set to cascade)
+        const placeholders = ids.map(() => '?').join(',');
+        await pool.query(`DELETE FROM gsirf_submission_categories WHERE submission_id IN (${placeholders})`, ids);
+        
+        // Delete the main submissions
+        const [result] = await pool.query(`DELETE FROM gsirf_submissions WHERE id IN (${placeholders})`, ids);
+
+        res.json({ 
+            success: true, 
+            affectedRows: result.affectedRows,
+            message: 'Targeted submissions purged successfully.' 
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
 // ALWAYS AT THE ABSOLUTE BOTTOM OF THE FILE
 module.exports = router;
